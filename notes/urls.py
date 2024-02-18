@@ -1,11 +1,16 @@
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from . import views
+from django.urls import path
+from .views import NoteListView, NoteDetailView, home, create_note
 
-router = DefaultRouter()
-router.register(r'notes', views.NoteViewSet)
-router.register(r'blogposts', views.BlogPostViewSet)
+
+app_name = 'notes' 
+
 
 urlpatterns = [
-    path('', include(router.urls)),
+    # .as_view() is used to convert the class-based view into a function-based view. See views.py for the difference between the two.
+    path('', NoteListView.as_view(), name='note_list'), 
+    path('<int:pk>/', NoteDetailView.as_view(), name='note_detail'),  # Primary Key used at the route to identify the correct note
+    
+    # These are function-based views
+    path('', home, name='home'),
+    path('create/', create_note, name='create_note'),
 ]

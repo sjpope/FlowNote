@@ -48,3 +48,18 @@ Thumbs.db
 *.mov
 *.wmv
 
+*.pyc
+__pycache__/
+db.sqlite3
+.DS_Store
+*.pyo
+*.pyd
+*.swp
+.env
+venv/
+.idea/
+.vscode/
+*.bak
+*.log
+staticfiles/
+media/
