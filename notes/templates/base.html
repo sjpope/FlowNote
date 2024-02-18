@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlowNote</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'notes/css/notes_styles.css' %}">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>FlowNote</h1>
+            <nav>
+                <ul>
+                    <li><a href="{% url 'notes:note_list' %}">Home</a></li>
+                    <!-- <li><a href="{% url 'notes:create_note' %}">Create Note</a></li> -->
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div id="content" class="container">
+        {% block content %}
+        <!-- Content from child templates will be inserted here -->
+        {% endblock %}
+    </div>
+
+    <footer>
+        <div class="container">
+            &copy; 2024 FlowNote.
+        </div>
+    </footer>
+</body>
+</html>
