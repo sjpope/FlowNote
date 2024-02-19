@@ -63,3 +63,6 @@ venv/
 *.log
 staticfiles/
 media/
+
+#for api keys
+.env

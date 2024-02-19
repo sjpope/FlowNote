@@ -46,28 +46,52 @@ body {
 }
 
 /* Form styles */
-.form {
-  margin-bottom: 20px;
+.note-form {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.form input[type="text"],
-.form textarea {
+.note-form input[type="text"],
+.note-form textarea {
   width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
+  padding: 12px;
+  border: 1px solid #ddd;
   border-radius: 5px;
   margin-bottom: 10px;
+  box-sizing: border-box;
 }
 
-.form button {
-  padding: 10px 20px;
-  background-color: #333;
+.note-form input[type="text"]:focus,
+.note-form textarea:focus {
+  border-color: #555;
+}
+
+.note-form button {
+  padding: 12px 20px;
+  background-color: #007bff;
   color: #fff;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.3s;
 }
 
-.form button:hover {
-  background-color: #555;
+.note-form button:hover {
+  background-color: #0056b3;
 }
+
+.note-form a {
+  display: block;
+  margin-top: 10px;
+  text-align: center;
+  color: #007bff;
+}
+
+.note-form a:hover {
+  text-decoration: underline;
+}
+

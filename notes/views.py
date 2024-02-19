@@ -16,7 +16,10 @@ class NoteDetailView(DetailView):
     template_name = 'note_detail.html'  
 
 def home(request):
-    return render(request, 'home.html')  
+    return render(request, 'home.html') 
+
+def login(request):
+    return render(request, 'login.html')
 
 def create_note(request):
     if request.method == 'POST':
@@ -29,4 +32,3 @@ def create_note(request):
     else:
         form = NoteForm()
     return render(request, 'note_form.html', {'form': form})
-

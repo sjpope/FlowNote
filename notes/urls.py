@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import NoteListView, NoteDetailView, home, create_note
+from .views import NoteListView, NoteDetailView, home, create_note, login
 
 
 app_name = 'notes' 
@@ -13,4 +13,5 @@ urlpatterns = [
     # These are function-based views
     path('', home, name='home'),
     path('create/', create_note, name='create_note'),
+    path('login', login, name='login'),
 ]
