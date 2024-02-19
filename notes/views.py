@@ -57,7 +57,7 @@ def create_note(request):
         form = NoteForm(request.POST)
         if form.is_valid():
             new_note = form.save(commit=False)
-            new_note.owner = request.user  # TO-DO: Implement User Authentication / Guest User Logic
+            new_note.owner = request.user  
             new_note.save()
             return redirect('notes:note_list')
     else:
