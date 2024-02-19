@@ -1,5 +1,5 @@
 # FlowNote
-
+![Project Logo](logo.png)
 > FlowNote is an innovative, AI-powered note-taking application that enhances user productivity by offering advanced features like real-time speech-to-text conversion and intelligent note summarization.
 
 ## Table of Contents
