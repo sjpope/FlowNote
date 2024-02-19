@@ -17,10 +17,11 @@
 
 ## Team
 We are a team of Texas State University students developing this project as part of our Software Engineering course.
-- Samuel Pope
-- Israel Ibinayin
-- John Yamamoto
-- Matthew Ruiz
+
+* Samuel Pope
+* Israel Ibinayin
+* John Yamamoto
+* Matthew Ruiz
 
 ## General Information
 - FlowNote is designed to address the challenges of traditional note-taking by integrating AI capabilities, making the process more intuitive and efficient.
