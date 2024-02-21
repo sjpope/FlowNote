@@ -18,7 +18,10 @@
                     <a href="{% url 'home' %}">Home</a>
 
                     {% if user.is_authenticated %}
-                        <a href="{% url 'notes:logout' %}">Logout</a>
+                        <form action="{% url 'notes:logout' %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit">Logout</button>
+                        </form>
                         <li><a href="{% url 'notes:note_list' %}">Note List</a></li>
                         <li><a href="{% url 'notes:create_note' %}">Create Note</a></li>
                     {% else %}
