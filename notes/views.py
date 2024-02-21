@@ -9,13 +9,17 @@ from django.urls import reverse
 from .models import Note, BlogPost
 from .forms import *
 
+@login_required
+def profile(request):
+    return render(request, 'profile.html', {'user': request.user})
+
 
 def register(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('notes:login') # accounts/profile error occured here 2/18/24 1 AM CT
+            return redirect('notes:login')
     else:
         form = RegisterForm()  
     return render(request, 'registration/register.html', {'form': form})
