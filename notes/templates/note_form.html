@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<head>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'notes/css/note_form.css' %}">
+</head>
   <div class="note-form">
     <h2>{% if form.instance.pk %}Edit Note{% else %}Create Note{% endif %}</h2>
     <form method="post">
