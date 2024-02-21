@@ -1,8 +1,9 @@
 # FlowNote
-
+![Project Logo](logo.png)
 > FlowNote is an innovative, AI-powered note-taking application that enhances user productivity by offering advanced features like real-time speech-to-text conversion and intelligent note summarization.
 
 ## Table of Contents
+* [Team](#team)
 * [General Info](#general-information)
 * [Technologies Used](#technologies-used)
 * [Features](#features)
@@ -13,6 +14,14 @@
 * [Room for Improvement](#room-for-improvement)
 * [Acknowledgements](#acknowledgements)
 * [Contact](#contact)
+
+## Team
+We are a team of Texas State University students developing this project as part of our Software Engineering course.
+
+* Samuel Pope
+* Israel Ibinayin
+* John Yamamoto
+* Matthew Ruiz
 
 ## General Information
 - FlowNote is designed to address the challenges of traditional note-taking by integrating AI capabilities, making the process more intuitive and efficient.
