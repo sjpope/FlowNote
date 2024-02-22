@@ -3,6 +3,9 @@
 {% block content %}
     <h2>Welcome to FlowNote</h2>
     <p>Your personal AI-enhanced note-taking companion.</p>
-    <p><a href="{% url 'notes:profile' %}">Profile</a></p>
-    <p><a href="{% url 'notes:create_note' %}">Start taking notes</a> and explore the ease and intelligence of FlowNote.</p>
+    
+    {% if user.is_authenticated %}
+        <p><a href="{% url 'notes:profile' %}">Profile</a></p>
+        <p><a href="{% url 'notes:create_note' %}">Start taking notes</a> and explore the ease and intelligence of FlowNote.</p>
+    {% endif %}
 {% endblock %}
