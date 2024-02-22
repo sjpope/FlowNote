@@ -30,3 +30,28 @@
     font-size: 40px;
     text-decoration: none;
 }
+
+nav form {
+    display: inline;
+}
+
+nav ul {
+    padding: 0;
+    list-style: none;
+    background-color: #333;
+}
+
+nav ul li {
+    display: inline;
+    margin-right: 10px;
+}
+
+footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
