@@ -13,20 +13,19 @@
 
 <body>
     <header>
-        <div class="container">
+        <div class="nav-container">
             <h1>FlowNote</h1>
             <nav>
                 <ul>
                     <li><a href="{% url 'home' %}" class="{% if request.path == '/' %}active{% endif %}">Home</a></li>
                     {% if user.is_authenticated %}
+                        <li><a href="{% url 'notes:note_list' %}" class="{% if request.path == '/notes/list/' %}active{% endif %}">Note List</a></li>
+                        <li><a href="{% url 'notes:create_note' %}" class="{% if request.path == '/notes/create/' %}active{% endif %}">Create Note</a></li>
 
                         <form action="{% url 'notes:logout' %}" method="post">
                             {% csrf_token %}
                             <button type="submit">Logout</button>
                         </form>
-
-                        <li><a href="{% url 'notes:note_list' %}" class="{% if request.path == '/notes/list/' %}active{% endif %}">Note List</a></li>
-                        <li><a href="{% url 'notes:create_note' %}" class="{% if request.path == '/notes/create/' %}active{% endif %}">Create Note</a></li>
                     {% else %}
                         <a href="{% url 'notes:login' %}">Login</a>
                         <a href="{% url 'notes:register' %}">Register</a>
