@@ -1,18 +1,17 @@
 # from .serializers import NoteSerializer, BlogPostSerializer
 # from rest_framework import viewsets
 from django.shortcuts import render, redirect
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, UpdateView, DeleteView
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from .models import Note, BlogPost
 from .forms import *
 
 @login_required
 def profile(request):
     return render(request, 'profile.html', {'user': request.user})
-
 
 def register(request):
     if request.method == 'POST':
@@ -42,16 +41,6 @@ def user_logout(request):
     logout(request)
     return redirect('home')  # TO-DO: Redirect to success page, or add a success message
 
-# TO-DO: Convert these class-based views to function-based views
-class NoteListView(ListView):
-    model = Note
-    template_name = 'note_list.html'  
-    context_object_name = 'notes'
-
-class NoteDetailView(DetailView):
-    model = Note
-    template_name = 'note_detail.html'  
-
 def home(request):
     return render(request, 'home.html')  
 
@@ -67,3 +56,23 @@ def create_note(request):
     else:
         form = NoteForm()
     return render(request, 'note_form.html', {'form': form})
+
+class NoteListView(ListView):
+    model = Note
+    template_name = 'note_list.html'  
+    context_object_name = 'notes'
+
+class NoteDetailView(DetailView):
+    model = Note
+    template_name = 'note_detail.html'  
+
+class NoteDeleteView(DeleteView):
+    model = Note
+    template_name = 'note_delete.html'
+    success_url = reverse_lazy('notes:note_list') 
+
+class NoteUpdateView(UpdateView):
+    model = Note
+    form_class = NoteForm
+    template_name = 'note_update.html'
+    success_url = reverse_lazy('notes:note_list')
