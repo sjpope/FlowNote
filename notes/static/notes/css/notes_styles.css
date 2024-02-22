@@ -8,13 +8,14 @@ body {
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
+  overflow: hidden;
 }
 
 /* Header styles */
 .header {
   background-color: #333;
   color: #fff;
-  padding: 10px;
+  padding: 10px 0;
 }
 
 .header h1 {
@@ -72,7 +73,7 @@ body {
 
 .note-form button {
   padding: 12px 20px;
-  background-color: #007bff;
+  background-color: #4CAF50;
   color: #fff;
   border: none;
   border-radius: 5px;
@@ -81,17 +82,146 @@ body {
 }
 
 .note-form button:hover {
-  background-color: #0056b3;
+  background-color: #45a049
 }
 
 .note-form a {
   display: block;
   margin-top: 10px;
   text-align: center;
-  color: #007bff;
+  color: #54b957;
 }
 
 .note-form a:hover {
   text-decoration: underline;
 }
 
+/* Navbar styles */
+
+header {
+  background-color: #333;
+  color: #fff;
+  padding: 10px 0;
+}
+
+.nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+}
+
+.nav-container h1 {
+  margin: 0;
+}
+
+nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+nav ul li {
+  margin-left: 20px;
+}
+
+nav ul li:first-child {
+  margin-left: 0;
+}
+
+nav ul li a {
+  color: #fff;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+nav ul li a:hover {
+  color: #ffcc00;
+}
+
+/* More form styles */
+/* Add this to your CSS file */
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+label {
+  display: inline-block;
+  width: 150px; /* Adjust this width as needed */
+  font-weight: bold;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  width: calc(100% - 170px); /* Adjust the width to accommodate label */
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+button[type="submit"] {
+  width: 100%;
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover {
+  background-color: #45a049;
+}
+
+/*More notes styles*/
+
+
+.note-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.notes-list {
+  list-style: none;
+  padding: 0;
+}
+
+.note-item {
+  margin-bottom: 20px;
+}
+
+.note-card {
+  display: block;
+  text-decoration: none;
+  border: 1px solid #ddd; /* Border style for the card */
+  border-radius: 5px; /* Rounded corners */
+  padding: 15px;
+  transition: box-shadow 0.3s ease; /* Add shadow transition for hover effect */
+}
+
+.note-card:hover {
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Shadow effect on hover */
+}
+
+.note-content {
+  color: #201010;
+}
+
+/* Adjustments for title and content */
+.note-content h3 {
+  margin-top: 0;
+}
+
+.note-content p {
+  margin-bottom: 0;
+}
