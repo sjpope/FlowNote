@@ -69,10 +69,10 @@ class NoteDetailView(DetailView):
 class NoteDeleteView(DeleteView):
     model = Note
     template_name = 'note_delete.html'
-    success_url = reverse_lazy('note_list')  # TO-DO: Add success message
+    success_url = reverse_lazy('notes:note_list') 
 
 class NoteUpdateView(UpdateView):
     model = Note
     form_class = NoteForm
     template_name = 'note_update.html'
-    success_url = reverse_lazy('note_list')
+    success_url = reverse_lazy('notes:note_list')
