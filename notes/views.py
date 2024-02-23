@@ -6,8 +6,22 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse, reverse_lazy
+from django.db.models import Q # For complex queries (search feature)
 from .models import Note, BlogPost
 from .forms import *
+
+class NoteSearchView(ListView):
+    model = Note
+    template_name = 'note_search.html'
+    context_object_name = 'notes'
+
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        if query:
+            return Note.objects.filter(Q(title__icontains=query) | Q(content__icontains=query), owner=self.request.user)
+        else:
+            return Note.objects.all()
+
 
 @login_required
 def profile(request):
