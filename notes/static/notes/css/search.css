@@ -1,0 +1,56 @@
+/* FILEPATH: /C:/Users/sampo/OneDrive/Documents/TXST/SWE/Repos/flownote/notes/static/notes/css/search.css */
+
+/* Styles for the search container */
+.search-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* Styles for the search input */
+.search-input {
+  width: 300px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+/* Styles for the search button */
+.search-button {
+  margin-left: 10px;
+  padding: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* Styles for the search results */
+.search-results {
+  margin-top: 20px;
+}
+
+/* Styles for the individual search result */
+.search-result {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+/* Styles for the search result title */
+.search-result-title {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+/* Styles for the search result content */
+.search-result-content {
+  margin-top: 5px;
+  font-size: 14px;
+  color: #555;
+}
