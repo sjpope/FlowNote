@@ -11,8 +11,8 @@
 
         <div class="search-container" style="text-align: center; margin-bottom: 20px;">
             <form action="{% url 'notes:note_search' %}" method="get">
-                <input type="text" name="q" placeholder="Search notes...">
-                <button type="submit">Search</button>
+                <input class="search-input" type="text" name="q" placeholder="Search notes..."> <!--value="{{ request.GET.q }}"-->
+                <button class="search-button" type="submit">Search</button>
             </form>
         </div>
 
@@ -28,7 +28,7 @@
             </li>
             {% endfor %}
         </ul>
-        
+
     </div>
     {% else %}
     <p>No notes found.</p>
