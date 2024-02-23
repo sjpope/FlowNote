@@ -3,6 +3,15 @@
 {% block content %}
   <div class="note-container">
     <h2 style="text-align: center;">Notes</h2>
+
+    <div class="search-container" style="text-align: center; margin-bottom: 20px;">
+      <form action="{% url 'notes:note_search' %}" method="get">
+        <input type="text" name="q" placeholder="Search notes...">
+        <button type="submit">Search</button>
+      </form>
+    </div>
+
+
     <ul class="notes-list">
       {% for note in notes %}
         <li class="note-item">
