@@ -13,6 +13,7 @@ class Note(models.Model):
     def __str__(self):
         return self.title
 
+#TO-DO: Implement a BlogPost model with the following fields:
 class BlogPost(models.Model):
     title = models.CharField(max_length=100)
     content = models.TextField()

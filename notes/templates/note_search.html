@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if request.GET.q %}
+<div class="search-results">
+    <h4>Search Results for "{{ request.GET.q }}"</h4>
+    {% if notes %}
+    <div class="note-container">
+        <h2 style="text-align: center;">Notes</h2>
+
+        <div class="search-container" style="text-align: center; margin-bottom: 20px;">
+            <form action="{% url 'notes:note_search' %}" method="get">
+                <input type="text" name="q" placeholder="Search notes...">
+                <button type="submit">Search</button>
+            </form>
+        </div>
+
+        <ul class="notes-list">
+            {% for note in notes %}
+            <li class="note-item">
+                <a href="{% url 'notes:note_detail' note.pk %}" class="note-card">
+                    <div class="note-content">
+                        <h3>{{ note.title }}</h3>
+                        <p>{{ note.content }}</p>
+                    </div>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+        
+    </div>
+    {% else %}
+    <p>No notes found.</p>
+    {% endif %}
+</div>
+{% endif %}
+
+{% endblock %}
