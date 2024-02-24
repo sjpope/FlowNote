@@ -7,4 +7,9 @@
   <a href="{% url 'notes:note_update' note.id %}" class="btn btn-primary">Update</a>
   <a href="{% url 'notes:note_delete' note.id %}" class="btn btn-danger">Delete</a>
 
+  <form action="{% url 'notes:analyze_note' note.id%}" method="post">
+    {% csrf_token %}
+    <button type="submit">Analyze Note</button>
+  </form>
+
 {% endblock %}

@@ -1,15 +1,30 @@
 # from .serializers import NoteSerializer, BlogPostSerializer
 # from rest_framework import viewsets
-from django.shortcuts import render, redirect
+from django.shortcuts import *   # render, redirect, get_object_or_404
 from django.views.generic import ListView, DetailView, UpdateView, DeleteView
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse, reverse_lazy
-from django.db.models import Q # For complex queries (search feature)
+from django.db.models import Q      # For complex queries (search feature)
 from .models import Note, BlogPost
 from .forms import *
+from AIEngine.services.note_analysis import analyze_notes
 
+def analyze(request, note_id):
+    if request.method == "POST":
+        note = Note.objects.get(pk=note_id)     # note = get_object_or_404(Note, pk=pk)
+
+        # Perform analysis
+        
+        results = analyze_notes(note.content)
+        note.analysis_results = results     # Save the results to the database? Or just display them to the user?
+
+        # Display results to the user without changing the note content 
+
+        # Send em back to the detail page
+        return redirect('note_detail', pk=note.pk)
+    
 class NoteSearchView(ListView):
     model = Note
     template_name = 'note_search.html'
@@ -21,7 +36,6 @@ class NoteSearchView(ListView):
             return Note.objects.filter(Q(title__icontains=query) | Q(content__icontains=query), owner=self.request.user)
         else:
             return Note.objects.all()
-
 
 @login_required
 def profile(request):
