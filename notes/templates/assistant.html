@@ -1,0 +1,127 @@
+<div id="assistant-container">
+    <div id="assistant-header">
+        <h3>AI Assistant</h3>
+    </div>
+    <div id="chat-history"></div>
+    <div id="assistant-body">
+        <div id="controller">
+            <input type="text" id="user-input" placeholder="Type your message...">
+            <button id="send-button">Send</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    #assistant-container {
+        width: 300px;
+        min-height: 350px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin: 20px;
+        position: fixed;
+        bottom: -12%;
+        right: 20px;
+        transform: translateY(-50%);
+    }
+
+    #assistant-header {
+        background-color: #333;
+        color: white;
+        padding: 10px;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+    }
+
+    #assistant-header h3 {
+        margin: 0;
+    }
+
+    #assistant-body {
+        position: fixed;
+        padding: 10px;
+        bottom: 0;
+        width: 90%;
+    }
+
+    #chat-history {
+        max-height: 300px;
+        overflow-y: auto;
+    }
+
+    .user-message {
+        background-color: #f2f2f2;
+        border-radius: 5px;
+        padding: 5px 10px;
+        margin-bottom: 5px;
+    }
+
+    .ai-message {
+        background-color: #007bff;
+        color: white;
+        border-radius: 5px;
+        padding: 5px 10px;
+        margin-bottom: 5px;
+        text-align: right;
+    }
+
+    #controller {
+        display: flex;
+        align-items: center;
+        bottom: 0;
+    }
+
+    #user-input {
+        flex: 1;
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    #send-button {
+        padding: 5px 10px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-left: 10px;
+    }
+
+    #send-button:hover {
+        background-color: #0056b3;
+    }
+</style>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var chatHistory = document.getElementById('chat-history');
+        var userInput = document.getElementById('user-input');
+        var sendButton = document.getElementById('send-button');
+
+        sendButton.addEventListener('click', function () {
+            var message = userInput.value.trim();
+            if (message !== '') {
+                // Add user message to chat history
+                chatHistory.innerHTML += '<div class="user-message">' + message + '</div>';
+
+                // Send user message to backend for AI response
+                fetch('/assistant/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ message: message })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Add AI response to chat history
+                    chatHistory.innerHTML += '<div class="ai-message">' + data.response + '</div>';
+                })
+                .catch(error => console.error('Error:', error));
+
+                // Clear user input
+                userInput.value = '';
+            }
+        });
+    });
+</script>
