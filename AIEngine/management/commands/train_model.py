@@ -1,0 +1,1 @@
+# A Django management command to train your AI models, which can be executed from the command line.
