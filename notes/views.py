@@ -13,8 +13,15 @@ import os
 import openai
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+from .ai import generate_response
 
 openai.api_key = os.getenv('OPENAI_API_KEY')
+
+def generate_response_from_prompt(request):
+    prompt = request.GET.get('prompt')
+    response = generate_response(prompt)
+    return JsonResponse({'response': response})
 
 class NoteSearchView(ListView):
     model = Note
@@ -63,21 +70,6 @@ def user_logout(request):
 
 def home(request):
     return render(request, 'home.html')  
-
-def assistant(request):
-    if request.method == 'POST':
-        # Get user input from the POST request
-        data = request.POST.dict()
-
-        # Process the user input and generate an AI response (replace this with your AI logic)
-        user_input = data.get('message', '')
-        ai_response = "This is the AI response to: " + user_input
-
-        # Return the AI response as JSON
-        return JsonResponse({'response': ai_response})
-
-    # Handle other HTTP methods or invalid requests
-    return JsonResponse({'error': 'Invalid request'})
 
 @login_required
 def create_note(request):
