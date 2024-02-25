@@ -38,6 +38,3 @@ def format_response(response):
     answer = response.choices[0].message.content
     answer = answer.strip()
     return answer
-
-print(generate_response("what is the mitochondria?"))
-print("hi")
