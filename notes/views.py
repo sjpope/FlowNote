@@ -19,9 +19,12 @@ from .ai import generate_response
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
 def generate_response_from_prompt(request):
-    prompt = request.GET.get('prompt')
-    response = generate_response(prompt)
-    return JsonResponse({'response': response})
+    if request.method == 'GET':
+        prompt = request.GET.get('prompt')
+        if prompt: #make sure it is not empty
+            response = generate_response(prompt)
+            return JsonResponse({'response': response})
+    return JsonResponse({'error': 'Invalid request'}, status=400) #more error handling
 
 class NoteSearchView(ListView):
     model = Note
