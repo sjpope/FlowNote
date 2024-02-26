@@ -61,7 +61,19 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'allauth.account.middleware.AccountMiddleware',
 ]
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': '86012774437-7vuqcs9s68cen85jldr08ng84r3snqto.apps.googleusercontent.com',
+            'secret': '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',
+            'key': ''
+        }
+    }
+}
 
 ROOT_URLCONF = 'flownote.urls'
 
@@ -123,8 +135,13 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_REQUIRED = True
+
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
+    
+    # `allauth` specific authentication methods
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
