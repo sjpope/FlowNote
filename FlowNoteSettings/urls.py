@@ -24,6 +24,7 @@ from notes.views import home
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('notes/', include('notes.urls')),
+    path('accounts/', include('allauth.urls')),
     path('', home, name='home'),
 ]
 
