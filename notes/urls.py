@@ -29,4 +29,7 @@ urlpatterns = [
 
     # Search URLs
     path('search/', NoteSearchView.as_view(), name='note_search'),
+
+    # Analysis URLs
+    path('analyze/', analyze, name='analyze'),
 ]
