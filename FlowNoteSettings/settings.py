@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 from django.urls import reverse_lazy
 
-SITE_ID = 1
 
 LOGIN_URL = 'notes:login'
 LOGIN_REDIRECT_URL = reverse_lazy('notes:profile')
@@ -36,19 +35,24 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
+SITE_ID = 1
 
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
-        # Django-allauth apps
+    'django.contrib.sites',
+
+    # Django-allauth apps
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'rest_framework',
     'notes',
 ]
@@ -83,7 +87,7 @@ EMAIL_HOST_USER = 'matr988@gmail.com'
 EMAIL_HOST_PASSWORD = 'oiuu cjeb rwzj oupd'
 DEFAULT_FROM_EMAIL = 'matr988@gmail.com'
 
-ROOT_URLCONF = 'flownote.urls'
+ROOT_URLCONF = 'FlowNoteSettings.urls'
 
 TEMPLATES = [
     {
@@ -101,7 +105,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'flownote.wsgi.application'
+WSGI_APPLICATION = 'FlowNoteSettings.wsgi.application'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
