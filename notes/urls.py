@@ -18,7 +18,9 @@ urlpatterns = [
     path('<int:pk>/delete/', NoteDeleteView.as_view(), name='note_delete'),
     path('<int:pk>/update/', NoteUpdateView.as_view(), name='note_update'),
     path('<int:pk>/summary/', NoteSummaryView.as_view(), name='note_summary'),
-
+    path('NoteSummaryView/<int:note_id>/', generate_summary, name='generate_summary'),
+    
+    
     # Registration/User Profile URLs
     path('register/', register, name='register'),
     path('login/', auth_views.LoginView.as_view(), name='login'),

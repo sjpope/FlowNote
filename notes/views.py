@@ -2,8 +2,9 @@
 # from rest_framework import viewsets
 import os
 import openai
+from openai import OpenAI
 from dotenv import load_dotenv
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, DetailView, UpdateView, DeleteView
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate, logout
@@ -13,6 +14,7 @@ from django.db.models import Q # For complex queries (search feature)
 from .models import Note, BlogPost
 from .forms import *
 from django.http import JsonResponse
+from django.conf import settings
 
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
@@ -95,3 +97,39 @@ class NoteSummaryView(DetailView):
     template_name = 'note_summary.html'
     success_url = reverse_lazy('notes:note_list')
 
+def generate_summary(request, note_id):
+    if request.method == 'POST':
+        try:
+            note = Note.objects.get(id=note_id) 
+
+            client = OpenAI()
+            
+            prompt = f"Summarize this note: {note.content}"
+
+            response = client.chat.completions.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {"role": "system", "content": "You are an assistant."},
+                    {"role": "user", "content": prompt}
+                ]
+            )
+            
+            # Accessing the correct part of the response
+            # Assuming the latest message in the completion is the summary
+            if response.choices:
+                summary = response.choices[0].message.content
+            else:
+                summary = "Summary generation failed."
+
+            # Save the summary to the note and the database
+            note.summary = summary
+            note.save()
+
+            # Return a success response
+            return JsonResponse({'status': 'success', 'summary': summary})
+        except Exception as e:
+            # Return an error response if something goes wrong
+            return JsonResponse({'status': 'error', 'message': str(e)})
+    else:
+        # Handle the case where the method is not POST
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method'})

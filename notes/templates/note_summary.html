@@ -1,13 +1,39 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <!-- Display the current summary if it exists -->
-  {% if note.summary %}
-    <h3>Summary</h3>
-    <p>{{ note.summary }}</p>
-  {% endif %}
-
-  <!-- Button to trigger summary generation -->
-  <button id="generate-summary">Generate Summary</button>
-
+{% if note.summary %}
+<div id="note-summary">
+  <h3>Summary</h3>
+  <p>{{ note.summary }}</p>
+</div>
+{% else %}
+<div id="note-summary"></div>
+{% endif %}
+<button id="generate-summary" data-note-id="{{ note.id }}">Generate Summary</button>
+<script>
+    const noteId = document.getElementById('generate-summary').getAttribute('data-note-id');
+    const csrftoken = '{{ csrf_token }}';  
+  
+    document.getElementById('generate-summary').addEventListener('click', function() {
+        fetch(`/notes/NoteSummaryView/${noteId}/`, {    
+          method: 'POST',
+          headers: {
+            'X-CSRFToken': csrftoken,
+            'Content-Type': 'application/json',
+          },
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'success') {
+            document.getElementById('note-summary').innerHTML = `<h3>Summary</h3><p>${data.summary}</p>`;
+            alert('Summary generated successfully');
+          } else {
+            alert('Failed to generate summary: ' + data.message);
+          }
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
+      });
+  </script>
 {% endblock %}
