@@ -24,7 +24,23 @@ def analyze(request, note_id):
 
         # Send em back to the detail page
         return redirect('note_detail', pk=note.pk)
-    
+    import os
+import openai
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+from .ai import generate_response
+
+openai.api_key = os.getenv('OPENAI_API_KEY')
+
+def generate_response_from_prompt(request):
+    if request.method == 'GET':
+        prompt = request.GET.get('prompt')
+        if prompt: #make sure it is not empty
+            response = generate_response(prompt)
+            return JsonResponse({'response': response})
+    return JsonResponse({'error': 'Invalid request'}, status=400) #more error handling
+
 class NoteSearchView(ListView):
     model = Note
     template_name = 'note_search.html'

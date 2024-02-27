@@ -1,0 +1,154 @@
+<div id="assistant-container">
+    <div id="assistant-header">
+        <h3>AI Assistant</h3>
+    </div>
+    <div id="chat-history"></div>
+    <div id="assistant-body">
+        <form id="promptForm">
+            <input type="text" id="prompt" name="prompt" placeholder="Type your message...">
+            <button type="submit" id="send-button">Send</button>
+        </form>
+    </div>
+</div>
+
+<style>
+    #assistant-container {
+        width: 300px;
+        min-height: 450px;
+        max-height: 500px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin: 20px;
+        position: fixed;
+        bottom: -19%;
+        right: 20px;
+        transform: translateY(-50%);
+        padding: 15px;
+    }
+
+    #assistant-header {
+        background-color: #333;
+        color: white;
+        padding: 10px;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+    }
+
+    #assistant-header h3 {
+        margin: 0;
+    }
+
+    #assistant-body {
+        position: fixed;
+        padding: 10px;
+        bottom: 0;
+        width: 90%;
+    }
+
+    #chat-history {
+        max-height: 380px;
+        overflow-y: auto;
+    }
+
+    .user-message {
+        background-color: #007bff;
+        color: white;
+        border-radius: 9px;
+        padding: 5px 10px;
+        margin-bottom: 5px;
+        text-align: right;
+        width: 70%;
+        margin-left: 65px;
+    }
+
+    .ai-message {
+        background-color: #c7c7c7;
+        color: rgb(0, 0, 0);
+        border-radius: 5px;
+        padding: 5px 10px;
+        margin-bottom: 5px;
+        text-align: left;
+        width: 70%;
+        margin-right: 25px;
+    }
+
+    form {
+        display: flex;
+        align-items: center;
+        bottom: 0;
+    }
+
+    #prompt {
+        flex: 1;
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        width: 150px;
+    }
+
+    #send-button {
+        padding: 5px 10px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-left: 10px;
+        width: 50px;
+    }
+
+    #send-button:hover {
+        background-color: #0056b3;
+    }
+</style>
+<script>
+    document.getElementById("promptForm").addEventListener("submit", function(event) {
+        var chatHistory = document.getElementById('chat-history');
+        var prompt = document.getElementById('prompt');
+        var input = prompt.value.trim();
+        chatHistory.innerHTML += '<div class="user-message">' + input + '</div>';
+
+        event.preventDefault();
+        var prompt = document.getElementById("prompt").value;
+        fetch("/generate-response/?prompt=" + encodeURIComponent(prompt)) //?prompt=" + encodeURIComponent(prompt)
+        .then(response => response.json())
+        .then(data => {
+            //document.getElementById("response").innerText = data.response;
+            chatHistory.innerHTML += '<div class="ai-message">' + data.response + '</div>';
+            prompt.value = ''
+        });
+    });
+
+    /* document.addEventListener('DOMContentLoaded', function () {
+        var chatHistory = document.getElementById('chat-history');
+        var userInput = document.getElementById('user-input');
+        var sendButton = document.getElementById('send-button');
+
+        sendButton.addEventListener('click', function () {
+            var prompt = userInput.value.trim();
+            if (prompt !== '') {
+                // Add user message to chat history
+                chatHistory.innerHTML += '<div class="user-message">' + prompt + '</div>';
+
+                // Send user message to backend for AI response
+                fetch('/generate-response/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ prompt: prompt })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Add AI response to chat history
+                    chatHistory.innerHTML += '<div class="ai-message">' + data.response + '</div>';
+                })
+                .catch(error => console.error('Error:', error));
+
+                // Clear user input
+                userInput.value = '';
+            }
+        });
+    }); */
+</script>
