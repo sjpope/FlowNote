@@ -35,7 +35,7 @@ class NoteSearchView(ListView):
         if query:
             return Note.objects.filter(Q(title__icontains=query) | Q(content__icontains=query), owner=self.request.user)
         else:
-            return Note.objects.all()
+            return Note.objects.filter(owner=self.request.user)
 
 @login_required
 def profile(request):
