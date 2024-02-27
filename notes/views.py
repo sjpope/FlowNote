@@ -1,5 +1,8 @@
 # from .serializers import NoteSerializer, BlogPostSerializer
 # from rest_framework import viewsets
+import os
+import openai
+from dotenv import load_dotenv
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView, UpdateView, DeleteView
 from django.contrib.auth.models import User
@@ -9,18 +12,14 @@ from django.urls import reverse, reverse_lazy
 from django.db.models import Q # For complex queries (search feature)
 from .models import Note, BlogPost
 from .forms import *
+from django.http import JsonResponse
+
+openai.api_key = os.getenv('OPENAI_API_KEY')
 
 class NoteSearchView(ListView):
     model = Note
     template_name = 'note_search.html'
     context_object_name = 'notes'
-
-    def get_queryset(self):
-        query = self.request.GET.get('q')
-        if query:
-            return Note.objects.filter(Q(title__icontains=query) | Q(content__icontains=query), owner=self.request.user)
-        else:
-            return Note.objects.all()
 
 
 @login_required
@@ -78,7 +77,7 @@ class NoteListView(ListView):
 
 class NoteDetailView(DetailView):
     model = Note
-    template_name = 'note_detail.html'  
+    template_name = 'note_detail.html'
 
 class NoteDeleteView(DeleteView):
     model = Note
@@ -90,3 +89,9 @@ class NoteUpdateView(UpdateView):
     form_class = NoteForm
     template_name = 'note_update.html'
     success_url = reverse_lazy('notes:note_list')
+
+class NoteSummaryView(DetailView):
+    model = Note
+    template_name = 'note_summary.html'
+    success_url = reverse_lazy('notes:note_list')
+

@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <!-- Display the current summary if it exists -->
+  {% if note.summary %}
+    <h3>Summary</h3>
+    <p>{{ note.summary }}</p>
+  {% endif %}
+
+  <!-- Button to trigger summary generation -->
+  <button id="generate-summary">Generate Summary</button>
+
+{% endblock %}
