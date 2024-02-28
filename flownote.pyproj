@@ -5,6 +5,7 @@
     <Name>flownote</Name>
     <RootNamespace>TestDjangoWebProj</RootNamespace>
     <InterpreterId>MSBuild|venv-3|$(MSBuildProjectFullPath)</InterpreterId>
+    <TestFramework>Pytest</TestFramework>
   </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
