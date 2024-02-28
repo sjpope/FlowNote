@@ -2,7 +2,10 @@
 
 {% block content %}
   <h2>{{ note.title }}</h2>
+  <p><strong>Summary:</strong> {{ note.summary }}</p>
   <p>{{ note.content }}</p>
+  <p>By: {{ note.owner }}</p>
+
 
   <a href="{% url 'notes:note_update' note.id %}" class="btn btn-primary">Update</a>
   <a href="{% url 'notes:note_delete' note.id %}" class="btn btn-danger">Delete</a>

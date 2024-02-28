@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 class NoteForm(forms.ModelForm):
     class Meta:
         model = Note
-        fields = ['title', 'content']  # TO-DO: Add more fields here, such as 'tags' and 'is_favorite'.
+        fields = ['title', 'content','summary']  # TO-DO: Add more fields here, such as 'tags' and 'is_favorite'.
 
 class RegisterForm(forms.ModelForm):
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
