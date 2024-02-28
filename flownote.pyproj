@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <Name>flownote</Name>
+    <RootNamespace>TestDjangoWebProj</RootNamespace>
+    <InterpreterId>MSBuild|venv-3|$(MSBuildProjectFullPath)</InterpreterId>
+  </PropertyGroup>
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>59f61c65-6496-400a-aeb3-795924b73323</ProjectGuid>
+    <ProjectHome>.</ProjectHome>
+    <ProjectTypeGuids>{5F0BE9CA-D677-4A4D-8806-6076C0FAAD37};{349c5851-65df-11da-9384-00065b846f21};{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
+    <StartupFile>manage.py</StartupFile>
+    <SearchPath>
+    </SearchPath>
+    <WorkingDirectory>.</WorkingDirectory>
+    <WebBrowserUrl>http://localhost</WebBrowserUrl>
+    <LaunchProvider>Django launcher</LaunchProvider>
+    <DjangoSettingsModule>FlowNoteSettings.settings</DjangoSettingsModule>
+    <OutputPath>.</OutputPath>
+    <SuppressCollectPythonCloudServiceFiles>true</SuppressCollectPythonCloudServiceFiles>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Include Python files -->
+    <Compile Include="AIEngine\__init__.py" />
+    <Compile Include="AIEngine\admin.py" />
+    <Compile Include="AIEngine\apps.py" />
+    <Compile Include="AIEngine\models.py" />
+    <Compile Include="AIEngine\tests.py" />
+    <Compile Include="AIEngine\views.py" />
+    <Compile Include="AIEngine\migrations\__init__.py" />
+    <!-- Add other migrations as needed -->
+    <Compile Include="AIEngine\services\note_analysis.py" />
+    <Compile Include="AIEngine\services\text_processing.py" />
+    <Compile Include="AIEngine\services\topic_modeling.py" />
+    <Compile Include="AIEngine\services\__init__.py" />
+    <Compile Include="AIEngine\utils\data_access.py" />
+    <Compile Include="AIEngine\utils\preprocessing.py" />
+    <Compile Include="AIEngine\utils\__init__.py" />
+    <Compile Include="AIEngine\management\commands\train_model.py" />
+    <Compile Include="AIEngine\management\__init__.py" />
+    <!-- Add other Python files as needed -->
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DataConnector\admin.py" />
+    <Compile Include="DataConnector\models.py" />
+    <Compile Include="DataConnector\tests.py" />
+    <Compile Include="DataConnector\views.py" />
+    <Compile Include="DataConnector\__init__.py" />
+    <Compile Include="DataConnector\migrations\__init__.py" />
+    <Compile Include="DataConnector\apps.py" />
+    <Compile Include="DataConnector\data_access.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="notes\admin.py" />
+    <Compile Include="notes\ai.py" />
+    <Compile Include="notes\apps.py" />
+    <Compile Include="notes\forms.py" />
+    <Compile Include="notes\models.py" />
+    <Compile Include="notes\serializers.py" />
+    <Compile Include="notes\tests.py" />
+    <Compile Include="notes\urls.py" />
+    <Compile Include="notes\views.py" />
+    <Compile Include="notes\__init__.py" />
+    <Compile Include="notes\migrations\__init__.py" />
+    <Compile Include="manage.py" />
+    <Compile Include="FlowNoteSettings\__init__.py" />
+    <Compile Include="FlowNoteSettings\settings.py" />
+    <Compile Include="FlowNoteSettings\urls.py" />
+    <Compile Include="FlowNoteSettings\wsgi.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="AIEngine\" />
+    <Folder Include="AIEngine\management\" />
+    <Folder Include="AIEngine\management\commands\" />
+    <Folder Include="AIEngine\migrations\" />
+    <Folder Include="AIEngine\services\" />
+    <Folder Include="AIEngine\utils\" />
+    <Folder Include="DataConnector\" />
+    <Folder Include="DataConnector\migrations\" />
+    <Folder Include="FlowNoteSettings\" />
+    <Folder Include="notes\" />
+    <Folder Include="notes\migrations\" />
+    <Folder Include="notes\static\" />
+    <Folder Include="notes\static\notes\" />
+    <Folder Include="notes\static\notes\css\" />
+    <Folder Include="notes\templates\" />
+    <Folder Include="notes\templates\registration\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include=".env" />
+    <Content Include="notes\static\notes\css\login.css" />
+    <Content Include="notes\static\notes\css\navbar.css" />
+    <Content Include="notes\static\notes\css\notes_styles.css" />
+    <Content Include="notes\static\notes\css\note_form.css" />
+    <Content Include="notes\static\notes\css\search.css" />
+    <Content Include="notes\templates\assistant.html" />
+    <Content Include="notes\templates\base.html" />
+    <Content Include="notes\templates\home.html" />
+    <Content Include="notes\templates\note_delete.html" />
+    <Content Include="notes\templates\note_detail.html" />
+    <Content Include="notes\templates\note_form.html" />
+    <Content Include="notes\templates\note_list.html" />
+    <Content Include="notes\templates\note_search.html" />
+    <Content Include="notes\templates\note_update.html" />
+    <Content Include="notes\templates\profile.html" />
+    <Content Include="notes\templates\registration\login.html" />
+    <Content Include="notes\templates\registration\logout.html" />
+    <Content Include="notes\templates\registration\register.html" />
+    <Content Include="requirements.txt" />
+    <Content Include="db.sqlite3" />
+  </ItemGroup>
+  <ItemGroup>
+    <Interpreter Include="venv-3\">
+      <Id>venv-3</Id>
+      <Version>0.0</Version>
+      <Description>venv-3 (Python 3.12 (64-bit))</Description>
+      <InterpreterPath>Scripts\python.exe</InterpreterPath>
+      <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
+      <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
+      <Architecture>X64</Architecture>
+    </Interpreter>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.Django.targets" />
+  <!-- Specify pre- and post-build commands in the BeforeBuild and 
+       AfterBuild targets below. -->
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <AutoAssignPort>True</AutoAssignPort>
+          <UseCustomServer>True</UseCustomServer>
+          <CustomServerUrl>http://localhost</CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}" User="">
+        <WebProjectProperties>
+          <StartPageUrl>
+          </StartPageUrl>
+          <StartAction>CurrentPage</StartAction>
+          <AspNetDebugging>True</AspNetDebugging>
+          <SilverlightDebugging>False</SilverlightDebugging>
+          <NativeDebugging>False</NativeDebugging>
+          <SQLDebugging>False</SQLDebugging>
+          <ExternalProgram>
+          </ExternalProgram>
+          <StartExternalURL>
+          </StartExternalURL>
+          <StartCmdLineArguments>
+          </StartCmdLineArguments>
+          <StartWorkingDirectory>
+          </StartWorkingDirectory>
+          <EnableENC>False</EnableENC>
+          <AlwaysStartWebServerOnDebug>False</AlwaysStartWebServerOnDebug>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>
