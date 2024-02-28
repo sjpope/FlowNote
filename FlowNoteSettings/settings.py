@@ -34,11 +34,19 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    #'allauth.account.models.EmailAddress',
+    
     'rest_framework',
     'notes',
 ]
 
 MIDDLEWARE = [
+    # Use the Associated Middleware Stack instead.
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',

@@ -17,6 +17,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from .ai import generate_response
 
+openai.api_key = os.getenv('OPENAI_API_KEY')
+
+
 def analyze(request, note_id):
     if request.method == "POST":
         note = Note.objects.get(pk=note_id)     # note = get_object_or_404(Note, pk=pk)
@@ -30,9 +33,6 @@ def analyze(request, note_id):
 
         # Send em back to the detail page
         return redirect('note_detail', pk=note.pk)
-
-
-openai.api_key = os.getenv('OPENAI_API_KEY')
 
 def generate_response_from_prompt(request):
     if request.method == 'GET':
