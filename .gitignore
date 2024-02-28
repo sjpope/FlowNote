@@ -69,3 +69,4 @@ media/
 /venv-3
 /.vs
 *.cache
+/db.sqlite3
