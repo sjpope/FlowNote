@@ -4,7 +4,6 @@ from django.contrib.auth import views as auth_views
 
 app_name = 'notes' 
 
-
 urlpatterns = [
     
     path('', home, name='home'),
