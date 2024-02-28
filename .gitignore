@@ -68,3 +68,4 @@ staticfiles/
 media/
 /venv-3
 /.vs
+*.cache
