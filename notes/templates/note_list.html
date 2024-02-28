@@ -18,7 +18,12 @@
           <a href="{% url 'notes:note_detail' note.pk %}" class="note-card">
             <div class="note-content">
               <h3>{{ note.title }}</h3>
-              <p>{{ note.content }}</p>
+              {% if note.summary %}
+                <p>{{ note.summary }}</p>
+              {% else %}
+                <p>{{ note.content }}</p>
+              {% endif %}
+              <p>By: {{ note.owner }}</p>
             </div>
           </a>
         </li>

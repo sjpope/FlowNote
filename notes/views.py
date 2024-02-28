@@ -10,6 +10,12 @@ from django.db.models import Q      # For complex queries (search feature)
 from .models import Note, BlogPost
 from .forms import *
 from AIEngine.services.note_analysis import analyze_notes
+import os
+import openai
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+from .ai import generate_response
 
 def analyze(request, note_id):
     if request.method == "POST":
@@ -24,12 +30,7 @@ def analyze(request, note_id):
 
         # Send em back to the detail page
         return redirect('note_detail', pk=note.pk)
-    import os
-import openai
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.http import JsonResponse
-from .ai import generate_response
+
 
 openai.api_key = os.getenv('OPENAI_API_KEY')
 

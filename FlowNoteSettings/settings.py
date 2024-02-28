@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 from django.urls import reverse_lazy
 
-
 LOGIN_URL = 'notes:login'
 LOGIN_REDIRECT_URL = reverse_lazy('notes:profile')
 LOGOUT_REDIRECT_URL = '/'
@@ -35,24 +34,14 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
-SITE_ID = 1
 
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
-    'django.contrib.sites',
-
-    # Django-allauth apps
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',
-
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
     'rest_framework',
     'notes',
 ]
@@ -65,29 +54,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
-    'allauth.account.middleware.AccountMiddleware',
 ]
 
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'APP': {
-            'client_id': '86012774437-7vuqcs9s68cen85jldr08ng84r3snqto.apps.googleusercontent.com',
-            'secret': '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',
-            'key': ''
-        }
-    }
-}
-
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'matr988@gmail.com'
-EMAIL_HOST_PASSWORD = 'oiuu cjeb rwzj oupd'
-DEFAULT_FROM_EMAIL = 'matr988@gmail.com'
-
-ROOT_URLCONF = 'FlowNoteSettings.urls'
+ROOT_URLCONF = 'flownote.urls'
 
 TEMPLATES = [
     {
@@ -105,7 +74,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'FlowNoteSettings.wsgi.application'
+WSGI_APPLICATION = 'flownote.wsgi.application'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -147,15 +116,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_EMAIL_REQUIRED = True
-
-AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
-    
-    # `allauth` specific authentication methods
-    'allauth.account.auth_backends.AuthenticationBackend',
-]
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
