@@ -7,7 +7,7 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse, reverse_lazy
 from django.db.models import Q      # For complex queries (search feature)
-from .models import Note, BlogPost
+from .models import Note
 from .forms import *
 from AIEngine.services.note_analysis import analyze_notes
 import os
