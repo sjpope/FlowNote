@@ -31,5 +31,5 @@ urlpatterns = [
     path('search/', NoteSearchView.as_view(), name='note_search'),
 
     # Analysis URLs
-    path('analyze/', analyze, name='analyze'),
+    path('analyze/<int:note_id>/', analyze, name='analyze'),
 ]
