@@ -33,7 +33,6 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- Include Python files -->
-    <Compile Include="AIEngine\__init__.py" />
     <Compile Include="AIEngine\admin.py" />
     <Compile Include="AIEngine\apps.py" />
     <Compile Include="AIEngine\models.py" />
@@ -53,6 +52,7 @@
     <!-- Add other Python files as needed -->
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AIEngine\__init__.py" />
     <Compile Include="DataConnector\admin.py" />
     <Compile Include="DataConnector\models.py" />
     <Compile Include="DataConnector\tests.py" />
