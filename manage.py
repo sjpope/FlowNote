@@ -7,7 +7,7 @@ import sys
 def main():
     """Run administrative tasks."""
     # os.environ['DJANGO_SETTINGS_MODULE' ]='FlowNoteSettings.settings'
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'your_project_name.settings')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'FlowNoteSettings.settings')
     # os.environ['DJANGO_SETTINGS_MODULE' ]='flownote.settings'
     # os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'flownote.settings')
     
