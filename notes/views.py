@@ -1,30 +1,48 @@
 # from .serializers import NoteSerializer, BlogPostSerializer
 # from rest_framework import viewsets
+import os
+import openai
+#import AIEngine
+
+from AIEngine.services.note_analysis import analyze_notes
+
+from .forms import *
+from .models import Note
+
+from django.urls import reverse, reverse_lazy
 from django.shortcuts import *   # render, redirect, get_object_or_404
-from django.views.generic import ListView, DetailView, UpdateView, DeleteView
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
-from django.urls import reverse, reverse_lazy
 from django.db.models import Q      # For complex queries (search feature)
-from .models import Note, BlogPost
-from .forms import *
-from AIEngine.services.note_analysis import analyze_notes
+from django.http import JsonResponse
+from django.views.generic import ListView, DetailView, UpdateView, DeleteView
+from django.views.decorators.csrf import csrf_exempt
+
+from .ai import generate_response
+
+openai.api_key = os.getenv('OPENAI_API_KEY')
 
 def analyze(request, note_id):
     if request.method == "POST":
-        note = Note.objects.get(pk=note_id)     # note = get_object_or_404(Note, pk=pk)
+        note = Note.objects.get(pk=note_id)     # Use -> note = get_object_or_404(Note, pk=pk)
 
         # Perform analysis
-        
         results = analyze_notes(note.content)
         note.analysis_results = results     # Save the results to the database? Or just display them to the user?
 
         # Display results to the user without changing the note content 
-
         # Send em back to the detail page
         return redirect('note_detail', pk=note.pk)
-    
+
+def generate_response_from_prompt(request):
+    if request.method == 'GET':
+        prompt = request.GET.get('prompt')
+        if prompt: #make sure it is not empty
+            response = generate_response(prompt)
+            return JsonResponse({'response': response})
+    return JsonResponse({'error': 'Invalid request'}, status=400) #more error handling
+
 class NoteSearchView(ListView):
     model = Note
     template_name = 'note_search.html'
@@ -35,7 +53,7 @@ class NoteSearchView(ListView):
         if query:
             return Note.objects.filter(Q(title__icontains=query) | Q(content__icontains=query), owner=self.request.user)
         else:
-            return Note.objects.all()
+            return Note.objects.filter(owner=self.request.user)
 
 @login_required
 def profile(request):
