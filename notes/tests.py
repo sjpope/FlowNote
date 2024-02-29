@@ -22,4 +22,30 @@ class NoteAPITests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Note.objects.count(), 2)
         self.assertEqual(Note.objects.latest('id').title, 'New Note')
+
+    def test_delete_note(self):
+        self.client.login(username='testuser', password='testpassword')
+        note_to_delete = Note.objects.get(title='Test Note')
+        response = self.client.post(reverse('notes:note_delete', kwargs={'pk': note_to_delete.pk}))
+        self.assertFalse(Note.objects.filter(pk=note_to_delete.pk).exists())
+        self.assertRedirects(response, reverse_lazy('notes:note_list'))
+
+    def test_update_note_get(self):
+        self.client.login(username='testuser', password='testpassword')
+        response = self.client.get(reverse('notes:note_update', kwargs={'pk': self.note.pk}))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Update Note')
+        self.assertContains(response, 'Initial Title')
+        self.assertContains(response, 'Initial content.')
+
+    def test_update_note_post(self):
+        self.client.login(username='testuser', password='testpassword')
+        response = self.client.post(reverse('notes:note_update', kwargs={'pk': self.note.pk}), {
+            'title': 'Updated Title',
+            'content': 'Updated content.',
+        })
+        self.note.refresh_from_db()
+        self.assertEqual(self.note.title, 'Updated Title')
+        self.assertEqual(self.note.content, 'Updated content.')
+        self.assertRedirects(response, reverse_lazy('notes:note_list'))
 """
