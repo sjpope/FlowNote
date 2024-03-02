@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<div class="full-page">
   <h2>{{ note.title }}</h2>
   <p><strong>Summary:</strong> {{ note.summary }}</p>
   <p>{{ note.content }}</p>
@@ -14,5 +15,15 @@
     {% csrf_token %}
     <button type="submit">Analyze Note</button>
   </form>
+</div>
+<style>
+  .container {
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+  }
+</style>
 
 {% endblock %}
