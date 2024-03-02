@@ -70,5 +70,5 @@ media/
 /.vs
 *.cache
 /db.sqlite3
-
+*.sql
 .fake
