@@ -7,6 +7,22 @@ class NoteForm(forms.ModelForm):
     class Meta:
         model = Note
         fields = ['title', 'content','summary']  # TO-DO: Add more fields here, such as 'tags' and 'is_favorite'.
+        labels = {
+            'title': '',
+            'content': '',
+            'summary': '',
+        }
+        placeholders = {
+            'title': 'Enter title',
+            'content': 'Enter content',
+            'summary': 'Enter summary',
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(NoteForm, self).__init__(*args, **kwargs)
+        for field in self.fields:
+            if field in self.Meta.placeholders:
+                self.fields[field].widget.attrs['placeholder'] = self.Meta.placeholders[field]
 
 class RegisterForm(forms.ModelForm):
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
