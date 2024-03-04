@@ -2,6 +2,7 @@ import sqlite3
 import os
 from dotenv import load_dotenv
 from pymongo import MongoClient
+from pymongo.server_api import ServerApi
 load_dotenv()
 
 def getSQL(table, columns='', filters=''):
@@ -33,11 +34,11 @@ def getMongoDB(collection_name, query={}, projection=None):
     """
 
     mongo_uri = os.getenv('MONGO_URI')
-    mongo_db_name = os.getenv('MONGO_DB_NAME')
+    # mongo_db_name = os.getenv('MONGO_DB_NAME')
 
     client = MongoClient(mongo_uri)
-    db = client[mongo_db_name]
-    collection = db[collection_name]
+    db = client.NoteData
+    collection = db[collection_name] # Tokens
 
     documents = collection.find(query, projection)
 
@@ -45,3 +46,24 @@ def getMongoDB(collection_name, query={}, projection=None):
 
     client.close()
     return results
+
+def pushMongoDB(database, collection, data):
+    """
+    Pushes a document to a MongoDB collection.
+
+    :param database: The name of the MongoDB database to use.
+    :param collection: The name of the MongoDB collection to use.
+    :param data: The document to push to the collection.
+    :return: None
+    """
+
+    mongo_uri = os.getenv('MONGO_URI')
+    # mongo_db_name = os.getenv('MONGO_DB_NAME')
+
+    client = MongoClient(mongo_uri)
+    db = client[database]
+    collection = db[collection]
+
+    collection.insert_one(data)
+
+    client.close()
