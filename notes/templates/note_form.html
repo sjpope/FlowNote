@@ -15,7 +15,7 @@
       {{ form.as_p }}
       <button type="submit">Save</button>
     </form>
-    <a href="{% url 'notes:note_list' %}">Back to notes list</a>
+    <a href="{% url 'notes:note_list' %}" class="btn btn-success">Back to notes list</a>
   </div>
 
   <style>
@@ -63,6 +63,20 @@
       border-color: #555;
     }
 
+    .btn-success {
+      background-color: #474787;
+    }
+    .btn {
+        display: inline-block;
+        padding: 5px 10px;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        text-decoration: none;
+        color: #fff;
+    }
+
     
     .note-form textarea:first-of-type {
       min-height: 300px;
@@ -71,10 +85,11 @@
 
     .note-form button {
       padding: 12px 20px;
-      background-color: #4CAF50;
+      background-color: #474787;
       color: #fff;
       border: none;
       width: 10%;
+      text-align: center;
       border-radius: 5px;
       cursor: pointer;
       transition: background-color 0.3s;

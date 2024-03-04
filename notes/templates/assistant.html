@@ -28,7 +28,7 @@
     }
 
     #assistant-header {
-        background-color: #333;
+        background-color: #2C2C54;
         color: white;
         padding: 10px;
         border-top-left-radius: 5px;
@@ -73,7 +73,7 @@
         margin-right: 25px;
     }
 
-    form {
+    #promptForm {
         display: flex;
         align-items: center;
         bottom: 0;
@@ -89,7 +89,7 @@
 
     #send-button {
         padding: 5px 10px;
-        background-color: #007bff;
+        background-color: #474787;
         color: white;
         border: none;
         border-radius: 5px;
@@ -119,36 +119,4 @@
             prompt.value = ''
         });
     });
-
-    /* document.addEventListener('DOMContentLoaded', function () {
-        var chatHistory = document.getElementById('chat-history');
-        var userInput = document.getElementById('user-input');
-        var sendButton = document.getElementById('send-button');
-
-        sendButton.addEventListener('click', function () {
-            var prompt = userInput.value.trim();
-            if (prompt !== '') {
-                // Add user message to chat history
-                chatHistory.innerHTML += '<div class="user-message">' + prompt + '</div>';
-
-                // Send user message to backend for AI response
-                fetch('/generate-response/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ prompt: prompt })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    // Add AI response to chat history
-                    chatHistory.innerHTML += '<div class="ai-message">' + data.response + '</div>';
-                })
-                .catch(error => console.error('Error:', error));
-
-                // Clear user input
-                userInput.value = '';
-            }
-        });
-    }); */
 </script>
