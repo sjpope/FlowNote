@@ -39,7 +39,7 @@ We are a team of Texas State University students developing this project as part
 - **Dual Database Architecture**: Utilize SQLite for managing user data and authentication, while employing MongoDB for storing and handling dynamic, unstructured note content.
 
 ## Sprint 1 ##
-* Israel Ibinayin:
+* **Israel Ibinayin:**
     * `Jira Task SCRUM-4: Design AI Assistant Integration.`
         * [SCRUM-4](https://cs3398s24klingons.atlassian.net/browse/SCRUM-4), [Bitbucket]()
     * `Jira Task SCRUM-5: Implement AI Assistant Integration.`
@@ -51,7 +51,7 @@ We are a team of Texas State University students developing this project as part
     * `Jira Task SCRUM-8: Implement User Interface for AI Assistant.`
         * [SCRUM-8](https://cs3398s24klingons.atlassian.net/browse/SCRUM-8), [Bitbucket]()
     
-* Samuel Pope:
+* **Samuel Pope:**
     * `Jira Task SCRUM-14: Design Search Functionality.`
         * [SCRUM-14](https://cs3398s24klingons.atlassian.net/browse/SCRUM-14), [Bitbucket]()
     * `Jira Task SCRUM-15: Implement Search Backend.`
@@ -101,7 +101,7 @@ We are a team of Texas State University students developing this project as part
     * `Jira Task SCRUM-80: Migration from SQLite3 to SQL Server.`
         * [SCRUM-80](https://cs3398s24klingons.atlassian.net/browse/SCRUM-80), [Bitbucket]()
 
-* Matthew Ruiz: "Email Verification, Test Summarization feature, and Integrate External APIs."
+* **Matthew Ruiz:** "Email Verification, Test Summarization feature, and Integrate External APIs."
     * `Jira Task SCRUM-24: Test OpenAI Summarization Feature.`
         * [SCRUM-24](https://cs3398s24klingons.atlassian.net/browse/SCRUM-24), [Bitbucket]()
     * `Jira Task SCRUM-25: The user interface for submitting documents and receiving summaries must be intuitive, and easy to navigate.`
@@ -111,7 +111,7 @@ We are a team of Texas State University students developing this project as part
     * `Jira Task SCRUM-74: Integrate External APIs for Complex Data Operations (Build/Test AI Features).`
         * [SCRUM-74](https://cs3398s24klingons.atlassian.net/browse/SCRUM-74), [Bitbucket]()
 
-* John Yamamoto: "Implement AI generated Summaries, and Create CRUD tests for Notes."
+* **John Yamamoto:** "Implement AI generated Summaries, and Create CRUD tests for Notes."
     * `Jira Task SCRUM-22: Implement Generative AI API to summarize notes.`
         * [SCRUM-22](https://cs3398s24klingons.atlassian.net/browse/SCRUM-22), [Bitbucket](https://bitbucket.org/cs3398s24klingons/flownote/commits/0ecd11a18b9433d750b847b03a1456dc9cfaec43)
     * `Jira Task SCRUM-23: A Method to add Summary to notes.`
@@ -123,13 +123,13 @@ We are a team of Texas State University students developing this project as part
 ![Burnup1](notes/static/notes/css/images/Sprint1BurnupReport.png)
 
 ## Next Steps (Sprint 2) ##
-* Israel Ibinayin:
+* **Israel Ibinayin:**
     *
-* Samuel Pope:
+* **Samuel Pope:**
     *
-* Matthew Ruiz:
+* **Matthew Ruiz:**
     *
-* John Yamamoto:
+* **John Yamamoto:**
     * Look to potentially design user interface for the Analysis and Content Sugestion Features.
 
 ## Screenshots
