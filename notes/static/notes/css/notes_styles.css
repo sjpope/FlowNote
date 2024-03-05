@@ -2,6 +2,10 @@
 body {
   font-family: Arial, sans-serif;
   background-color: #f5f5f5;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
 }
 
 .container {
@@ -21,14 +25,13 @@ body {
   background-color: #333;
   color: #fff;
   padding: 10px 0;
+  flex-shrink: 0;
 }
 
 .header h1 {
   margin: 0;
   font-size: 24px;
 }
-
-/* Note styles */
 
 /* Navbar styles */
 
@@ -48,7 +51,9 @@ header {
 .nav-container h1 {
   margin: 0;
 }
-
+footer {
+  flex-shrink: 0;
+}
 .footer-container {
   background-color: #2C2C54;
 }
@@ -81,6 +86,7 @@ nav ul li a:hover {
 
 .container {
   max-width: 100%;
+  flex: 1;
 }
 
 .form-group {
@@ -117,8 +123,6 @@ button[type="submit"] {
 button[type="submit"]:hover {
   background-color: #515185;
 }
-
-/*More notes styles*/
 
 
 .note-container {

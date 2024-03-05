@@ -4,6 +4,45 @@ from notes.models import Note
 from DataConnector.data_access import getMongoDB, pushMongoDB
 from AIEngine.services.note_analysis import analyze_notes
 
+
+def perform_note_analysis(note_id):
+    database_name = 'NoteData'
+    collection_name = 'AnalysisResults'
+
+    # Check MongoDB for existing analysis results
+    # existing_results = getMongoDB(
+    #     database_name=database_name,
+    #     collection_name=collection_name,
+    #     query={'note_id': note_id}
+    # )
+
+    # if existing_results:
+    #     # Analysis results already exist in MongoDB
+    #     results = existing_results[0]['analysis_results']
+    # else:
+        # Retrieve the note content
+    note = Note.objects.get(pk=note_id)
+    note_content = note.content
+
+        # Perform analysis
+    results = analyze_notes(note_content)
+
+        # Store new analysis results in MongoDB
+        # pushMongoDB(
+        #     database=database_name,
+        #     collection=collection_name,
+        #     data={
+        #         'note_id': note_id,
+        #         'analysis_results': results
+        #     }
+        # )
+
+    note = Note.objects.get(pk=note_id)
+    note.analysis = results  # Store the results in the 'analysis' field
+    note.save()
+
+    return results
+
 @shared_task
 def analyze_note_task(note_id):
     database_name = 'NoteData'  
