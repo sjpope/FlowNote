@@ -1,10 +1,71 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<div class="update-note">
   <h2>Update Note</h2>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Update</button>
-  </form>
+    <form method="post" class="update-form">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Update</button>
+    </form>
+</div>
+<style>
+  .update-note {
+    display: flex;
+    flex-direction: column;
+  }
+   form {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: left;
+   }
+
+   .update-form input[type="text"],
+    .update-form textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin-bottom: 10px;
+      box-sizing: border-box;
+    }
+
+    .update-form input[type="text"]:focus,
+    .update-form textarea:focus {
+      border-color: #555;
+    }
+
+    
+    .update-form textarea:first-of-type {
+      min-height: 300px;
+      min-width: 500px;
+    }
+
+    .update-form button {
+      padding: 12px 20px;
+      background-color: #5c62af;
+      color: #fff;
+      border: none;
+      width: 10%;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .update-form button:hover {
+      background-color: #45a049
+    }
+
+    .update-form a {
+      display: block;
+      margin-top: 10px;
+      text-align: center;
+      color: #54b957;
+    }
+
+    .update-form a:hover {
+      text-decoration: underline;
+    }
+</style>
 {% endblock %}
