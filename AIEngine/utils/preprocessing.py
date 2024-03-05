@@ -1,4 +1,3 @@
-# Text preprocessing utilities, like tokenization, lemmatization, and stop word removal.
 import spacy
 
 nlp = spacy.load('en_core_web_sm')
