@@ -29,13 +29,12 @@ def analyze(request, note_id):
     if request.method == "POST":
         note = get_object_or_404(Note, pk=note_id)
 
-        # Trigger the Celery task to analyze the note asynchronously
-        analyze_note_task.delay(note_id)
+        # analyze_note_task.delay(note_id)  # Trigger the Celery task to analyze the note asynchronously
 
-        messages.add_message(request, messages.INFO, 'Analysis is pending. Please check back shortly.')
+        perform_note_analysis(note_id)
+        messages.add_message(request, messages.INFO, 'Analysis Complete.')
 
-        # Redirect the user to the note detail page immediately
-        return redirect('note_detail', pk=note.pk)
+        return redirect('notes:note_detail', pk=note.pk) 
 
 def generate_response_from_prompt(request):
     if request.method == 'GET':

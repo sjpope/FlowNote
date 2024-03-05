@@ -7,7 +7,11 @@
   <p>{{ note.content }}</p>
   <p>By: {{ note.owner }}</p>
 
-
+  {% if note.analysis %}
+    <h3>Analysis</h3>
+    <p>{{ note.analysis }}</p>
+  {% endif %}
+  
   <a href="{% url 'notes:note_update' note.id %}" class="btn btn-primary">Update</a>
   <a href="{% url 'notes:note_delete' note.id %}" class="btn btn-danger">Delete</a>
 
