@@ -5,12 +5,14 @@ import openai
 #import AIEngine
 
 from AIEngine.services.note_analysis import analyze_notes
+from AIEngine.tasks import *
 
 from .forms import *
 from .models import Note
 
 from django.urls import reverse, reverse_lazy
 from django.shortcuts import *   # render, redirect, get_object_or_404
+from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
@@ -25,14 +27,14 @@ openai.api_key = os.getenv('OPENAI_API_KEY')
 
 def analyze(request, note_id):
     if request.method == "POST":
-        note = Note.objects.get(pk=note_id)     # Use -> note = get_object_or_404(Note, pk=pk)
+        note = get_object_or_404(Note, pk=note_id)
 
-        # Perform analysis
-        results = analyze_notes(note.content)
-        note.analysis_results = results     # Save the results to the database? Or just display them to the user?
+        # Trigger the Celery task to analyze the note asynchronously
+        analyze_note_task.delay(note_id)
 
-        # Display results to the user without changing the note content 
-        # Send em back to the detail page
+        messages.add_message(request, messages.INFO, 'Analysis is pending. Please check back shortly.')
+
+        # Redirect the user to the note detail page immediately
         return redirect('note_detail', pk=note.pk)
 
 def generate_response_from_prompt(request):
