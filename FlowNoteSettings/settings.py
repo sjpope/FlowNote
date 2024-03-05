@@ -13,6 +13,8 @@ from django.urls import reverse_lazy
 
 load_dotenv()
 
+CELERY_BROKER_URL = 'redis://localhost:6379/0' # Celery is using 'Redis' as broker
+
 LOGIN_URL = 'notes:login'
 LOGIN_REDIRECT_URL = reverse_lazy('notes:profile')
 LOGOUT_REDIRECT_URL = '/'

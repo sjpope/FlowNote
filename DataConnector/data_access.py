@@ -23,7 +23,7 @@ def getSQL(table, columns='', filters=''):
     conn.close()
     return notes
 
-def getMongoDB(collection_name, query={}, projection=None):
+def getMongoDB(database_name, collection_name, query={}, projection=None):
     """
     Fetches documents from a MongoDB collection.
 
@@ -37,7 +37,7 @@ def getMongoDB(collection_name, query={}, projection=None):
     # mongo_db_name = os.getenv('MONGO_DB_NAME')
 
     client = MongoClient(mongo_uri)
-    db = client.NoteData
+    db = client[database_name]
     collection = db[collection_name] # Tokens
 
     documents = collection.find(query, projection)
