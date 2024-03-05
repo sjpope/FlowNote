@@ -1,6 +1,6 @@
 from celery import shared_task
 from django.core.cache import cache
-from .models import Note
+from notes.models import Note
 from DataConnector.data_access import getMongoDB, pushMongoDB
 from AIEngine.services.note_analysis import analyze_notes
 
