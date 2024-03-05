@@ -113,11 +113,11 @@ We are a team of Texas State University students developing this project as part
 
 * John Yamamoto: "Implement AI generated Summaries, and Create CRUD tests for Notes."
     * `Jira Task SCRUM-22: Implement Generative AI API to summarize notes.`
-        * [SCRUM-22](https://cs3398s24klingons.atlassian.net/browse/SCRUM-22), [Bitbucket]()
+        * [SCRUM-22](https://cs3398s24klingons.atlassian.net/browse/SCRUM-22), [Bitbucket](https://bitbucket.org/cs3398s24klingons/flownote/commits/0ecd11a18b9433d750b847b03a1456dc9cfaec43)
     * `Jira Task SCRUM-23: A Method to add Summary to notes.`
-        * [SCRUM-23](https://cs3398s24klingons.atlassian.net/browse/SCRUM-23), [Bitbucket]()
+        * [SCRUM-23](https://cs3398s24klingons.atlassian.net/browse/SCRUM-23), [Bitbucket](https://bitbucket.org/cs3398s24klingons/flownote/commits/dab858cf2a54ddeee5aa8cd5bf978da1eaeae0cd)
     * `Jira Task SCRUM-46: Write Unit Tests for CRUD Operations.`
-        * [SCRUM-46](https://cs3398s24klingons.atlassian.net/browse/SCRUM-46), [Bitbucket]()
+        * [SCRUM-46](https://cs3398s24klingons.atlassian.net/browse/SCRUM-46), [Bitbucket](https://bitbucket.org/cs3398s24klingons/flownote/commits/d6d734ec88323ca881b1df17ab634fb55052eb97)
 
 ## 1st Report ##
 ![Burnup1](notes/static/notes/css/images/Sprint1BurnupReport.png)
@@ -130,7 +130,7 @@ We are a team of Texas State University students developing this project as part
 * Matthew Ruiz:
     *
 * John Yamamoto:
-    *
+    * Look to potentially design user interface for the Analysis and Content Sugestion Features.
 
 ## Screenshots
 ![FlowNote Screenshot](./img/flow_note_screenshot.png)
