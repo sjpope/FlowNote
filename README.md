@@ -124,11 +124,12 @@ We are a team of Texas State University students developing this project as part
 
 ## Next Steps (Sprint 2) ##
 * **Israel Ibinayin:**
-    *
+    * 
 * **Samuel Pope:**
-    *
+    * 
 * **Matthew Ruiz:**
-    *
+    * Create a toggle view for AI Assistant
+    * Enhance Search Functionality
 * **John Yamamoto:**
     * Look to potentially design user interface for the Analysis and Content Sugestion Features.
 
