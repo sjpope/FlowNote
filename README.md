@@ -126,7 +126,18 @@ We are a team of Texas State University students developing this project as part
 * **Israel Ibinayin:**
     * 
 * **Samuel Pope:**
-    * 
+    * Integrate OCR technology for converting handwritten notes to digital text.
+    * Develop a recommendation engine based on user activity.
+    * Implement speech-to-text functionality for note dictation.
+    * Convert lecture notes into audio presentations.
+    * Create widgets from Microsoft Graph for important emails.
+    * Enhance note sorting functionality.
+    * Improve text editor features (indentation, bold text, font size, etc.).
+    * Design a user profile page.
+    * Implement private notes feature.
+    * Plan deployment and migrate to Azure.
+    * Format content delivery in visually appealing formats like mind maps and interactive columns.
+
 * **Matthew Ruiz:**
     * Create a toggle view for AI Assistant
     * Enhance Search Functionality
