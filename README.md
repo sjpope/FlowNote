@@ -107,9 +107,9 @@ We are a team of Texas State University students developing this project as part
     * `Jira Task SCRUM-25: The user interface for submitting documents and receiving summaries must be intuitive, and easy to navigate.`
         * [SCRUM-25](https://cs3398s24klingons.atlassian.net/browse/SCRUM-25), [Bitbucket]()
     * `Jira Task SCRUM-50: Setup Email Verification.`
-        * [SCRUM-50](https://cs3398s24klingons.atlassian.net/browse/SCRUM-50), [Bitbucket]()
+        * [SCRUM-50](https://cs3398s24klingons.atlassian.net/browse/SCRUM-50), [Bitbucket](https://bitbucket.org/cs3398s24klingons/flownote/commits/branch/feature%2FSCRUM-50-setup-email-verification)
     * `Jira Task SCRUM-74: Integrate External APIs for Complex Data Operations (Build/Test AI Features).`
-        * [SCRUM-74](https://cs3398s24klingons.atlassian.net/browse/SCRUM-74), [Bitbucket]()
+        * [SCRUM-74](https://cs3398s24klingons.atlassian.net/browse/SCRUM-74), [Bitbucket](https://bitbucket.org/cs3398s24klingons/flownote/branch/SCRUM-7-user-interface-design-for-ai)
 
 * **John Yamamoto:** "Implement AI generated Summaries, and Create CRUD tests for Notes."
     * `Jira Task SCRUM-22: Implement Generative AI API to summarize notes.`
@@ -124,11 +124,12 @@ We are a team of Texas State University students developing this project as part
 
 ## Next Steps (Sprint 2) ##
 * **Israel Ibinayin:**
-    *
+    * 
 * **Samuel Pope:**
-    *
+    * 
 * **Matthew Ruiz:**
-    *
+    * Create a toggle view for AI Assistant
+    * Enhance Search Functionality
 * **John Yamamoto:**
     * Look to potentially design user interface for the Analysis and Content Sugestion Features.
 
