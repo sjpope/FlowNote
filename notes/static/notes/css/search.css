@@ -1,8 +1,18 @@
-.search-container {
+  .search-container {
     display: flex;
     justify-content: center;
     align-items: center;
     margin-bottom: 20px;
+  }
+  .search-bar {
+    min-width: 280px;
+    height: 40px;
+    margin: 10px;
+  }
+  .search-btn {
+    min-width: 150px;
+    height: 40px;
+    margin: 10px;
   }
   .search-form {
     display: flex;

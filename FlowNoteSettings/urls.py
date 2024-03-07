@@ -19,12 +19,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from notes.views import home
+from notes.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('notes/', include('notes.urls')),
+    path('accounts/', include('allauth.urls')),
     path('', home, name='home'),
+    
+    path('generate-response/', generate_response_from_prompt, name='generate-response'), # Move this to notes.urls.py
 ]
 
 

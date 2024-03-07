@@ -6,8 +6,8 @@
 
     <div class="search-container" style="text-align: center; margin-bottom: 20px;">
       <form action="{% url 'notes:note_search' %}" method="get">
-        <input type="text" name="q" placeholder="Search notes...">
-        <button type="submit">Search</button>
+        <input class="search-bar" type="text" name="q" placeholder="Search notes...">
+        <button type="submit" class="search-btn">Search</button>
       </form>
     </div>
 
@@ -18,7 +18,12 @@
           <a href="{% url 'notes:note_detail' note.pk %}" class="note-card">
             <div class="note-content">
               <h3>{{ note.title }}</h3>
-              <p>{{ note.content }}</p>
+              {% if note.summary %}
+                <p>{{ note.summary }}</p>
+              {% else %}
+                <p>{{ note.content }}</p>
+              {% endif %}
+              <p>By: {{ note.owner }}</p>
             </div>
           </a>
         </li>
