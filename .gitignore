@@ -66,3 +66,12 @@ venv/
 *.log
 staticfiles/
 media/
+/venv-3
+/venv
+/note-env
+/env
+/.vs
+*.cache
+/db.sqlite3
+*.sql
+.fake

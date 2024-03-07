@@ -1,15 +1,35 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<div class="full-page">
   <h2>{{ note.title }}</h2>
+  <p><strong>Created At:</strong> {{ note.created_at|date:"F d, Y H:i" }}</p>
+  <p><strong>Last Updated:</strong> {{ note.updated_at|date:"F d, Y H:i" }}</p>
+  <p><strong>Summary:</strong> {{ note.summary }}</p>
   <p>{{ note.content }}</p>
+  <p>By: {{ note.owner }}</p>
+  
+  {% if note.analysis %}
+    <h3>Analysis</h3>
+    <p>{{ note.analysis }}</p>
+  {% endif %}
 
   <a href="{% url 'notes:note_update' note.id %}" class="btn btn-primary">Update</a>
   <a href="{% url 'notes:note_delete' note.id %}" class="btn btn-danger">Delete</a>
 
-  <form action="{% url 'notes:analyze_note' note.id%}" method="post">
+  <form action="{% url 'notes:analyze' note.id%}" method="post">
     {% csrf_token %}
     <button type="submit">Analyze Note</button>
   </form>
+</div>
+<style>
+  .container {
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+  }
+</style>
 
 {% endblock %}

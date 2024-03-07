@@ -15,7 +15,7 @@
     <header>
         <div class="nav-container">
             <h1>FlowNote</h1>
-            <nav>
+            <nav class="nav-links">
                 <ul>
                     <li><a href="{% url 'home' %}" class="{% if request.path == '/' %}active{% endif %}">Home</a></li>
                     {% if user.is_authenticated %}
@@ -42,12 +42,11 @@
         <!-- Content from child templates will be inserted here -->
         {% endblock %}
     </div>
-
-    <footer>
-        <div class="container">
+    {% include 'assistant.html' %}
+</body>
+<!-- <footer>
+        <div class="footer-container">
             &copy; 2024 FlowNote.
         </div>
-    </footer>
-</body>
-
+</footer> -->
 </html>

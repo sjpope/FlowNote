@@ -1,11 +1,74 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h2>Welcome to FlowNote</h2>
-    <p>Your personal AI-enhanced note-taking companion.</p>
-    
-    {% if user.is_authenticated %}
-        <p><a href="{% url 'notes:profile' %}">Profile</a></p>
-        <p><a href="{% url 'notes:create_note' %}">Start taking notes</a> and explore the ease and intelligence of FlowNote.</p>
-    {% endif %}
+    <div class="container">
+        <h2>Welcome to FlowNote</h2>
+        <p>Your personal AI-enhanced note-taking companion.</p>
+        
+        {% if user.is_authenticated %}
+            <p><a href="{% url 'notes:profile' %}" class="btn btn-primary">Profile</a></p>
+            <p><a href="{% url 'notes:create_note' %}" class="btn btn-success">Start taking notes</a> and explore the ease and intelligence of FlowNote.</p>
+        {% endif %}
+        
+        <div class="features">
+            <h3>Key Features:</h3>
+            <ul>
+                <li>AI-powered note organization</li>
+                <li>Sync across all devices</li>
+                <li>Intuitive user interface</li>
+                <li>Secure encryption for your data</li>
+                <li>Customizable themes</li>
+            </ul>
+        </div>
+    </div>
+
+    <style>
+        /* CSS styles for the homepage */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: start;
+            justify-content: left;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 5px 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            color: #fff;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+        }
+
+        .features {
+            margin-top: 30px;
+        }
+
+        .features h3 {
+            font-size: 20px;
+            color: #333;
+        }
+
+        .features ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .features li {
+            margin-bottom: 10px;
+        }
+    </style>
 {% endblock %}

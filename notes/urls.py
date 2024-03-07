@@ -4,7 +4,6 @@ from django.contrib.auth import views as auth_views
 
 app_name = 'notes' 
 
-
 urlpatterns = [
     
     path('', home, name='home'),
@@ -14,6 +13,7 @@ urlpatterns = [
     path('list/', NoteListView.as_view(), name='note_list'), 
     path('<int:pk>/', NoteDetailView.as_view(), name='note_detail'),  # Primary Key used at the route to identify the correct note
     path('create/', create_note, name='create_note'),
+    path('generate-response/', generate_response_from_prompt, name='generate-response'),
     path('<int:pk>/delete/', NoteDeleteView.as_view(), name='note_delete'),
     path('<int:pk>/update/', NoteUpdateView.as_view(), name='note_update'),
 
@@ -31,5 +31,5 @@ urlpatterns = [
     path('search/', NoteSearchView.as_view(), name='note_search'),
 
     # Analysis URLs
-    path('analyze/', analyze, name='analyze'),
+    path('analyze/<int:note_id>/', analyze, name='analyze'),
 ]
