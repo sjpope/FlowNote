@@ -75,3 +75,6 @@ media/
 /db.sqlite3
 *.sql
 .fake
+*.ipynb
+.ipynb_checkpoints/Untitled-checkpoint.ipynb
+Untitled.ipynb
