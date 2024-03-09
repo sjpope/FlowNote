@@ -26,13 +26,14 @@ from .ai import generate_response
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
 def analyze(request, note_id):
-    if request.method == "POST" and request.is_ajax():
+    
+    if request.method == "POST" :
         note = get_object_or_404(Note, pk=note_id)
 
         # analyze_note_task.delay(note_id)  # Trigger the Celery task to analyze the note asynchronously
 
         result = perform_note_analysis(note_id)
-        messages.add_message(request, messages.INFO, 'Analysis Complete.')
+        print('Analysis Complete: ', result)
 
         #return redirect('notes:note_detail', pk=note.pk) 
         return JsonResponse({'analysis': result})
