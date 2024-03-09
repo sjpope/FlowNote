@@ -41,11 +41,9 @@ def analyze_notes(content):
         logging.warning("Text too short or insignificant for analysis.")
         return "Text too short or insignificant for analysis."
 
-    # Extract keywords
     keywords = preprocess_and_extract_keywords(processed_notes)
     logging.info(f"Extracted Keywords: {keywords}")
 
-    # Summarize the text
     summary = summarize_text_with_lsa(processed_notes)
     logging.info(f"Summary: {summary}")
 

@@ -79,3 +79,5 @@ def analyze_note_task(note_id):
     # Here, you can decide what to do with the 'results' variable
     # For example, you could update the Note model instance with a summary or keywords
     # Or you might want to notify the user that the analysis is complete
+    
+
