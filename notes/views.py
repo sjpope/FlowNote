@@ -33,10 +33,13 @@ def analyze(request, note_id):
         # analyze_note_task.delay(note_id)  # Trigger the Celery task to analyze the note asynchronously
 
         result = perform_note_analysis(note_id)
-        print('Analysis Complete: ', result)
+        keywords, summary = result.split('Summary: ')
+        keywords = keywords.replace('Keywords: ', '')
+
+        print('Analysis Complete: ', JsonResponse({'keywords': keywords, 'summary': summary}))
 
         #return redirect('notes:note_detail', pk=note.pk) 
-        return JsonResponse({'analysis': result})
+        return JsonResponse({'keywords': keywords, 'summary': summary})
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
 def generate_response_from_prompt(request):
