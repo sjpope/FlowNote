@@ -2,6 +2,7 @@ import transformers
 from transformers import BertForSequenceClassification, GPT2LMHeadModel
 from transformers import AdamW, get_linear_schedule_with_warmup
 import torch
+import pandas as pd
 
 # A Django management command to train your AI models, which can be executed from the command line.
 
@@ -18,8 +19,8 @@ def train_bert():
     scheduler = get_linear_schedule_with_warmup(optimizer, num_warmup_steps=0, num_training_steps=1000)
     
     # Prepare the training data
-    train_dataset = ...  # Load your training dataset
-    
+    train_dataset = pd.read_csv("NoCSVYet.csv")  # Load your training dataset
+    num_epochs = 15
     # Set up the training loop
     for epoch in range(num_epochs):
         # Set the model to training mode
@@ -60,6 +61,7 @@ def train_gpt():
     train_dataset = ...  # Load your training dataset
     
     # Set up the training loop
+    num_epochs = 15
     for epoch in range(num_epochs):
         # Set the model to training mode
         model.train()
