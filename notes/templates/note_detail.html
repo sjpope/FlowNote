@@ -21,6 +21,10 @@
     {% csrf_token %}
     <button type="submit">Analyze Note</button>
   </form>
+
+  <button id="analyzeNoteBtn" data-note-id="{{ note.id }}">Analyze Note</button>
+  <div id="analysisResult"></div>
+
 </div>
 <style>
   .container {
@@ -32,4 +36,65 @@
   }
 </style>
 
+{% endblock %}
+
+{% block javascript %}
+<script>
+document.addEventListener("DOMContentLoaded", function() 
+{
+
+  const analyzeBtn = document.getElementById("analyzeNoteBtn");
+  analyzeBtn.addEventListener("click", function(e) 
+  {
+    e.preventDefault();
+    const noteId = this.getAttribute("data-note-id");
+    
+    fetch(`/notes/analyze/${noteId}/`, 
+    {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': getCookie('csrftoken'), // Fetch CSRF token
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ 'note_id': noteId })
+    })
+    .then(response => response.json())
+    .then(data => 
+    {
+      const analysisContainer = document.getElementById("analysisResult");
+      analysisContainer.innerHTML = ''; // Clear previous results
+
+      data.analysis.split('\n').forEach(function(part) 
+      {
+        const p = document.createElement('p');
+        p.textContent = part;
+        analysisContainer.appendChild(p);
+      });
+      
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+  });
+
+  // Function to get CSRF token from cookies
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+
+      const cookies = document.cookie.split(';');
+
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+
+    }
+    return cookieValue;
+  }
+});
+</script>
 {% endblock %}
