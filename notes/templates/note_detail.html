@@ -19,8 +19,13 @@
 
   <form action="{% url 'notes:analyze' note.id%}" method="post">
     {% csrf_token %}
+    <input type="hidden" id="ajaxAnalyzeUrl" value="{% url 'notes:analyze' note.id %}">
     <button type="submit">Analyze Note</button>
-  </form>
+  </form> 
+
+  <button id="analyzeNoteBtn" data-note-id="{{ note.id }}" data-analyze-url="{% url 'notes:analyze' note.id %}">Analyze Note</button>
+  <div id="analysisResult"></div>
+
 </div>
 <style>
   .container {
@@ -32,4 +37,63 @@
   }
 </style>
 
+{% endblock %}
+
+{% block javascript %}
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const analyzeBtn = document.getElementById("analyzeNoteBtn");
+  
+    analyzeBtn.addEventListener("click", function(e) {
+      e.preventDefault();
+      const analyzeUrl = this.getAttribute("data-analyze-url");
+      
+      fetch(analyzeUrl, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': getCookie('csrftoken'),
+        },
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log(data); // Log the data to see what is received
+  
+        const analysisContainer = document.getElementById("analysisResult");
+        analysisContainer.innerHTML = ''; // Clear previous results
+        
+        // Update the webpage with the received data
+        const keywordsP = document.createElement('p');
+        keywordsP.textContent = "Keywords: " + data.keywords;
+        analysisContainer.appendChild(keywordsP);
+  
+        const summaryP = document.createElement('p');
+        summaryP.textContent = "Summary: " + data.summary;
+        analysisContainer.appendChild(summaryP);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+    });
+  
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+  });
+</script>
 {% endblock %}
