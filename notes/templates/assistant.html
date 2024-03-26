@@ -51,7 +51,7 @@
     }
 
     #toggle-assistant {
-        background-image: url('https://i.imgur.com/sWpDHF7.png');
+        background-image: url('../../static/notes/css/images/close-chat-icon.png');
         background-size: cover;
         background-color: transparent;
         width: 50px;
@@ -135,10 +135,10 @@
         var assistantButton = document.getElementById("toggle-assistant");
         if (isChatOpen) {
             assistant.style.opacity = "0";
-            assistantButton.style.backgroundImage = "url('https://i.imgur.com/WJINIF9.png')"; 
+            assistantButton.style.backgroundImage = "url('../../static/notes/css/images/open-chat-icon.png')"; 
         } else {
             assistant.style.opacity = "1";
-            assistantButton.style.backgroundImage = "url('https://i.imgur.com/sWpDHF7.png')";
+            assistantButton.style.backgroundImage = "url('../../static/notes/css/images/close-chat-icon.png')";
         }
         isChatOpen = !isChatOpen;
     });
