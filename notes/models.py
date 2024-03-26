@@ -5,8 +5,8 @@ from django.conf import settings
 class Note(models.Model):
     title = models.CharField(max_length=100)
     content = models.TextField()
-    summary = models.CharField(max_length=255, blank=True)
-    analysis = models.TextField(blank=True)
+    summary = models.CharField(max_length=255, blank=True) 
+    analysis = models.TextField(blank=True) # Holds results of analysis, Updates when 'analyze note' task is invoked.
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     last_modified = models.DateTimeField(auto_now=True)
