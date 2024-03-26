@@ -1,5 +1,4 @@
 <div id="assistant-container">
-    <button id="toggle-assistant">X</button>
     <div id="assistant-header">
         <h3>AI Assistant</h3>
     </div>
@@ -11,6 +10,8 @@
         </form>
     </div>
 </div>
+
+<button id="toggle-assistant" class="chat-icon"></button>
 
 <style>
     #assistant-container {
@@ -25,8 +26,9 @@
         bottom: -19%;
         right: 20px;
         transform: translateY(-50%);
+        opacity: 1;
+        transition: opacity 0.5s ease;
         padding: 15px;
-        transition: bottom 0.5s ease;
     }
 
     #assistant-header {
@@ -55,17 +57,17 @@
         width: 50px;
         height: 50px;
         border: none;
-        color: #999;
-        font-size: 20px;
         cursor: pointer;
         position: absolute;
-        top: 20px;
+        margin: 20px;
         right: 20px;
+        bottom: 0;
         outline: none;
+        transition: transform 0.2s ease;
     }
 
     #toggle-assistant:hover {
-        color: #333;
+        transform: scale(1.2);
     }
 
     #chat-history {
@@ -126,15 +128,20 @@
 </style>
 
 <script>
-   document.getElementById("toggle-assistant").addEventListener("click", function() {
-       var assistant = document.getElementById("assistant-container");
-       var currentPosition = parseInt(assistant.style.bottom.replace('%', '')); // Remove '%' and convert to integer
-       if (currentPosition === -19) {
-           assistant.style.bottom = "calc(-70%)";
-       } else {
-           assistant.style.bottom = "-19%";
-       }
-   });
+// Script for hiding and showing the assistant
+    var isChatOpen = true;
+    document.getElementById("toggle-assistant").addEventListener("click", function() {
+        var assistant = document.getElementById("assistant-container");
+        var assistantButton = document.getElementById("toggle-assistant");
+        if (isChatOpen) {
+            assistant.style.opacity = "0";
+            assistantButton.style.backgroundImage = "url('https://i.imgur.com/WJINIF9.png')"; 
+        } else {
+            assistant.style.opacity = "1";
+            assistantButton.style.backgroundImage = "url('https://i.imgur.com/sWpDHF7.png')";
+        }
+        isChatOpen = !isChatOpen;
+    });
 </script>
 
 <script>
