@@ -38,7 +38,7 @@ def perform_note_analysis(note_id):
         # )
 
     note = Note.objects.get(pk=note_id)
-    note.analysis = results  # Store the results in the 'analysis' field
+    note.analysis = results  # Store (non-parsed) analysis in Note.analysis field.
     note.save()
 
     return results
@@ -79,3 +79,5 @@ def analyze_note_task(note_id):
     # Here, you can decide what to do with the 'results' variable
     # For example, you could update the Note model instance with a summary or keywords
     # Or you might want to notify the user that the analysis is complete
+    
+
