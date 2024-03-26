@@ -11,5 +11,8 @@ def preprocess_text(text):
         result.append(token.lemma_)
     return " ".join(result)
 
-# Notes is a list of strings here...may need to adjust this.
+# Use this for multiple notes (Grouping Feature)
 # processed_notes = [preprocess_text(note) for note in notes] 
+
+# Use python scripts to preprocess & clean notes
+# TO-DO: Add more preprocessing steps as needed
