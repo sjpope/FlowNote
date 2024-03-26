@@ -39,7 +39,7 @@ We are a team of Texas State University students developing this project as part
 - **Dual Database Architecture**: Utilize SQLite for managing user data and authentication, while employing MongoDB for storing and handling dynamic, unstructured note content.
 
 ## Sprint 1 ##
-* **Israel Ibinayin:**
+* **Israel Ibinayin:** "Implement OpenAI to quickly answer user questions, and created page layouts, designs, and added styles using CSS."
     * `Jira Task SCRUM-4: Design AI Assistant Integration.`
         * [SCRUM-4](https://cs3398s24klingons.atlassian.net/browse/SCRUM-4), [Bitbucket]()
     * `Jira Task SCRUM-5: Implement AI Assistant Integration.`
