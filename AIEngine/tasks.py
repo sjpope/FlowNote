@@ -38,7 +38,7 @@ def perform_note_analysis(note_id):
         # )
 
     note = Note.objects.get(pk=note_id)
-    note.analysis = results  # Store the results in the 'analysis' field
+    note.analysis = results  # Store (non-parsed) analysis in Note.analysis field.
     note.save()
 
     return results

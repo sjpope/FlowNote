@@ -30,7 +30,7 @@ def analyze(request, note_id):
     if request.method == "POST" :
         note = get_object_or_404(Note, pk=note_id)
 
-        # analyze_note_task.delay(note_id)  # Trigger the Celery task to analyze the note asynchronously
+        # analyze_note_task.delay(note_id)  # TO-DO: Trigger the Celery task to analyze the note asynchronously
 
         result = perform_note_analysis(note_id)
         keywords, summary = result.split('Summary: ')
