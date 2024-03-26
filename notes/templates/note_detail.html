@@ -6,7 +6,10 @@
   <p><strong>Created At:</strong> {{ note.created_at|date:"F d, Y H:i" }}</p>
   <p><strong>Last Updated:</strong> {{ note.updated_at|date:"F d, Y H:i" }}</p>
   <p><strong>Summary:</strong> {{ note.summary }}</p>
-  <p>{{ note.content }}</p>
+  <div class="content-area">
+    <p>{{ note.content }}</p>
+  </div>
+  
   <p>By: {{ note.owner }}</p>
   
   {% if note.analysis %}
@@ -14,8 +17,10 @@
     <p>{{ note.analysis }}</p>
   {% endif %}
 
-  <a href="{% url 'notes:note_update' note.id %}" class="btn btn-primary">Update</a>
-  <a href="{% url 'notes:note_delete' note.id %}" class="btn btn-danger">Delete</a>
+  <div class="button-group">
+    <button><a href="{% url 'notes:note_update' note.id %}" class="btn btn-primary">Update</a></button>
+    <button><a href="{% url 'notes:note_delete' note.id %}" class="btn btn-danger">Delete</a></button>
+  </div>
 
   <form action="{% url 'notes:analyze' note.id%}" method="post">
     {% csrf_token %}
@@ -30,6 +35,30 @@
     flex-direction: column;
     justify-content: start;
     align-items: start;
+  }
+
+  .button-group {
+    margin-top: 10px;
+    margin-bottom: 20px;
+  }
+
+  .button-group button {
+    margin-right: 10px;
+    background-color: #474787;
+    padding: 10px;
+    border-radius: 9px;
+    border: none;
+  }
+
+  .button-group button a {
+    text-decoration: none;
+    color: white;
+  }
+
+  .content-area {
+    background-color: rgb(246, 229, 197);
+    border-radius: 16px;
+    padding: 15px 40px 20px 20px;
   }
 </style>
 
