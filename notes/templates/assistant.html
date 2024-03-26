@@ -114,10 +114,13 @@
         var prompt = document.getElementById("prompt").value;
         fetch("/generate-response/?prompt=" + encodeURIComponent(prompt)) //?prompt=" + encodeURIComponent(prompt)
         .then(response => response.json())
+        //.then(prompt.value = '')
         .then(data => {
             //document.getElementById("response").innerText = data.response;
             chatHistory.innerHTML += '<div class="ai-message">' + data.response + '</div>';
             prompt.value = ''
         });
+        //prompt.innerHTML = ''
+        document.getElementById("prompt").value = "";
     });
 </script>
