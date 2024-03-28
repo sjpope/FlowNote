@@ -16,15 +16,15 @@ SITE_ID = 1
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 STATIC_URL = '/static/'  
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') # 'notes/static'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Dev Settings - unsuitable for production https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
-SECRET_KEY = 'django-insecure-6j!_jhh_9u#b$yzhf^(@7ai+=xpr$3v_^s4vp#sr%q_1g-j_d@'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 DEBUG = True
 
-# ALLOWED_HOSTS = ['flownote.herokuapp.com', 'localhost', '127.0.0.1']
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['flownote.herokuapp.com', 'localhost', '127.0.0.1']
+# ALLOWED_HOSTS = []
 
 EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND')
 EMAIL_HOST = os.environ.get('EMAIL_HOST')
@@ -102,11 +102,11 @@ REST_FRAMEWORK = {
 
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 DATABASES = {
-    #  For HEROKU - 'default': dj_database_url.config(default='sqlite:///db.sqlite3', conn_max_age=600)
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.environ.get('DB1_PATH', BASE_DIR / 'db.sqlite3'),
-    },
+    'default': dj_database_url.config(default='sqlite:///db.sqlite3', conn_max_age=600),
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': os.environ.get('DB1_PATH', BASE_DIR / 'db.sqlite3'),
+    # },
     'mssql': {
         'ENGINE': 'mssql',
         'NAME': os.environ.get('MSSQL_DB_NAME'),
