@@ -16,15 +16,13 @@ SITE_ID = 1
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 STATIC_URL = '/static/'  
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') # 'notes/static'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Dev Settings - unsuitable for production https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
-DEBUG = True
+DEBUG = os.environ.get('DEBUG') == 'True'
 
-ALLOWED_HOSTS = ['flownote.herokuapp.com', 'localhost', '127.0.0.1']
-# ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['flownote-6d0dd88b2f1f.herokuapp.com', 'localhost', '127.0.0.1']
 
 EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND')
 EMAIL_HOST = os.environ.get('EMAIL_HOST')
