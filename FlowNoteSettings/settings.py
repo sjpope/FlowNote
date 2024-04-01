@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'notes',
     'AIEngine',
     'DataConnector',
+    'ckeditor',
 ]
 
 MIDDLEWARE = [
@@ -72,8 +73,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     
     'allauth.account.middleware.AccountMiddleware',
-
-    'ckeditor',
 ]
 
 ROOT_URLCONF = 'FlowNoteSettings.urls'
@@ -173,8 +172,16 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CKEDITOR_CONFIGS = {
     'default': {
-        'toolbar': 'Full',
-        'height': 300,
-        'width': '100%',
-    },
+        'toolbar': 'Custom',
+        'toolbar_Custom': [
+            {'name': 'basicstyles', 'items': ['Bold', 'Italic', 'Underline']},
+            {'name': 'colors', 'items': ['TextColor', 'BGColor']},
+            {'name': 'fonts', 'items': ['Font', 'FontSize']},
+            {'name': 'paragraph', 'items': ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent']},
+            {'name': 'links', 'items': ['Link', 'Unlink']},
+            {'name': 'tools', 'items': ['RemoveFormat', 'Source']},
+        ],
+        'extraAllowedContent': 'span{background,color};',
+        'removePlugins': 'elementspath',
+    }
 }
