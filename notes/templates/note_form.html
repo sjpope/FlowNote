@@ -16,6 +16,7 @@
       <button type="submit">Save</button>
     </form>
     <a href="{% url 'notes:note_list' %}" class="btn btn-success">Back to notes list</a>
+    {% include 'assistant.html' %}
   </div>
 
   <style>
@@ -88,7 +89,7 @@
       background-color: #474787;
       color: #fff;
       border: none;
-      width: 10%;
+      width: 35%;
       text-align: center;
       border-radius: 5px;
       cursor: pointer;
