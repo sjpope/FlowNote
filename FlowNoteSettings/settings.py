@@ -6,7 +6,7 @@ import dj_database_url
 load_dotenv()
 
 CELERY_BROKER_URL = 'redis://localhost:6379/0' # Celery is using 'Redis' as broker
-
+REDIS_URL = os.environ.get('REDIS_URL', 'redis://127.0.0.1:6379')
 LOGIN_URL = 'notes:login'
 LOGIN_REDIRECT_URL = reverse_lazy('notes:profile')
 LOGOUT_REDIRECT_URL = '/'
@@ -34,6 +34,7 @@ DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL')
 
 # Application definition
 INSTALLED_APPS = [
+    # Django Apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -48,10 +49,14 @@ INSTALLED_APPS = [
     #'allauth.account.models.EmailAddress',
     
     'rest_framework',
+    'channels',
+    'ckeditor',
+    
+    # Internal Apps
     'notes',
     'AIEngine',
     'DataConnector',
-    'ckeditor',
+    
 ]
 
 MIDDLEWARE = [
@@ -86,7 +91,18 @@ TEMPLATES = [
     },
 ]
 
+ASGI_APPLICATION = 'FlowNoteSettings.asgi.application'
 WSGI_APPLICATION = 'FlowNoteSettings.wsgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [REDIS_URL],
+        },
+    },
+}
+
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -97,7 +113,6 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ],
 }
-
 
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 DATABASES = {
