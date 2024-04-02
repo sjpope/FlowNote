@@ -7,10 +7,11 @@
         <form id="promptForm">
             <input type="text" id="prompt" name="prompt" placeholder="Type your message...">
             {% if user.is_authenticated %}
-            <button type="submit" id="send-button">Send</button>
+            <p style="display: none;" id="auth">0</p>
             {% else %}
-            <li><a style="text-decoration: none;" id="send-button" href="{% url 'notes:login' %}">Login</a></li>
+            <p style="display: none;" id="auth">1</p>
             {% endif %}
+            <button type="submit" id="send-button">Send</button>
         </form>
     </div>
 </div>
@@ -19,7 +20,7 @@
 
 <style>
     #assistant-container {
-        width: 300px;
+        inline-size: 300px;
         min-height: 450px;
         max-height: 500px;
         border: 1px solid #ccc;
@@ -27,7 +28,7 @@
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         margin: 20px;
         position: fixed;
-        bottom: -19%;
+        inset-block-end: -19%;
         right: 20px;
         transform: translateY(-50%);
         opacity: 1;
@@ -60,14 +61,14 @@
         background-image: url('../../static/notes/css/images/close-chat-icon.png');
         background-size: cover;
         background-color: transparent;
-        width: 50px;
-        height: 50px;
+        inline-size: 50px;
+        block-size: 50px;
         border: none;
         cursor: pointer;
         position: fixed;
         margin: 20px;
-        right: 20px;
-        bottom: 0;
+        inset-inline-end: 20px;
+        inset-block-end: 0;
         outline: none;
         transition: transform 0.2s ease;
     }
@@ -109,7 +110,7 @@
     #promptForm {
         display: flex;
         align-items: center;
-        bottom: 0;
+        inset-block-end: 0;
         flex-direction: row;
     }
 
@@ -118,7 +119,7 @@
         padding: 5px;
         border: 1px solid #ccc;
         border-radius: 5px;
-        width: 150px;
+        inline-size: 150px;
     }
 
     #send-button {
@@ -128,8 +129,8 @@
         border: none;
         border-radius: 5px;
         cursor: pointer;
-        margin-left: 10px;
-        width: 50px;
+        margin-inline-start: 10px;
+        inline-size: 50px;
     }
 
     #send-button:hover {
@@ -158,17 +159,27 @@
     document.getElementById("promptForm").addEventListener("submit", function(event) {
         var chatHistory = document.getElementById('chat-history');
         var prompt = document.getElementById('prompt');
+        var authenticated = document.getElementById('auth').innerHTML;
         var input = prompt.value.trim();
         chatHistory.innerHTML += '<div class="user-message">' + input + '</div>';
 
         event.preventDefault();
+        //console.log(authenticated)
         var prompt = document.getElementById("prompt").value;
         fetch("/generate-response/?prompt=" + encodeURIComponent(prompt)) //?prompt=" + encodeURIComponent(prompt)
         .then(response => response.json())
         //.then(prompt.value = '')
         .then(data => {
             //document.getElementById("response").innerText = data.response;
-            chatHistory.innerHTML += '<div class="ai-message">' + data.response + '</div>';
+            // console.log(data)
+            // console.log(data.response)
+            // console.log(data.response.substring(0,10))
+            if (authenticated == "0"){
+                chatHistory.innerHTML += '<div class="ai-message">' + data.response + '</div>';
+            } else {
+                chatHistory.innerHTML += '<div class="ai-message">' + data.response.substring(0, 35) + "... <br><br> Please Login to continue" + '</div>';
+            }
+            
             //prompt.value = ''
             document.getElementById("prompt").value = '';
         });
