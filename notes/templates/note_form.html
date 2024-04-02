@@ -2,6 +2,7 @@
 
 {% block content %}
 <head>
+  {{ form.media }}
   {% load static %}
 </head>
 <div class="page-head">
@@ -18,6 +19,30 @@
     <a href="{% url 'notes:note_list' %}" class="btn btn-success">Back to notes list</a>
     {% include 'assistant.html' %}
   </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Assuming you have only one CKEditor instance on the page
+        CKEDITOR.on('instanceReady', function(evt) {
+            var editor = evt.editor;
+    
+            // Hide the toolbar on init
+            editor.on('instanceReady', function() {
+                this.container.findOne('.cke_top').hide();
+            });
+    
+            // Show the toolbar when the editor is focused
+            editor.on('focus', function() {
+                this.container.findOne('.cke_top').show();
+            });
+    
+            // Optionally, hide the toolbar when the editor is blurred (loses focus)
+            editor.on('blur', function() {
+                this.container.findOne('.cke_top').hide();
+            });
+        });
+    });
+  </script>
 
   <style>
     .page-head {
