@@ -17,11 +17,11 @@
         <li class="note-item">
           <a href="{% url 'notes:note_detail' note.pk %}" class="note-card">
             <div class="note-content">
-              <h3>{{ note.title }}</h3>
+              <h3 style="text-decoration: underline;">{{ note.title }}</h3>
               {% if note.summary %}
-                <p>{{ note.summary }}</p>
+                {{ note.content|safe }}
               {% else %}
-                <p>{{ note.content }}</p>
+              {{ note.content|safe }}
               {% endif %}
               <p>By: {{ note.owner }}</p>
             </div>
