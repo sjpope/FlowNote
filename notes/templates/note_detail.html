@@ -28,7 +28,7 @@
     <button type="submit">Analyze Note</button>
   </form>
   {% include 'assistant.html' %}
-  <button id="analyzeNoteBtn" data-note-id="{{ note.id }}" data-analyze-url="{% url 'notes:analyze' note.id %}">Analyze Note</button>
+  <!-- <button id="analyzeNoteBtn" data-note-id="{{ note.id }}" data-analyze-url="{% url 'notes:analyze' note.id %}">Analyze Note</button> -->
   <div id="analysisResult"></div>
 </div>
 <style>
