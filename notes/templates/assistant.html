@@ -6,7 +6,11 @@
     <div id="assistant-body">
         <form id="promptForm">
             <input type="text" id="prompt" name="prompt" placeholder="Type your message...">
+            {% if user.is_authenticated %}
             <button type="submit" id="send-button">Send</button>
+            {% else %}
+            <li><a style="text-decoration: none;" id="send-button" href="{% url 'notes:login' %}">Login</a></li>
+            {% endif %}
         </form>
     </div>
 </div>
