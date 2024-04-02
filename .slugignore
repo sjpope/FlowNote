@@ -1,0 +1,6 @@
+README.md
+logo.png
+docs/*
+*.pyproj
+*.pyproj.user
+*.sln
