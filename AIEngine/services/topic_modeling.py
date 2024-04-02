@@ -1,5 +1,4 @@
 # Holds the logic for topic modeling, including training, updating, and utilizing topic models.
-
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.decomposition import LatentDirichletAllocation
 from AIEngine.utils.preprocessing import preprocess_text
