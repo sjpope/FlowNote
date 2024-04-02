@@ -1,10 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
+from ckeditor.fields import RichTextField
 
 class Note(models.Model):
     title = models.CharField(max_length=100)
-    content = models.TextField()
+    content = RichTextField()
     summary = models.CharField(max_length=255, blank=True) 
     analysis = models.TextField(blank=True) # Holds results of analysis, Updates when 'analyze note' task is invoked.
     created_at = models.DateTimeField(auto_now_add=True)
