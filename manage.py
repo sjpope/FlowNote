@@ -6,10 +6,7 @@ import sys
 
 def main():
     """Run administrative tasks."""
-    # os.environ['DJANGO_SETTINGS_MODULE' ]='FlowNoteSettings.settings'
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'FlowNoteSettings.settings')
-    # os.environ['DJANGO_SETTINGS_MODULE' ]='flownote.settings'
-    # os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'flownote.settings')
     
     try:
         from django.core.management import execute_from_command_line

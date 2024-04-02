@@ -79,3 +79,4 @@ media/
 .ipynb_checkpoints/Untitled-checkpoint.ipynb
 Untitled.ipynb
 .ipynb_checkpoints
+staticfiles/
