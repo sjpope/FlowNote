@@ -55,7 +55,6 @@ INSTALLED_APPS = [
     # Internal Apps
     'notes',
     'AIEngine',
-    'DataConnector',
     
 ]
 
