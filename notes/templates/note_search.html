@@ -2,38 +2,39 @@
 
 {% block content %}
 
-{% if request.GET.q %}
-<div class="search-results">
-    <h4>Search Results for "{{ request.GET.q }}"</h4>
-    {% if notes %}
-    <div class="note-container">
-        <h2 style="text-align: center;">Notes</h2>
+<h2 style="text-align: center;">Notes</h2>
 
-        <div class="search-container" style="text-align: center; margin-bottom: 20px;">
-            <form action="{% url 'notes:note_search' %}" method="get">
-                <input class="search-input" type="text" name="q" placeholder="Search notes..."> <!--value="{{ request.GET.q }}"-->
-                <button class="search-button" type="submit">Search</button>
-            </form>
-        </div>
-
-        <ul class="notes-list">
-            {% for note in notes %}
-            <li class="note-item">
-                <a href="{% url 'notes:note_detail' note.pk %}" class="note-card">
-                    <div class="note-content">
-                        <h3>{{ note.title }}</h3>
-                        <p>{{ note.content }}</p>
-                    </div>
-                </a>
-            </li>
-            {% endfor %}
-        </ul>
-
-    </div>
-    {% else %}
-    <p>No notes found.</p>
-    {% endif %}
+<div class="search-container" style="text-align: center; margin-top: 20px; margin-bottom: 20px;">
+    <form action="{% url 'notes:note_search' %}" method="get">
+        <input class="search-input" type="text" name="q" value="{{ request.GET.q }}" placeholder="Search notes...">
+        <button class="search-button" type="submit">Search</button>
+    </form>
 </div>
-{% endif %}
 
+{% if request.GET.q %}
+    <div class="search-results" style="text-align: center;">
+        <h4>Search Results for "{{ request.GET.q }}"</h4>
+        {% if notes.exists %}
+            <div class="note-container">
+                <ul class="notes-list">
+                    {% for note in notes %}
+                    <li class="note-item">
+                        <a href="{% url 'notes:note_detail' note.pk %}" class="note-card">
+                            <div class="note-content">
+                                <h3>{{ note.title }}</h3>
+                                {{ note.content|safe }}
+                            </div>
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+    </div>
+{% else %}
+    <div class="search-results" style="text-align: center; margin-top: 20px; margin-bottom: 20px;">
+        <h4>No notes found...</h4>
+        <h4>Enter another search query to find notes.</h4>
+    </div>
+{% endif %}
 {% endblock %}
