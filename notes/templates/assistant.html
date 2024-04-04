@@ -177,7 +177,7 @@
             if (authenticated == "0"){
                 chatHistory.innerHTML += '<div class="ai-message">' + data.response + '</div>';
             } else {
-                chatHistory.innerHTML += '<div class="ai-message">' + data.response.substring(0, 35) + "... <br><br> Please Login to continue" + '</div>';
+                chatHistory.innerHTML += '<div class="ai-message">' + data.response.substring(0, 35) + `... <br><br> Please <a href="{% url 'notes:login' %}">Login</a> to continue` + '</div>';
             }
             
             //prompt.value = ''
