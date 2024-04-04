@@ -7,7 +7,7 @@ from AIEngine.services.note_analysis import analyze_notes
 from AIEngine.tasks import *
 
 from .forms import *
-from .models import Note
+from .models import Note, NoteGroup
 
 from django.urls import reverse, reverse_lazy
 from django.shortcuts import *   # render, redirect, get_object_or_404
@@ -48,6 +48,10 @@ def generate_response_from_prompt(request):
             response = generate_response(prompt)
             return JsonResponse({'response': response})
     return JsonResponse({'error': 'Invalid request'}, status=400) #more error handling
+
+def note_group_list(request):
+    groups = NoteGroup.objects.all()  # Retrieve all note groups from the database
+    return render(request, 'note_group_list.html', {'groups': groups})
 
 class NoteSearchView(ListView):
     model = Note
