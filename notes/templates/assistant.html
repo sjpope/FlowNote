@@ -162,6 +162,13 @@
         var authenticated = document.getElementById('auth').innerHTML;
         var input = prompt.value.trim();
         chatHistory.innerHTML += '<div class="user-message">' + input + '</div>';
+        if (authenticated == "0"){
+            //remove loading div
+            chatHistory.innerHTML += '<div class="ai-message">' + "loading..." + '</div>';
+        } else {
+            //remove loading div
+            chatHistory.innerHTML += '<div class="ai-message">' + "loading..." + '</div>';
+        }
 
         event.preventDefault();
         //console.log(authenticated)
@@ -174,6 +181,10 @@
             // console.log(data)
             // console.log(data.response)
             // console.log(data.response.substring(0,10))
+            var loadingDiv = chatHistory.querySelector('.ai-message:last-child');
+            if (loadingDiv) {
+                loadingDiv.remove();
+            }
             if (authenticated == "0"){
                 chatHistory.innerHTML += '<div class="ai-message">' + data.response + '</div>';
             } else {
