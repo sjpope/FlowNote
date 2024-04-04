@@ -1,11 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Profile Page</h2>
+<h2>Settings Page</h2>
 <div>
     <!--<p><a href="{% url 'home' %}">Home</a></p>-->
     <p>Username: {{ request.user.username }}</p>
     <p>Email: {{ user.email }}</p>
-    <p><a href="{% url 'notes:settings' %}" class="btn btn-primary">Settings</a></p>
 </div>
 {% endblock %}

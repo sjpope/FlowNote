@@ -65,6 +65,10 @@ class NoteSearchView(ListView):
 def profile(request):
     return render(request, 'profile.html', {'user': request.user})
 
+@login_required
+def settings(request):
+    return render(request, 'settings.html', {'user': request.user})
+
 def register(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
