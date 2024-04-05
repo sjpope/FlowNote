@@ -1,0 +1,23 @@
+/* Light theme styles */
+.theme-light {
+    --bg-color: #f5f5f5;
+    --text-color: #333;
+    --link-color: #007bff;
+  }
+  
+  /* Dark theme styles */
+  .theme-dark {
+    --bg-color: #222;
+    --text-color: #f5f5f5;
+    --link-color: #4da6ff;
+  }
+  
+  /* Apply the theme variables */
+  body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+  }
+  
+  a {
+    color: var(--link-color);
+  }

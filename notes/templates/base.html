@@ -6,12 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}FlowNote{% endblock %}</title>
     {% load static %}
+    <link rel="stylesheet" href="{% static 'notes/css/themes.css' %}">
     <link rel="stylesheet" href="{% static 'notes/css/notes_styles.css' %}">
     <link rel="stylesheet" href="{% static 'notes/css/navbar.css' %}">
     <link rel="stylesheet" href="{% static 'notes/css/search.css' %}">
 </head>
 
-<body>
+<body class="{% if user.userprofile.theme == 'dark' %}theme-dark{% else %}theme-light{% endif %}">
     <header>
         <div class="nav-container">
             <h1>FlowNote</h1>
