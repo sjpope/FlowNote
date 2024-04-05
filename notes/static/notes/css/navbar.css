@@ -1,5 +1,5 @@
 .navbar {
-    background-color: #333;
+    background-color: var(--navbar-bg-color);
     overflow: auto;
     position: fixed;
     top: 0;
@@ -12,20 +12,20 @@
 .navbar a {
     float: right;
     display: block;
-    color: white;
+    color: var(--navbar-text-color);
     text-align: center;
     padding: 14px 20px;
     text-decoration: none;
 }
 
 .navbar a:hover {
-    background-color: #ddd;
-    color: black;
+    background-color: var(--navbar-hover-bg-color);
+    color: var(--navbar-hover-text-color);
 }
 
 .navbar-title {
-    float: left; /* Adjusted to float left */
-    color: white;
+    float: left;
+    color: var(--navbar-text-color);
     padding: 14px 20px;
     font-size: 40px;
     text-decoration: none;
@@ -35,11 +35,14 @@ nav form {
     display: inline;
 }
 
+nav form button {
+    color: var(--navbar-button-text-color);
+}
 nav ul {
     padding: 0;
     list-style: none;
-    display: flex; 
-    justify-content: space-around; 
+    display: flex;
+    justify-content: space-around;
 }
 
 nav ul li {
@@ -48,36 +51,30 @@ nav ul li {
 }
 
 nav ul a {
-    text-decoration: none;
-    color: #fff;
-    padding: 10px 15px; 
-    transition: background-color 0.3s; 
-}
-
-nav ul li a {
     display: inline-block;
-    margin-right: 15px; 
+    margin-right: 15px;
     text-decoration: none;
-    color: #FFFFFF; 
-    padding: 10px 15px; 
-    background-color: #656ab4; 
-    border: none; 
-    border-radius: 5px; 
+    color: var(--navbar-text-color);
+    padding: 10px 15px;
+    transition: background-color 0.3s;
+    background-color: var(--navbar-link-bg-color);
+    border: none;
+    border-radius: 5px;
 }
 
 @media (max-width: 600px) {
     nav ul {
-      flex-direction: column; 
+      flex-direction: column;
     }
     nav ul a {
-      text-align: center; 
-      padding: 10px; 
+      text-align: center;
+      padding: 10px;
     }
-  }
+}
 
 footer {
-    background-color: #2C2C54;
-    color: white;
+    background-color: var(--footer-bg-color);
+    color: var(--footer-text-color);
     text-align: center;
     padding: 10px 0;
     position: absolute;
