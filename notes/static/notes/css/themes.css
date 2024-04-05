@@ -5,6 +5,15 @@
     --link-color: #007bff;
     --header-bg-color: #2C2C54;
     --header-text-color: #f5f5f5;
+    --navbar-bg-color: #2C2C54;
+    --navbar-text-color: #f5f5f5;
+    --navbar-hover-bg-color: #ddd;
+    --navbar-hover-text-color: #333;
+    --navbar-link-bg-color: #656ab4;
+    --navbar-button-bg-color: #007bff;
+    --navbar-button-text-color: #f5f5f5;
+    --footer-bg-color: #2C2C54;
+    --footer-text-color: #f5f5f5;
   }
   
   /* Dark theme styles */
@@ -14,6 +23,15 @@
     --link-color: #4da6ff;
     --header-bg-color: #333;
     --header-text-color: #f5f5f5;
+    --navbar-bg-color: #333;
+    --navbar-text-color: #f5f5f5;
+    --navbar-hover-bg-color: #444;
+    --navbar-hover-text-color: #f5f5f5;
+    --navbar-link-bg-color: #222;
+    --navbar-button-bg-color: #4da6ff;
+    --navbar-button-text-color: #f5f5f5;
+    --footer-bg-color: #333;
+    --footer-text-color: #f5f5f5;
   }
   
   /* Apply the theme variables */
@@ -29,4 +47,36 @@
   
   a {
     color: var(--link-color);
+  }
+  
+  .navbar {
+    background-color: var(--navbar-bg-color);
+    color: var(--navbar-text-color);
+  }
+  
+  .navbar a {
+    color: var(--navbar-text-color);
+  }
+  
+  .navbar a:hover {
+    background-color: var(--navbar-hover-bg-color);
+    color: var(--navbar-hover-text-color);
+  }
+  
+  .navbar-title {
+    color: var(--navbar-text-color);
+  }
+  
+  nav ul a {
+    background-color: var(--navbar-link-bg-color);
+  }
+  
+  nav form button {
+    background-color: var(--navbar-button-bg-color);
+    color: var(--navbar-button-text-color);
+  }
+  
+  footer {
+    background-color: var(--footer-bg-color);
+    color: var(--footer-text-color);
   }
