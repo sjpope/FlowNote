@@ -62,7 +62,7 @@ nav ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
-  background-color: #2C2C54;
+  background-color: var(--nvabar-link-bg-color);
   display: flex;
 }
 
@@ -111,7 +111,7 @@ input[type="password"] {
 
 button[type="submit"] {
   width: 135px;
-  background-color: #474787;
+  background-color: var(--navbar-link-bg-color);
   color: white;
   padding: 10px 20px;
   border: none;
@@ -121,7 +121,7 @@ button[type="submit"] {
 }
 
 button[type="submit"]:hover {
-  background-color: #515185;
+  background-color: var(--navbar-hover-bg-color);
 }
 
 
