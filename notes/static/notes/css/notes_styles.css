@@ -157,7 +157,7 @@ button[type="submit"]:hover {
 }
 
 .note-content {
-  color: #201010;
+  color: var(--card-text-color);
 }
 
 /* Adjustments for title and content */
