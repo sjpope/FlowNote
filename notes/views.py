@@ -7,7 +7,7 @@ from AIEngine.services.note_analysis import analyze_notes
 from AIEngine.tasks import *
 
 from .forms import *
-from .models import Note
+from .models import Note, UserProfile
 
 from django.urls import reverse, reverse_lazy
 from django.shortcuts import *   # render, redirect, get_object_or_404
@@ -64,6 +64,19 @@ class NoteSearchView(ListView):
 @login_required
 def profile(request):
     return render(request, 'profile.html', {'user': request.user})
+
+@login_required
+def settings(request):
+    return render(request, 'settings.html', {'user': request.user})
+
+def update_theme(request):
+    if request.method == 'POST':
+        theme = request.POST.get('theme')
+        user_profile, _ = UserProfile.objects.get_or_create(user=request.user)
+        user_profile.theme = theme
+        user_profile.save()
+        messages.success(request, 'Theme updated successfully')
+    return redirect('notes:settings')
 
 def register(request):
     if request.method == 'POST':

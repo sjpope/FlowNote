@@ -2,7 +2,6 @@ from AIEngine.utils.data_access import *
 from AIEngine.utils.preprocessing import preprocess_text
 from AIEngine.services.topic_modeling import perform_topic_modeling
 from AIEngine.services.text_processing import extract_keywords
-from DataConnector.data_access import getSQL, pushMongoDB
 
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
@@ -25,7 +24,6 @@ def preprocess_and_extract_keywords(text):
     keywords = [word for word in words if word not in stop_words]
     return keywords
 
-# Function to summarize text
 def summarize_text_with_lsa(text, sentence_count=3):
     parser = PlaintextParser.from_string(text, Tokenizer("english"))
     summarizer = LsaSummarizer()
@@ -51,7 +49,6 @@ def analyze_notes(content):
     keywords_str = ', '.join(keywords)  
     analysis_result = f"Keywords: {keywords_str}\n\nSummary: {summary}"
 
-    # pushMongoDB('NoteData', 'Analysis', analysis_result)
     
     return analysis_result
 

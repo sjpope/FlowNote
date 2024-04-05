@@ -19,14 +19,14 @@
         <form method="get" action="{% url 'account_reset_password' %}">
             <button type="submit" class="btn btn-info btn-forgot-password">Forgot Password?</button>
         </form>
-        {% include 'assistant.html' %}
+        {% include 'theme_popup.html' %}
     </div>
     <style>
         .login-container {
             margin-top: 50px;
             border: 1px solid #ccc;
             border-radius: 5px;
-            background-color: #f9f9f9;
+            background-color: var(--form-color);
             width: 450px;
             height: 550px;
             margin-left: 150px;
@@ -65,6 +65,8 @@
             border: 1px solid #ccc;
             border-radius: 4px;
             box-sizing: border-box;
+            background-color: var(--bg-color);
+            color: var(--text-color);
         }
 
         button[type="submit"] {
@@ -76,7 +78,7 @@
         }
 
         .btn-primary {
-            background-color: #474787;
+            background-color: var(--button-bg-color);
             color: white;
         }
 
@@ -85,7 +87,7 @@
         }
 
         .btn-info {
-            background-color: #474787;
+            background-color: var(--button-bg-color);
             color: white;
         }
 
@@ -94,4 +96,48 @@
         }
 
     </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var themePopup = document.getElementById('theme-popup');
+            var saveThemeButton = document.getElementById('save-theme');
+            var themeRadios = document.getElementsByName('theme');
+    
+            // Check if the user has already selected a theme
+            var selectedTheme = localStorage.getItem('selectedTheme');
+    
+            if (!selectedTheme) {
+                // If no theme is selected, show the pop-up
+                themePopup.style.display = 'block';
+            }
+    
+            saveThemeButton.addEventListener('click', function() {
+                var selectedTheme = '';
+    
+                // Get the selected theme value
+                themeRadios.forEach(function(radio) {
+                    if (radio.checked) {
+                        selectedTheme = radio.value;
+                    }
+                });
+    
+                // Save the selected theme to local storage
+                localStorage.setItem('selectedTheme', selectedTheme);
+    
+                // Hide the pop-up
+                themePopup.style.display = 'none';
+    
+                // Redirect to the appropriate theme URL or update the theme dynamically
+                // Example: window.location.href = '/set-theme/' + selectedTheme + '/';
+                // Get the saved theme from localStorage
+                var savedTheme = localStorage.getItem('selectedTheme');
+
+                // Apply the saved theme to the page
+                if (savedTheme) {
+                    document.body.classList.remove('theme-light', 'theme-dark');
+                    document.body.classList.add(`theme-${savedTheme}`);
+                }
+            });
+        });
+    </script>
 {% endblock %}
