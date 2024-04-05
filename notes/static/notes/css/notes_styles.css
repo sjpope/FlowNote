@@ -62,7 +62,7 @@ nav ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
-  background-color: var(--nvabar-link-bg-color);
+  background-color: var(--navbar-bg-color);
   display: flex;
 }
 
@@ -122,6 +122,10 @@ button[type="submit"] {
 
 button[type="submit"]:hover {
   background-color: var(--navbar-hover-bg-color);
+}
+
+.btn-secondary[type="submit"] {
+  background-color: var(--button-bg-color);
 }
 
 
