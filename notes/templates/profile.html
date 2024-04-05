@@ -6,6 +6,6 @@
     <!--<p><a href="{% url 'home' %}">Home</a></p>-->
     <p>Username: {{ request.user.username }}</p>
     <p>Email: {{ user.email }}</p>
-    <p><a href="{% url 'notes:settings' %}" class="btn btn-primary">Settings</a></p>
+    <p><a href="{% url 'notes:settings' %}" class="link">Settings</a></p>
 </div>
 {% endblock %}
