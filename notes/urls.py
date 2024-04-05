@@ -13,23 +13,27 @@ urlpatterns = [
     path('list/', NoteListView.as_view(), name='note_list'), 
     path('<int:pk>/', NoteDetailView.as_view(), name='note_detail'),  # Primary Key used at the route to identify the correct note
     path('create/', create_note, name='create_note'),
-    path('generate-response/', generate_response_from_prompt, name='generate-response'),
     path('<int:pk>/delete/', NoteDeleteView.as_view(), name='note_delete'),
     path('<int:pk>/update/', NoteUpdateView.as_view(), name='note_update'),
 
+    path('note-groups/', note_group_list, name='note_group_list'),
+    #path('assign-note-to-group/', views.assign_note_to_group, name='assign-note-to-group'),
+    
     # Registration/User Profile URLs
     path('register/', register, name='register'),
     path('login/', auth_views.LoginView.as_view(), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('accounts/profile/', profile, name='profile'),
 
-    # These function-based views were replaced by Django's built-in auth views above.
-    # path('login/', user_login, name='login'),
-    # path('logout/', user_logout, name='logout'),
+   
 
     # Search URLs
     path('search/', NoteSearchView.as_view(), name='note_search'),
 
     # Analysis URLs
     path('analyze/<int:note_id>/', analyze, name='analyze'),
+    
+    # AI Assistant URLs
+    path('generate-response/', generate_response_from_prompt, name='generate-response'),
+
 ]
