@@ -69,14 +69,13 @@ def profile(request):
 def settings(request):
     return render(request, 'settings.html', {'user': request.user})
 
-@login_required
 def update_theme(request):
     if request.method == 'POST':
         theme = request.POST.get('theme')
         user_profile, _ = UserProfile.objects.get_or_create(user=request.user)
         user_profile.theme = theme
         user_profile.save()
-        return redirect('notes:settings')
+        messages.success(request, 'Theme updated successfully')
     return redirect('notes:settings')
 
 def register(request):
