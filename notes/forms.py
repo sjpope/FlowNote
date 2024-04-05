@@ -17,7 +17,7 @@ class NoteGroupForm(forms.Form):
         return title
 
 class NoteGroupAssignmentForm(forms.Form):
-    groups = forms.ModelMultipleChoiceField(queryset=Group.objects.all(), required=False, label='Groups', widget=forms.CheckboxSelectMultiple)
+    groups = forms.ModelMultipleChoiceField(queryset=NoteGroup.objects.all(), required=False, label='Groups', widget=forms.CheckboxSelectMultiple)
 
 
 class NoteForm(forms.ModelForm):
