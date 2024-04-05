@@ -29,6 +29,8 @@
     --card-bg-color: #fff;
     --card-title-color: #333;
     --card-text-color: #555;
+    --close-assistant-icon: url('../../static/notes/css/images/close-chat-icon.png');
+    --open-assistant-icon: url('../../static/notes/css/images/open-chat-icon.png');
 }
   
   /* Dark theme styles */
@@ -62,6 +64,9 @@
     --card-bg-color: #444;
     --card-title-color: #f5f5f5;
     --card-text-color: #ccc;
+
+    --close-assistant-icon: url('../../static/notes/css/images/white-close-chat-icon.png');
+    --open-assistant-icon: url('../../static/notes/css/images/white-open-chat-icon.png');
   }
   
   /* Apply the theme variables */
