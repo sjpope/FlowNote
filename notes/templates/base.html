@@ -10,6 +10,16 @@
     <link rel="stylesheet" href="{% static 'notes/css/notes_styles.css' %}">
     <link rel="stylesheet" href="{% static 'notes/css/navbar.css' %}">
     <link rel="stylesheet" href="{% static 'notes/css/search.css' %}">
+    <style>
+        body {
+            background-color: var(--bg-color);
+        }
+
+        header {
+            background-color: var(--header-bg-color);
+            color: var(--header-text-color);
+        }
+    </style>
 </head>
 
 <body class="{% if user.userprofile.theme == 'dark' %}theme-dark{% else %}theme-light{% endif %}">
