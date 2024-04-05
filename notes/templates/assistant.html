@@ -37,8 +37,8 @@
     }
 
     #assistant-header {
-        background-color: #2C2C54;
-        color: white;
+        background-color: var(--header-bg-color);
+        color: var(--header-text-color);
         padding: 10px;
         border-top-left-radius: 5px;
         border-top-right-radius: 5px;
@@ -58,7 +58,7 @@
     }
 
     #toggle-assistant {
-        background-image: url('../../static/notes/css/images/close-chat-icon.png');
+        background-image: var(--close-assistant-icon);
         background-size: cover;
         background-color: transparent;
         inline-size: 50px;
@@ -124,7 +124,7 @@
 
     #send-button {
         padding: 5px 10px;
-        background-color: #474787;
+        background-color: var(--button-bg-color);
         color: white;
         border: none;
         border-radius: 5px;
@@ -134,7 +134,7 @@
     }
 
     #send-button:hover {
-        background-color: #0056b3;
+        background-color: var(--button-hover-color);
     }
 </style>
 
@@ -146,10 +146,10 @@
         var assistantButton = document.getElementById("toggle-assistant");
         if (isChatOpen) {
             assistant.style.opacity = "0";
-            assistantButton.style.backgroundImage = "url('../../static/notes/css/images/open-chat-icon.png')"; 
+            assistantButton.style.backgroundImage = "var(--open-assistant-icon)";
         } else {
             assistant.style.opacity = "1";
-            assistantButton.style.backgroundImage = "url('../../static/notes/css/images/close-chat-icon.png')";
+            assistantButton.style.backgroundImage = "var(--close-assistant-icon)";
         }
         isChatOpen = !isChatOpen;
     });
