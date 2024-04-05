@@ -19,6 +19,8 @@
     --button-hover-color: #0056b3;
     --button-text-color: #f5f5f5;
 
+    --form-color: #f5f5f5;
+
     /* Search css */
     --input-border-color: #ddd;
     --input-focus-border-color: #007bff;
@@ -49,6 +51,8 @@
     --button-bg-color: #333;
     --button-hover-color: #444;
     --button-text-color: #f5f5f5;
+
+    --form-color: #333;
 
     /* Search css */
     --input-border-color: #444;

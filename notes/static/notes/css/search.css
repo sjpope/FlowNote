@@ -9,6 +9,8 @@
   min-width: 280px;
   height: 40px;
   margin: 10px;
+  background-color: var(--bg-color);
+  color: var(--text-color);
 }
 
 button[type="submit"].search-btn {
