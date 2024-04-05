@@ -11,14 +11,18 @@
             {% csrf_token %}
             <div class="theme-previews">
                 <div class="theme-preview light">
-                    <img src="{% static '../static/notes/css/images/preview_lightmode.png' %}" alt="Light Mode Preview" class="preview-box">
+                    <label for="theme-light">
+                        <img src="{% static '../static/notes/css/images/preview_lightmode.png' %}" alt="Light Mode Preview" class="preview-box">
+                    </label>
                     <div class="preview-label">
                         <input type="radio" name="theme" value="light" id="theme-light" {% if user.userprofile.theme == 'light' %}checked{% endif %}>
                         <label for="theme-light">Light</label>
                     </div>
                 </div>
                 <div class="theme-preview dark">
-                    <img src="{% static '../static/notes/css/images/preview_darkmode.png' %}" alt="Dark Mode Preview" class="preview-box">
+                    <label for="theme-dark">
+                        <img src="{% static '../static/notes/css/images/preview_darkmode.png' %}" alt="Dark Mode Preview" class="preview-box">
+                    </label>
                     <div class="preview-label">
                         <input type="radio" name="theme" value="dark" id="theme-dark" {% if user.userprofile.theme == 'dark' %}checked{% endif %}>
                         <label for="theme-dark">Dark</label>
@@ -47,7 +51,7 @@
     .theme-previews {
         display: flex;
         justify-content: left;
-        gap: 20px;
+        gap: 200px;
         margin-top: 20px;
     }
 
@@ -63,6 +67,7 @@
         border-radius: 10px;
         object-fit: cover;
         margin-bottom: 10px;
+        cursor: pointer;
     }
 
     .preview-label {
