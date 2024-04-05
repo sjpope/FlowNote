@@ -32,6 +32,9 @@ class Note(models.Model):
     def __str__(self):
         return self.title
 
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    theme = models.CharField(max_length=10, default='light')
 
 #TO-DO: Implement a BlogPost model with the following fields:
 # class BlogPost(models.Model):

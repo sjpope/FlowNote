@@ -1,5 +1,5 @@
 from django import forms
-from .models import Note
+from .models import Note, UserProfile
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
@@ -47,3 +47,10 @@ class RegisterForm(forms.ModelForm):
         if commit:
             user.save()
         return user
+
+class UserSettingsForm(forms.ModelForm):
+    theme = forms.ChoiceField(choices=(('light', 'Light'), ('dark', 'Dark')), required=True)
+
+    class Meta:
+        model = UserProfile
+        fields = ['theme']
