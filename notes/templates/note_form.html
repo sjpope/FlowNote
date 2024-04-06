@@ -3,6 +3,7 @@
 {% block content %}
 <head>
   {{ form.media }}
+  <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
   {% load static %}
 </head>
 <div class="page-head">
@@ -14,6 +15,12 @@
     <form method="post" class="note-form">
       {% csrf_token %}
       {{ form.as_p }}
+      <script>
+        CKEDITOR.replace('{{ form.content.auto_id }}', {
+            contentsCss: ['https://cdn.ckeditor.com/4.16.2/standard/contents.css', '/static/notes/css/themes.css'],
+            height: 300
+        });
+      </script>
       <button type="submit">Save</button>
     </form>
     <a href="{% url 'notes:note_list' %}" class="btn btn-success">Back to notes list</a>
