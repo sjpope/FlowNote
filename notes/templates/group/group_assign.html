@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Assign Notes to Group</h2>
+
+<form method="post" action="{% url 'notes:assign-note-to-group' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Assign Groups</button>
+</form>
+
+<a href="{% url 'notes:group_list' %}">Back to Group List</a>
+{% endblock %}

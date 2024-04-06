@@ -1,7 +1,25 @@
+from .models import *
+
 from django import forms
-from .models import Note, UserProfile
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
+
+class NoteGroupForm(forms.ModelForm):
+    class Meta:
+        model = NoteGroup
+        fields = ['title', 'description']
+    def clean_title(self):
+        title = self.cleaned_data['title']
+        # Validation logic 
+        # if not title.isalnum():
+        #     raise ValidationError('Title should only contain letters and numbers.')
+        return title
+
+class NoteGroupAssignmentForm(forms.Form):
+    note = forms.ModelChoiceField(queryset=Note.objects.all(), required=True, label='Note')
+    groups = forms.ModelMultipleChoiceField(queryset=NoteGroup.objects.all(), required=False, label='Groups', widget=forms.CheckboxSelectMultiple)
+
 
 class NoteForm(forms.ModelForm):
     class Meta:
