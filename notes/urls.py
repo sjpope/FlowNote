@@ -16,8 +16,11 @@ urlpatterns = [
     path('<int:pk>/delete/', NoteDeleteView.as_view(), name='note_delete'),
     path('<int:pk>/update/', NoteUpdateView.as_view(), name='note_update'),
 
-    path('note-groups/', note_group_list, name='note_group_list'),
-    path('note-groups/<int:pk>/', note_group_detail, name='note_group_detail'),
+    path('note-groups/', group_list, name='group_list'),
+    path('note-groups/<int:pk>/', group_detail, name='group_detail'),
+    path('note-groups/create/', group_create, name='group_create'),
+    path('note-groups/<int:pk>/edit/', group_edit, name='group_edit'),
+    path('note-groups/<int:pk>/delete/', group_delete, name='group_delete'),
     path('assign-note-to-group/', assign_note_to_group, name='assign-note-to-group'),
 
     # Registration/User Profile URLs
