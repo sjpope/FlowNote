@@ -3,7 +3,7 @@
 {% block content %}
 <h2>{% if form.instance.pk %}Edit Group{% else %}Create Group{% endif %}</h2>
 
-<form method="post" action="{% url 'notes:group_create' %}">
+<form method="post" action="">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Save</button>

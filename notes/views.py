@@ -24,23 +24,26 @@ from .ai import generate_response
 
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
-""" AI Assistant Views """
+""" AI, ML Views """
 def analyze(request, note_id):
-    
-    if request.method == "POST" :
-        note = get_object_or_404(Note, pk=note_id)
+    try:
+        if request.method == "POST" :
+            note = get_object_or_404(Note, pk=note_id)
 
-        # analyze_note_task.delay(note_id)  # TO-DO: Trigger the Celery task to analyze the note asynchronously
+            # analyze_note_task.delay(note_id)  # TO-DO: Trigger the Celery task to analyze the note asynchronously
 
-        result = perform_note_analysis(note_id)
-        keywords, summary = result.split('Summary: ')
-        keywords = keywords.replace('Keywords: ', '')
+            result = perform_note_analysis(note_id)
+            keywords, summary = result.split('Summary: ')
+            keywords = keywords.replace('Keywords: ', '')
 
-        print('Analysis Complete: ', JsonResponse({'keywords': keywords, 'summary': summary}))
+            print('Analysis Complete: ', JsonResponse({'keywords': keywords, 'summary': summary}))
 
-        #return redirect('notes:note_detail', pk=note.pk) 
-        return JsonResponse({'keywords': keywords, 'summary': summary})
-    return JsonResponse({'error': 'Invalid request'}, status=400)
+            #return redirect('notes:note_detail', pk=note.pk) 
+            return JsonResponse({'keywords': keywords, 'summary': summary})
+        return JsonResponse({'error': 'Invalid request'}, status=400)
+    except Exception as e:
+        # TO-DO: Display the error msg as the analysis result instead of sending to notes/pk/analyze
+        return JsonResponse({'error': str(e)})
 
 def generate_response_from_prompt(request):
     if request.method == 'GET':
@@ -53,18 +56,17 @@ def generate_response_from_prompt(request):
 """ Group Views """
 def assign_note_to_group(request):
     if request.method == 'POST':
-        note_id = request.POST.get('note_id')
-        group_id = request.POST.get('group_id')
-        note = get_object_or_404(Note, pk=note_id)
-        group = get_object_or_404(NoteGroup, pk=group_id)
-        note.groups.add(group)
-        note.save()
-        return redirect('notes:group_list', pk=note.pk)
+        form = NoteGroupAssignmentForm(request.POST)
+        if form.is_valid():
+            note = form.cleaned_data['note']
+            groups = form.cleaned_data['groups']
+            for group in groups:
+                note.groups.add(group)
+            return redirect('notes:group_list')
     else:
-        notes = Note.objects.all()
-        groups = NoteGroup.objects.all()
-        return render(request, 'group/group_assign.html', {'notes': notes, 'groups': groups})
-        # return redirect('notes:note_list')
+        form = NoteGroupAssignmentForm()
+    
+    return render(request, 'group/group_assign.html', {'form': form})
 
 def group_edit(request, pk):
     group = get_object_or_404(NoteGroup, pk=pk)
@@ -86,7 +88,7 @@ def group_delete(request, pk):
 
 def group_detail(request, pk):
     group = get_object_or_404(NoteGroup, pk=pk)
-    notes = group.note_set.all()  # Grab all notes associated with the group
+    notes = group.notes.all()  # Grab all notes associated with the group
     return render(request, 'group/group_detail.html', {'group': group, 'notes': notes})
 
 def group_create(request):
@@ -99,7 +101,7 @@ def group_create(request):
             return redirect('notes:group_list')
     else:
         form = NoteGroupForm()
-    return render(request, 'group_form.html', {'form': form})
+    return render(request, 'group/group_form.html', {'form': form})
 
 def group_list(request):
     groups = NoteGroup.objects.all()  

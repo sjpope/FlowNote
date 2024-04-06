@@ -5,10 +5,10 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
-class NoteGroupForm(forms.Form):
-    title = forms.CharField(label='Title', max_length=100, help_text='Enter the title of the note group')
-    description = forms.CharField(label='Description', widget=forms.Textarea, required=False, help_text='Enter a brief description (optional)')
-
+class NoteGroupForm(forms.ModelForm):
+    class Meta:
+        model = NoteGroup
+        fields = ['title', 'description']
     def clean_title(self):
         title = self.cleaned_data['title']
         # Validation logic 
@@ -17,6 +17,7 @@ class NoteGroupForm(forms.Form):
         return title
 
 class NoteGroupAssignmentForm(forms.Form):
+    note = forms.ModelChoiceField(queryset=Note.objects.all(), required=True, label='Note')
     groups = forms.ModelMultipleChoiceField(queryset=NoteGroup.objects.all(), required=False, label='Groups', widget=forms.CheckboxSelectMultiple)
 
 
