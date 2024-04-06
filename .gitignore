@@ -80,3 +80,6 @@ media/
 Untitled.ipynb
 .ipynb_checkpoints
 staticfiles/
+obj/
+Any CPU/
+*.pyproj

@@ -17,15 +17,14 @@ urlpatterns = [
     path('<int:pk>/update/', NoteUpdateView.as_view(), name='note_update'),
 
     path('note-groups/', note_group_list, name='note_group_list'),
-    #path('assign-note-to-group/', views.assign_note_to_group, name='assign-note-to-group'),
-    
+    path('note-groups/<int:pk>/', note_group_detail, name='note_group_detail'),
+    path('assign-note-to-group/', assign_note_to_group, name='assign-note-to-group'),
+
     # Registration/User Profile URLs
     path('register/', register, name='register'),
     path('login/', auth_views.LoginView.as_view(), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('accounts/profile/', profile, name='profile'),
-
-   
 
     # Search URLs
     path('search/', NoteSearchView.as_view(), name='note_search'),

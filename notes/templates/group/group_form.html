@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>{% if form.instance.pk %}Edit Group{% else %}Create Group{% endif %}</h2>
+
+<form method="post" action="{% url 'notes:note_group_create' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save</button>
+</form>
+
+<a href="{% url 'notes:note_group_list' %}">Back to Group List</a>
+{% endblock %}
