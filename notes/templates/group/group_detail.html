@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>{{ group.title }}</h2>
+  <p>{{ group.description }}</p>
+  <h3>Notes in this group:</h3>
+  <ul>
+    {% for note in notes %}
+      <li>{{ note.title }}</li>
+      {% for note_group in note.group.all %}
+              {{ note_group.title }}{% if not forloop.last %}, {% endif %}
+          {% endfor %}
+    {% endfor %}
+  </ul>
+  
+  <a href="{% url 'notes:assign-note-to-group' %}">Assign Notes to Group</a>
+  <a href="{% url 'notes:group_edit' group.pk %}">Edit Group</a>
+  <a href="{% url 'notes:group_delete' group.pk %}" onclick="return confirm('Are you sure?');">Delete</a>
+
+  <a href="{% url 'notes:group_list' %}">Back to Group List</a>
+{% endblock %}
