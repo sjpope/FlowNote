@@ -25,7 +25,7 @@
   <form action="{% url 'notes:analyze' note.id%}" method="post">
     {% csrf_token %}
     <input type="hidden" id="ajaxAnalyzeUrl" value="{% url 'notes:analyze' note.id %}">
-    <button type="submit">Analyze Note</button>
+    <button type="submit" class="btn btn-secondary">Analyze Note</button>
   </form>
   {% include 'assistant.html' %}
   <!-- <button id="analyzeNoteBtn" data-note-id="{{ note.id }}" data-analyze-url="{% url 'notes:analyze' note.id %}">Analyze Note</button> -->
@@ -47,7 +47,7 @@
 
   .button-group button {
     margin-right: 10px;
-    background-color: #474787;
+    background-color: var(--button-bg-color);
     padding: 10px;
     border-radius: 9px;
     border: none;
@@ -59,7 +59,7 @@
   }
 
   .content-area {
-    background-color: #ebebeb;
+    background-color: var(--form-color);
     border-radius: 16px;
     padding: 15px 40px 20px 20px;
   }
