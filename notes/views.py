@@ -51,6 +51,21 @@ def generate_response_from_prompt(request):
     return JsonResponse({'error': 'Invalid request'}, status=400) #more error handling
 
 """ Group Views """
+def assign_note_to_group(request):
+    if request.method == 'POST':
+        note_id = request.POST.get('note_id')
+        group_id = request.POST.get('group_id')
+        note = get_object_or_404(Note, pk=note_id)
+        group = get_object_or_404(NoteGroup, pk=group_id)
+        note.groups.add(group)
+        note.save()
+        return redirect('notes:note_group_list', pk=note.pk)
+    else:
+        notes = Note.objects.all()
+        groups = NoteGroup.objects.all()
+        return render(request, 'group/note_group_assign.html', {'notes': notes, 'groups': groups})
+        # return redirect('notes:note_list')
+
 def note_group_edit(request, pk):
     group = get_object_or_404(NoteGroup, pk=pk)
     if request.method == 'POST':
@@ -71,7 +86,8 @@ def note_group_delete(request, pk):
 
 def note_group_detail(request, pk):
     group = get_object_or_404(NoteGroup, pk=pk)
-    return render(request, 'note_group_detail.html', {'group': group})
+    notes = group.note_set.all()  # Grab all notes associated with the group
+    return render(request, 'group/note_group_detail.html', {'group': group, 'notes': notes})
 
 def note_group_create(request):
     if request.method == 'POST':
