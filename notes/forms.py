@@ -65,3 +65,10 @@ class RegisterForm(forms.ModelForm):
         if commit:
             user.save()
         return user
+
+class UserSettingsForm(forms.ModelForm):
+    theme = forms.ChoiceField(choices=(('light', 'Light'), ('dark', 'Dark')), required=True)
+
+    class Meta:
+        model = UserProfile
+        fields = ['theme']
