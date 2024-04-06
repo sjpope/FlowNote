@@ -7,7 +7,7 @@ from AIEngine.services.note_analysis import analyze_notes
 from AIEngine.tasks import *
 
 from .forms import *
-from .models import Note, NoteGroup
+from .models import *
 
 from django.urls import reverse, reverse_lazy
 from django.shortcuts import *   # render, redirect, get_object_or_404
