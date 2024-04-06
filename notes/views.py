@@ -59,51 +59,51 @@ def assign_note_to_group(request):
         group = get_object_or_404(NoteGroup, pk=group_id)
         note.groups.add(group)
         note.save()
-        return redirect('notes:note_group_list', pk=note.pk)
+        return redirect('notes:group_list', pk=note.pk)
     else:
         notes = Note.objects.all()
         groups = NoteGroup.objects.all()
-        return render(request, 'group/note_group_assign.html', {'notes': notes, 'groups': groups})
+        return render(request, 'group/group_assign.html', {'notes': notes, 'groups': groups})
         # return redirect('notes:note_list')
 
-def note_group_edit(request, pk):
+def group_edit(request, pk):
     group = get_object_or_404(NoteGroup, pk=pk)
     if request.method == 'POST':
         form = NoteGroupForm(request.POST, instance=group)
         if form.is_valid():
             form.save()
-            return redirect('notes:note_group_list')
+            return redirect('notes:group_list')
     else:
         form = NoteGroupForm(instance=group)
-    return render(request, 'note_group_form.html', {'form': form})
+    return render(request, 'group/group_form.html', {'form': form})
                   
-def note_group_delete(request, pk):
+def group_delete(request, pk):
     group = get_object_or_404(NoteGroup, pk=pk)
     if request.method == 'POST':
         group.delete()
-        return redirect('notes:note_group_list')
-    return render(request, 'note_group_delete.html', {'group': group})
+        return redirect('notes:group_list')
+    return render(request, 'group/group_delete.html', {'group': group})
 
-def note_group_detail(request, pk):
+def group_detail(request, pk):
     group = get_object_or_404(NoteGroup, pk=pk)
     notes = group.note_set.all()  # Grab all notes associated with the group
-    return render(request, 'group/note_group_detail.html', {'group': group, 'notes': notes})
+    return render(request, 'group/group_detail.html', {'group': group, 'notes': notes})
 
-def note_group_create(request):
+def group_create(request):
     if request.method == 'POST':
         form = NoteGroupForm(request.POST)
         if form.is_valid():
             new_group = form.save(commit=False)
             new_group.owner = request.user
             new_group.save()
-            return redirect('notes:note_group_list')
+            return redirect('notes:group_list')
     else:
         form = NoteGroupForm()
-    return render(request, 'note_group_form.html', {'form': form})
+    return render(request, 'group_form.html', {'form': form})
 
-def note_group_list(request):
+def group_list(request):
     groups = NoteGroup.objects.all()  
-    return render(request, 'note_group_list.html', {'groups': groups})
+    return render(request, 'group/group_list.html', {'groups': groups})
 
 class NoteSearchView(ListView):
     model = Note

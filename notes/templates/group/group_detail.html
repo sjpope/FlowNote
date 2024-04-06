@@ -14,8 +14,8 @@
   </ul>
   
   <a href="{% url 'notes:assign-note-to-group' %}">Assign Notes to Group</a>
-  <a href="{% url 'notes:note_group_edit' group.pk %}">Edit Group</a>
-  <a href="{% url 'notes:note_group_delete' group.pk %}" onclick="return confirm('Are you sure?');">Delete</a>
+  <a href="{% url 'notes:group_edit' group.pk %}">Edit Group</a>
+  <a href="{% url 'notes:group_delete' group.pk %}" onclick="return confirm('Are you sure?');">Delete</a>
 
-  <a href="{% url 'notes:note_group_list' %}">Back to Group List</a>
+  <a href="{% url 'notes:group_list' %}">Back to Group List</a>
 {% endblock %}
