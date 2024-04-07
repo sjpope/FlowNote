@@ -3,7 +3,7 @@
 import os
 import openai
 
-from AIEngine.services.note_analysis import analyze_notes
+from AIEngine.analyze import analyze
 from AIEngine.tasks import *
 
 from .forms import *
@@ -30,11 +30,11 @@ def analyze(request, note_id):
         if request.method == "POST" :
             note = get_object_or_404(Note, pk=note_id)
 
-            # analyze_note_task.delay(note_id)  # TO-DO: Trigger the Celery task to analyze the note asynchronously
+            # analyze_note_task.delay(note_id)          # TO-DO: Trigger the Celery task to analyze the note asynchronously
 
             result = perform_note_analysis(note_id)
             
-            if 'Summary' not in result: # Likely caused by note content less than 25 words.
+            if 'Summary' not in result:                 # Likely caused by note content less than 25 words.
                 return JsonResponse({'result': result})
             
             keywords, summary = result.split('Summary: ')
@@ -47,7 +47,6 @@ def analyze(request, note_id):
         else:
             return JsonResponse({'error': 'Invalid request'}, status=400)
     except Exception as e:
-        # TO-DO: Display the error msg as the analysis result instead of sending to notes/pk/analyze
         return JsonResponse({'error': str(e)})
 
 def generate_response_from_prompt(request):

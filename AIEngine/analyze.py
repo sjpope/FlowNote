@@ -24,12 +24,8 @@ nlp = spacy.load('en_core_web_sm')
 
 def preprocess_text(text):
     doc = nlp(text)
-    result = []
-    for token in doc:
-        if token.is_stop or token.is_punct:
-            continue
-        result.append(token.lemma_)
-    return " ".join(result)
+    lemmatized = [token.lemma_ for token in doc if not token.is_stop and not token.is_punct and not token.is_space]
+    return " ".join(lemmatized)
 
 def perform_topic_modeling(notes):
     processed_notes = [preprocess_text(note) for note in notes]
@@ -53,6 +49,7 @@ def preprocess_and_extract_keywords(text):
     keywords = [word for word in words if word not in stop_words]
     return keywords
 
+# Create function to make sentence count dynamic based on input size.
 def summarize_text_with_lsa(text, sentence_count=3):
     parser = PlaintextParser.from_string(text, Tokenizer("english"))
     summarizer = LsaSummarizer()
@@ -60,7 +57,7 @@ def summarize_text_with_lsa(text, sentence_count=3):
     summary_text = " ".join([str(sentence) for sentence in summary])
     return summary_text
 
-def analyze_notes(content):
+def analyze(content):
     processed_notes = preprocess_text(content)  
     logging.debug(f"Processed Notes: {processed_notes}")
 
@@ -78,7 +75,6 @@ def analyze_notes(content):
     keywords_str = ', '.join(keywords)  
     analysis_result = f"Keywords: {keywords_str}\n\nSummary: {summary}"
 
-    
     return analysis_result
 
 
