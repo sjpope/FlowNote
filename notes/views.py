@@ -41,8 +41,12 @@ def auto_group_note_view(request, note_id):
 
 def auto_group_all_view(request):
     if request.method == "POST":
-        auto_group_all()
-        # Display a success message / notification
+        new_groups = auto_group_all()
+        
+        if new_groups:
+            logging.debug(f"Auto Grouping for all notes successful. Created {new_groups.count} new groups: {new_groups}")
+            
+        # Display a success message / notification to the user.
         return redirect('notes:group_list') 
     return render(request, 'notes/auto_group_all.html')
 
