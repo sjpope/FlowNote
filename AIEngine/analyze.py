@@ -1,5 +1,3 @@
-from AIEngine.services.topic_modeling import perform_topic_modeling
-from AIEngine.services.text_processing import extract_keywords
 from notes.models import Note, NoteGroup
 
 from sklearn.feature_extraction.text import CountVectorizer
@@ -94,6 +92,10 @@ def preprocess_and_extract_keywords(text):
     stop_words = set(stopwords.words('english'))
     keywords = [word for word in words if word not in stop_words]
     return keywords
+
+def extract_keywords(text):
+    doc = nlp(text)
+    return [token.text for token in doc if token.pos_ in ['NOUN', 'ADJ']]
 
 # Create function to make sentence count dynamic based on input size.
 def summarize_text_with_lsa(text, sentence_count=3):
