@@ -2,12 +2,12 @@
 
 {% block content %}
 <div class="full-page">
-  <h2>{{ note.title }}</h2>
+  <h2 style="text-decoration: underline;">{{ note.title }}</h2>
   <p><strong>Created At:</strong> {{ note.created_at|date:"F d, Y H:i" }}</p>
   <p><strong>Last Updated:</strong> {{ note.updated_at|date:"F d, Y H:i" }}</p>
   <p><strong>Summary:</strong> {{ note.summary }}</p>
   <div class="content-area">
-    <p>{{ note.content }}</p>
+    {{ note.content|safe }}
   </div>
   
   <p>By: {{ note.owner }}</p>

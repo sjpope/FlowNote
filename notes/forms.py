@@ -3,6 +3,7 @@ from .models import *
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from ckeditor.widgets import CKEditorWidget
 from django.core.exceptions import ValidationError
 
 class NoteGroupForm(forms.ModelForm):
@@ -22,6 +23,7 @@ class NoteGroupAssignmentForm(forms.Form):
 
 
 class NoteForm(forms.ModelForm):
+    content = forms.CharField(widget=CKEditorWidget())
     class Meta:
         model = Note
         fields = ['title', 'content','summary']  # TO-DO: Add more fields here, such as 'tags' and 'is_favorite'.
