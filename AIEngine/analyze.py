@@ -1,14 +1,17 @@
 from AIEngine.services.topic_modeling import perform_topic_modeling
 from AIEngine.services.text_processing import extract_keywords
+from notes.models import Note, NoteGroup
 
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.decomposition import LatentDirichletAllocation
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 
 import string
-
+import numpy as np
 from sumy.parsers.plaintext import PlaintextParser
 from sumy.nlp.tokenizers import Tokenizer
 from sumy.summarizers.lsa import LsaSummarizer
@@ -21,7 +24,9 @@ import logging
 import spacy
 
 nlp = spacy.load('en_core_web_sm')
+from django.utils.timezone import now
 
+""" Data Preprocessing Methods """
 def preprocess_text(text):
     doc = nlp(text)
     lemmatized = [token.lemma_ for token in doc if not token.is_stop and not token.is_punct and not token.is_space]
@@ -41,6 +46,47 @@ def perform_topic_modeling(notes):
         print(f"Topic #{topic_idx}:")
         print(" ".join([feature_names[i] for i in topic.argsort()[:-10 - 1:-1]]))  
 
+""" Auto Grouping Methods"""
+def compute_similarity_matrix(contents):
+    vectorizer = TfidfVectorizer()
+    tfidf_matrix = vectorizer.fit_transform(contents)
+    cosine_sim = cosine_similarity(tfidf_matrix, tfidf_matrix)
+    return cosine_sim
+
+
+def group_note(target_note, other_notes, similarities, threshold=0.5):
+    similar_indices = np.where(similarities > threshold)[0]  # Indices of notes similar to the target note
+    similar_notes = [other_notes[i] for i in similar_indices]
+
+    if similar_notes:
+        note_group = NoteGroup(title=f"Group for Note {target_note.pk} - {now().strftime('%Y-%m-%d %H:%M:%S')}")
+        note_group.save()
+        note_group.notes.add(target_note, *similar_notes)
+        return note_group
+
+def group_all_notes(notes, similarity_matrix, threshold=0.5):
+    note_groups = []
+    visited = set()
+
+    for idx, similarities in enumerate(similarity_matrix):
+        if idx in visited:
+            continue
+
+        similar_indices = np.where(similarities > threshold)[0]
+        group = [notes[i] for i in similar_indices if i not in visited]
+
+        visited.update(similar_indices)
+
+        if group:
+            note_group = NoteGroup(title=f"Auto Group {len(note_groups) + 1} - {now().strftime('%Y-%m-%d %H:%M:%S')}")
+            note_group.save()
+            note_group.notes.set(group)
+            note_group.save()
+            note_groups.append(note_group)
+
+    return note_groups
+
+""" Analysis Methods (Summary, Keywords)"""
 def preprocess_and_extract_keywords(text):
     text = text.lower()
     text = text.translate(str.maketrans('', '', string.punctuation))
