@@ -45,7 +45,7 @@ We are a team of Texas State University students developing this project as part
     * `Jira Task SCRUM-5: Implement AI Assistant Integration.`
         * [SCRUM-5](https://cs3398s24klingons.atlassian.net/browse/SCRUM-5), [Bitbucket]()
     * `Jira Task SCRUM-6: Unit Testing for AI Assistant Integration.`
-        * [SCRUM-6](https://cs3398s24klingons.atlassian.net/browse/SCRUM-6), [Bitbucket]()
+        * [SCRUM-6](https://cs3398s24klingons.atlassian.net/browse/SCRUM-6), [Bitbucket](https://bitbucket.org/cs3398s24klingons/%7Bb2711573-9b30-4954-9eb2-f53fdeb8c451%7D/commits/c6b020dca78409e3ac578e0fb1e7de2e6a18e3d0)
     * `Jira Task SCRUM-7: User Interface Design for AI Assistant.`
         * [SCRUM-7](https://cs3398s24klingons.atlassian.net/browse/SCRUM-7), [Bitbucket]()
     * `Jira Task SCRUM-8: Implement User Interface for AI Assistant.`
@@ -144,8 +144,89 @@ We are a team of Texas State University students developing this project as part
 * **John Yamamoto:**
     * Look to potentially design user interface for the Analysis and Content Sugestion Features.
 
+## Sprint 2 ##
+* **Israel Ibinayin:** "Fill in"
+    * `Jira Task SCRUM-103: `
+        * [SCRUM-103](https://cs3398s24klingons.atlassian.net/browse/SCRUM-103), [BitBucket](https://bitbucket.org/cs3398s24klingons/%7Bb2711573-9b30-4954-9eb2-f53fdeb8c451%7D/commits/0d7d67d3d72d89409c70a0cef0160bab49dabb06)
+    * `Jira Task SCRUM-104: Test and Make sure OpenAI would only work for logged in users.`
+        * [SCRUM-104](https://cs3398s24klingons.atlassian.net/browse/SCRUM-104), [BitBucket](https://bitbucket.org/cs3398s24klingons/%7Bb2711573-9b30-4954-9eb2-f53fdeb8c451%7D/commits/b40b436979d6f511777e3ec61a1b32595c563550)
+    * `Jira Task SCRUM-105: Fix when OpenAI is visible.`
+        * [SCRUM-105](https://cs3398s24klingons.atlassian.net/browse/SCRUM-105), [BitBucket](https://bitbucket.org/cs3398s24klingons/%7Bb2711573-9b30-4954-9eb2-f53fdeb8c451%7D/commits/8fa1c5079d528ecb7770e8ab4cd03145cbf3cb26)
+    * `Jira Task SCRUM-106: Allow for a loading indicator before response`
+        * [SCRUM-106](https://cs3398s24klingons.atlassian.net/browse/SCRUM-106), [BitBucket](https://bitbucket.org/cs3398s24klingons/%7Bb2711573-9b30-4954-9eb2-f53fdeb8c451%7D/commits/f6d17ca7b327b628144ad292a8c805c4d3137a43)
+    * `Jira Task SCRUM-107: Prompt user to login whenever they try to use OpenAI if not already.`
+        * [SCRUM-107](https://cs3398s24klingons.atlassian.net/browse/SCRUM-107), [BitBucket](https://bitbucket.org/cs3398s24klingons/%7Bb2711573-9b30-4954-9eb2-f53fdeb8c451%7D/commits/64ae05d71b454deaaaa14642a8048fb8542a8ae1)
+    * `Jira Task SCRUM-110: Add more information and Pictures to the homepage to assist the user.`
+        * [SCRUM-110](https://cs3398s24klingons.atlassian.net/browse/SCRUM-110), [BitBucket](https://bitbucket.org/cs3398s24klingons/%7Bb2711573-9b30-4954-9eb2-f53fdeb8c451%7D/commits/2c3572956c41d3cb7954b38a228fe6a45f4d6640)
+    * `Jira Task SCRUM-122: Clear the text box after sending a message to OpenAI Assistant and other bugs.`
+        * [SCRUM-122](https://cs3398s24klingons.atlassian.net/browse/SCRUM-122), [BitBucket](https://bitbucket.org/cs3398s24klingons/%7Bb2711573-9b30-4954-9eb2-f53fdeb8c451%7D/commits/439a875faff14c5944349a4f4224f4dc0e7a0a50)
+* **Samuel Pope:** "Fill in"
+    * `Jira Task SCRUM-59: Implement Asynchronous Communication for Real-time Analysis.`
+        * [SCRUM-59](https://cs3398s24klingons.atlassian.net/browse/SCRUM-59), [BitBucket](https://bitbucket.org/cs3398s24klingons/%7Bb2711573-9b30-4954-9eb2-f53fdeb8c451%7D/commits/f9646bac5998673c1c838682598dcf2d95f2d687)
+    * `Jira Task SCRUM-60: Integrate Analysis Feature with Note Data Model.`
+        * [SCRUM-60](https://cs3398s24klingons.atlassian.net/browse/SCRUM-60), [BitBucket](https://bitbucket.org/cs3398s24klingons/%7Bb2711573-9b30-4954-9eb2-f53fdeb8c451%7D/commits/e31867d8d7efa4c21a28d09680620d392b553692)
+    * `Jira Task SCRUM-67: Design Recommendation Algorithm for Content Suggestions.`
+        * [SCRUM-67](https://cs3398s24klingons.atlassian.net/browse/SCRUM-67), [BitBucket](https://bitbucket.org/cs3398s24klingons/%7Bb2711573-9b30-4954-9eb2-f53fdeb8c451%7D/commits/0b91fe3dacbd68e841c1c71f45c62c82da5aa5fd)
+    * `Jira Task SCRUM-81: Refactor DataConnector App to utilize SQL Server and MongoDB.(Not used in final version)`
+        * [SCRUM-81](https://cs3398s24klingons.atlassian.net/browse/SCRUM-81), [BitBucket](https://bitbucket.org/cs3398s24klingons/%7Bb2711573-9b30-4954-9eb2-f53fdeb8c451%7D/commits/5e8184bab0a84977fb45e78a5435731a3bca7dda)
+    * `Jira Task SCRUM-82: Refactor notes App Logic to point to DataConnector methods for CRUD and UserAuth Operations.(Not used in final version)`
+        * [SCRUM-82](https://cs3398s24klingons.atlassian.net/browse/SCRUM-82), [BitBucket](https://bitbucket.org/cs3398s24klingons/%7Bb2711573-9b30-4954-9eb2-f53fdeb8c451%7D/commits/ea5eeb9c0be883e5d4f5037b236e3ff4c7eb9adb)
+    * `Jira Task SCRUM-84: CI/CD Pipelines, Deployment Server (Demo Staging).`
+        * [SCRUM-84](https://cs3398s24klingons.atlassian.net/browse/SCRUM-84), [BitBucket](https://bitbucket.org/cs3398s24klingons/%7Bb2711573-9b30-4954-9eb2-f53fdeb8c451%7D/commits/6afd22d45bbc9428b64bbc2d9c47b01ca1e09f04)
+    * `Jira Task SCRUM-86: Setup Django Channels.`
+        * [SCRUM-86](https://cs3398s24klingons.atlassian.net/browse/SCRUM-86), [BitBucket](https://bitbucket.org/cs3398s24klingons/%7Bb2711573-9b30-4954-9eb2-f53fdeb8c451%7D/commits/ac2e61145fc930d1ce1d9640bb435b467538553c)
+    * `Jira Task SCRUM-87: Define WebSocket Consumer.`
+        * [SCRUM-87](https://cs3398s24klingons.atlassian.net/browse/SCRUM-87), [BitBucket](https://bitbucket.org/cs3398s24klingons/%7Bb2711573-9b30-4954-9eb2-f53fdeb8c451%7D/commits/5951ef4a89d3b2696e803188e1d11568ec3ae3cd)
+    * `Jira Task SCRUM-92: Database Model Implementation.`
+        * [SCRUM-92](https://cs3398s24klingons.atlassian.net/browse/SCRUM-92), [BitBucket](https://bitbucket.org/cs3398s24klingons/%7Bb2711573-9b30-4954-9eb2-f53fdeb8c451%7D/commits/058a0dcdf6bad48a7df6ce6ae93dff5a54281334)
+    * `Jira Task SCRUM-93: Form Creation for Group Management.`
+        * [SCRUM-93](https://cs3398s24klingons.atlassian.net/browse/SCRUM-93), [BitBucket](https://bitbucket.org/cs3398s24klingons/%7Bb2711573-9b30-4954-9eb2-f53fdeb8c451%7D/commits/1d5dfb00f81d02a56a31371671260b9bcd96494c)
+    * `Jira Task SCRUM-94: View Functions for Group Management and Note Assignment.`
+        * [SCRUM-94](https://cs3398s24klingons.atlassian.net/browse/SCRUM-94), [BitBucket](https://bitbucket.org/cs3398s24klingons/%7Bb2711573-9b30-4954-9eb2-f53fdeb8c451%7D/commits/1d5dfb00f81d02a56a31371671260b9bcd96494c)
+    * `Jira Task SCRUM-95: Template Development.`
+        * [SCRUM-95](https://cs3398s24klingons.atlassian.net/browse/SCRUM-95), [BitBucket](https://bitbucket.org/cs3398s24klingons/%7Bb2711573-9b30-4954-9eb2-f53fdeb8c451%7D/commits/7b8be26924778a14d0e806b8f130b8179a11b467)
+    * `Jira Task SCRUM-96: URL Configuration.`
+        * [SCRUM-96](https://cs3398s24klingons.atlassian.net/browse/SCRUM-96), [BitBucket](https://bitbucket.org/cs3398s24klingons/%7Bb2711573-9b30-4954-9eb2-f53fdeb8c451%7D/commits/1d5dfb00f81d02a56a31371671260b9bcd96494c)
+* **Matthew Ruiz:** "Fill in"
+    * `Jira Task SCRUM-83: Create a toggle view for AI assistant.`
+        * [SCRUM-83](https://cs3398s24klingons.atlassian.net/browse/SCRUM-83), [BitBucket](https://bitbucket.org/cs3398s24klingons/%7Bb2711573-9b30-4954-9eb2-f53fdeb8c451%7D/commits/c9701e2f9eece3fff1040d4efc816424dec9f7ed)
+    * `Jira Task SCRUM-113: Add a settings page where users can select their preferred theme.`
+        * [SCRUM-113](https://cs3398s24klingons.atlassian.net/browse/SCRUM-113), [BitBucket](https://bitbucket.org/cs3398s24klingons/%7Bb2711573-9b30-4954-9eb2-f53fdeb8c451%7D/commits/f4ffe4542b3bedadf555e4d7779e38fa9f86e0a5)
+    * `Jira Task SCRUM-114: Light/Dark mode themes that apply where visually appropiate.`
+        * [SCRUM-114](https://cs3398s24klingons.atlassian.net/browse/SCRUM-114), [BitBucket](https://bitbucket.org/cs3398s24klingons/%7Bb2711573-9b30-4954-9eb2-f53fdeb8c451%7D/commits/a4695075f3cd0aec571c3d2b029aa3888af06ee3)
+    * `Jira Task SCRUM-115: Add theme previews.`
+        * [SCRUM-115](https://cs3398s24klingons.atlassian.net/browse/SCRUM-115), [BitBucket](https://bitbucket.org/cs3398s24klingons/%7Bb2711573-9b30-4954-9eb2-f53fdeb8c451%7D/commits/fb12d0b3246e79444d6b9fc54dd01260752b3150)
+    * `Jira Task SCRUM-116: Create a default theme prompt for user first login.`
+        * [SCRUM-116](https://cs3398s24klingons.atlassian.net/browse/SCRUM-116), [BitBucket](https://bitbucket.org/cs3398s24klingons/%7Bb2711573-9b30-4954-9eb2-f53fdeb8c451%7D/commits/64b291cecd9a77585d13c12be901f28d72fdfc8b)
+    * `Jira Task SCRUM-123: Apply theme variable colors to CKEdtior Rich Text Form.`
+        * [SCRUM-123](https://cs3398s24klingons.atlassian.net/browse/SCRUM-123), [BitBucket](https://bitbucket.org/cs3398s24klingons/%7Bb2711573-9b30-4954-9eb2-f53fdeb8c451%7D/commits/435b4235f01d2749977fa2b13a0c3737711f58d0)
+* **John Yamamoto:** "Integration of Richtext Editor into Flownote and bug fix for note search feature."
+    * `Jira Task SCRUM-71:Searching with an empty filter causes the screen to go blank.`
+        * [SCRUM-71](https://cs3398s24klingons.atlassian.net/browse/SCRUM-71), [BitBucket](https://bitbucket.org/cs3398s24klingons/flownote/commits/5e9fd539d604973fe5fa46d32631cf705ee5b115)
+    * `Jira Task SCRUM-118: Select Rich Text Editor Library.`
+        * [SCRUM-118](https://cs3398s24klingons.atlassian.net/browse/SCRUM-118), [BitBucket](https://bitbucket.org/cs3398s24klingons/%7Bb2711573-9b30-4954-9eb2-f53fdeb8c451%7D/commits/30668926e413505d34231cb6d6d1888536010c60)
+    * `Jira Task SCRUM-Integrate Rich Text Editor into Django Application Models.py.`
+        * [SCRUM-119](https://cs3398s24klingons.atlassian.net/browse/SCRUM-119), [BitBucket](https://bitbucket.org/cs3398s24klingons/%7Bb2711573-9b30-4954-9eb2-f53fdeb8c451%7D/commits/47a6d46e9ba8591f4f0f116190bd5ae18e9ad81c)
+    * `Jira Task SCRUM-120: Integrate Richtest editor into Forms.py.`
+        * [SCRUM-120](https://cs3398s24klingons.atlassian.net/browse/SCRUM-120), [BitBucket](https://bitbucket.org/cs3398s24klingons/%7Bb2711573-9b30-4954-9eb2-f53fdeb8c451%7D/commits/85709844519f14298ec1a5f15ee2a45b5e20381f)
+    * `Jira Task SCRUM-121: Implement CKeditor into templates.`
+        * [SCRUM-121](https://cs3398s24klingons.atlassian.net/browse/SCRUM-121), [BitBucket](https://bitbucket.org/cs3398s24klingons/%7Bb2711573-9b30-4954-9eb2-f53fdeb8c451%7D/commits/f841984795b2170e41035b9040b397efbb0717c1)
+
+## 2nd Report ##
+![Burnup2](/notes/static/notes/css/images/Burnup2.png)
+
+## Next Steps (Sprint 3) ##
+* **Israel Ibinayin:**
+    * "Fill in"
+* **Samuel Pope**
+    * "Fill in"
+* **Matthew Ruiz**
+    * "Fill in"
+* **John Yamamoto**
+    * "Fill in"
+
 ## Screenshots
-![FlowNote Screenshot](./img/flow_note_screenshot.png)
+![FlowNote Screenshot](notes/static/notes/css/images/notePage.png)
 
 ## Setup
 FlowNote requires Python 3.12.1, MongoDB, and an environment capable of running Django. 
