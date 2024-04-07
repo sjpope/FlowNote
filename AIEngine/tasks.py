@@ -5,7 +5,7 @@ from notes.models import Note
 from AIEngine.analyze import *
 
 """ Auto Grouping Methods"""
-def auto_group_note(note_id, threshold=0.5):
+def auto_group_note(note_id, threshold=0.25):
     """
     Create a group for a specified note based on similarity with other notes.
     """
@@ -22,7 +22,7 @@ def auto_group_note(note_id, threshold=0.5):
     return group_note(target_note, other_notes, similarities, threshold)
 
 
-def auto_group_all(threshold=0.5):
+def auto_group_all(threshold=0.25):
     """
     Group all notes based on overall similarity.
     """
