@@ -25,6 +25,27 @@ from .ai import generate_response
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
 """ AI, ML Views """
+def auto_group_note_view(request, note_id):
+    if request.method == "POST":
+        new_group = auto_group_note(note_id)
+        
+        if new_group:
+            logging.debug(f"Auto Grouping for note {note_id} successful. Group: {new_group}")
+            # Display a success message / notification
+        
+
+        return redirect('notes:note_detail', pk=note_id)  
+    else:
+        note = get_object_or_404(Note, pk=note_id)
+        return render(request, 'notes/auto_group_note.html', {'note': note})
+
+def auto_group_all_view(request):
+    if request.method == "POST":
+        auto_group_all()
+        # Display a success message / notification
+        return redirect('notes:group_list') 
+    return render(request, 'notes/auto_group_all.html')
+
 def analyze(request, note_id):
     try:
         if request.method == "POST" :
