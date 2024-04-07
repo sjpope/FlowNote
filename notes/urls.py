@@ -16,6 +16,10 @@ urlpatterns = [
     path('<int:pk>/delete/', NoteDeleteView.as_view(), name='note_delete'),
     path('<int:pk>/update/', NoteUpdateView.as_view(), name='note_update'),
 
+    # Note Group URLs
+    path('notes/<int:note_id>/auto-group/', auto_group_note_view, name='auto_group_note'),
+    path('notes/auto-group-all/', auto_group_all_view, name='auto_group_all'),
+
     path('note-groups/', group_list, name='group_list'),
     path('note-groups/<int:pk>/', group_detail, name='group_detail'),
     path('note-groups/create/', group_create, name='group_create'),

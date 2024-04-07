@@ -11,7 +11,11 @@
       </form>
     </div>
 
-
+    <form action="{% url 'notes:auto_group_all' %}" method="post">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-secondary">Auto Group All Notes</button>
+    </form>
+    
     <ul class="notes-list">
       {% for note in notes %}
         <li class="note-item">
