@@ -35,7 +35,7 @@
     <input type="hidden" id="ajaxAnalyzeUrl" value="{% url 'notes:analyze' note.id %}">
     <button type="submit" class="btn btn-secondary">Analyze Note</button>
   </form>
-  
+
   {% include 'assistant.html' %}
 
   <button id="analyzeNoteBtn" data-note-id="{{ note.id }}" data-analyze-url="{% url 'notes:analyze' note.id %}">Analyze Note</button>
@@ -108,21 +108,35 @@
 
 {% block javascript %}
 <script>
+  // GENERATE CONTENT
   document.addEventListener("DOMContentLoaded", function() {
 
     function generateContent() {
-      const prompt = document.getElementById('prompt-input').value;
-      fetch(`/generate-content?prompt=${encodeURIComponent(prompt)}`, {
-        method: 'GET',  
-        headers: {
-          'X-CSRFToken': getCookie('csrftoken'),
-        },
-      })
-      .then(response => response.json())
-      .then(data => {
-        document.getElementById('content-container').innerText = data.content; 
-      })
-      .catch(error => console.error('Error generating content:', error));
+    const prompt = document.getElementById('prompt-input').value;
+    fetch(`/generate-content?prompt=${encodeURIComponent(prompt)}`)
+        .then(response => response.json())
+        .then(data => {
+            pollTaskStatus(data.task_id); // Start polling for task status
+        })
+        .catch(error => console.error('Error generating content:', error));
+    }
+
+    function pollTaskStatus(taskId) {
+      const interval = setInterval(() => {
+        fetch(`/task-status/${taskId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'SUCCESS') {
+                    clearInterval(interval);
+                    document.getElementById('content-container').innerText = data.result;
+                }
+                // TO-DO: Handle FAILURE status.
+            })
+            .catch(error => {
+                clearInterval(interval);
+                console.error('Error polling task status:', error);
+            });
+      }, 2000);  // Run every 2 seconds
     }
 
     document.getElementById('generate-content-btn').addEventListener('click', function(e) {
@@ -146,6 +160,7 @@
     }
   });
 
+  // AUTOCOMPLETE
   document.addEventListener("DOMContentLoaded", function() {
     const contentInput = document.getElementById('note-content-input');
     const suggestionsContainer = document.getElementById('autocomplete-suggestions');
@@ -193,6 +208,7 @@
     }
   });
 
+  // ANALYZE NOTE BUTTON
   document.addEventListener("DOMContentLoaded", function() {
     const analyzeBtn = document.getElementById("analyzeNoteBtn");
   
