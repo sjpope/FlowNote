@@ -43,8 +43,31 @@
     {% csrf_token %}
     <button type="submit" class="btn btn-secondary">Auto Group This Note</button>
   </form>
+
+  <!-- Input field for prompts, button triggers content generation -->
+  <div class="generate-content-form">
+    <input type="text" id="prompt-input" placeholder="Enter a prompt..." class="form-control">
+    <button onclick="generateContent()" class="btn btn-success">Generate Content</button>
+  </div>
+
+  <div id="content-container" class="content-display-area"></div>
+
 </div>
 <style>
+  .generate-content-form {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .content-display-area {
+    margin-top: 20px;
+    background: #f2f2f2;
+    padding: 20px;
+    border-radius: 10px;
+  }
+
   .container {
     text-align: left;
     display: flex;
@@ -120,7 +143,22 @@
         console.error('Error:', error);
       });
     });
-  
+
+    function generateContent() {
+      const prompt = document.getElementById('prompt-input').value;
+      fetch(`/generate-content?prompt=${encodeURIComponent(prompt)}`, {
+        headers: {
+          'X-CSRFToken': getCookie('csrftoken'),  // Add CSRF token for Django POST requests
+        },
+      })
+      .then(response => response.json())
+      .then(data => {
+        const contentContainer = document.getElementById('content-container');
+        contentContainer.innerText = data.content || 'Error generating content';
+      })
+      .catch(error => console.error('Error generating content:', error));
+    }
+
     function getCookie(name) {
       let cookieValue = null;
       if (document.cookie && document.cookie !== '') {

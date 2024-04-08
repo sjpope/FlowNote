@@ -25,6 +25,20 @@ from .ai import generate_response
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
 """ AI, ML Views """
+def generate_content_view(request):
+    if request.method == 'GET':
+        prompt = request.GET.get('prompt')
+        if prompt:
+            # Async Call
+            task = generate_content_task.delay(prompt)
+            
+            content = task.get(timeout=10)      # Wait for task to finish and get result. Timeout after 10 seconds.
+            return JsonResponse({'content': content})
+        else:
+            return JsonResponse({'error': 'Prompt is empty'}, status=400)
+
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
 def auto_group_note_view(request, note_id):
     if request.method == "POST":
         messages.info(request, 'Auto-grouping for this note has been initiated.')
