@@ -11,7 +11,15 @@
   </div>
   
   <p>By: {{ note.owner }}</p>
-  
+
+  {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+  {% endif %}
+
   {% if note.analysis %}
     <h3>Analysis</h3>
     <p>{{ note.analysis }}</p>
