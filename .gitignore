@@ -83,3 +83,7 @@ staticfiles/
 obj/
 Any CPU/
 *.pyproj
+
+models
+tokenizer
+obj
