@@ -16,7 +16,9 @@ urlpatterns = [
     path('<int:pk>/delete/', NoteDeleteView.as_view(), name='note_delete'),
     path('<int:pk>/update/', NoteUpdateView.as_view(), name='note_update'),
 
-
+    # Task Status URL
+    path('task-status/<str:task_id>/', task_status, name='task-status'),
+    
     # Trained GPT-2 Model URLs
     path('generate-content/', generate_content_view, name='generate-content'),
     path('autocomplete', autocomplete_view, name='autocomplete'),

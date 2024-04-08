@@ -9,23 +9,18 @@ from transformers import GPT2LMHeadModel, GPT2Tokenizer
 tokenizer = GPT2Tokenizer.from_pretrained('./tokenizer')
 model = GPT2LMHeadModel.from_pretrained('./models')
 
-
-@shared_task
 def get_autocomplete_suggestions(prompt):
-    # Tokenize the input prompt to be suitable for GPT-2
     inputs = tokenizer.encode(prompt, return_tensors='pt')
     
-    # Generate a set of possible continuations for the prompt
+    # TO-DO: Allow users to specify parameter (max_length, num_return_sequences) size in their settings. Use Slider? 
     outputs = model.generate(inputs, max_length=len(inputs[0]) + 10, num_return_sequences=3, do_sample=True)
 
     suggestions = []
     for output in outputs:
-        # Decode each generated sequence into text
         text = tokenizer.decode(output, skip_special_tokens=True)
-        # Assuming the prompt is part of the text, we isolate the continuation part
-        continuation = text[len(prompt):].strip()
-        # Assuming suggestions are individual words, we split the continuation and take the first word
+        continuation = text[len(prompt):].strip()           # Isolate the prompt from the suggestion
         suggestion = continuation.split()[0] if continuation else ''
+        
         if suggestion not in suggestions:
             suggestions.append(suggestion)
 

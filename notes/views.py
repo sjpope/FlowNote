@@ -20,15 +20,24 @@ from django.http import JsonResponse
 from django.views.generic import ListView, DetailView, UpdateView, DeleteView
 from django.views.decorators.csrf import csrf_exempt
 
+from celery.result import AsyncResult
 from .ai import generate_response
 
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
+""" Async Task Status Views """
+def task_status(request, task_id):
+    task = AsyncResult(task_id)
+    if task.state == 'SUCCESS' or task.ready():
+        return JsonResponse({'status': task.status, 'result': task.get()})
+    else:
+        return JsonResponse({'status': task.status})
+
 """ AI, ML Views """
 def autocomplete_view(request):
     if request.method == 'GET':
-        current_text = request.GET.get('text', '')      # Get text input from q parms
-        suggestions = get_autocomplete_suggestions.delay(current_text)
+        text = request.GET.get('text', '')
+        suggestions = get_autocomplete_suggestions(text)  
         return JsonResponse({'suggestions': suggestions})
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=405)
@@ -37,13 +46,10 @@ def generate_content_view(request):
     if request.method == 'GET':
         prompt = request.GET.get('prompt')
         if prompt:
-            task = generate_content_task.delay(prompt)  # Async Call
-            
-            content = task.get(timeout=10)              # Wait for task to finish and get result. Timeout after 10 seconds.
-            return JsonResponse({'content': content})
+            task = generate_content_task.delay(prompt)
+            return JsonResponse({'task_id': str(task.id)})
         else:
             return JsonResponse({'error': 'Prompt is empty'}, status=400)
-
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 def auto_group_note_view(request, note_id):
