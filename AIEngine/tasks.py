@@ -9,6 +9,28 @@ from transformers import GPT2LMHeadModel, GPT2Tokenizer
 tokenizer = GPT2Tokenizer.from_pretrained('./tokenizer')
 model = GPT2LMHeadModel.from_pretrained('./models')
 
+
+@shared_task
+def get_autocomplete_suggestions(prompt):
+    # Tokenize the input prompt to be suitable for GPT-2
+    inputs = tokenizer.encode(prompt, return_tensors='pt')
+    
+    # Generate a set of possible continuations for the prompt
+    outputs = model.generate(inputs, max_length=len(inputs[0]) + 10, num_return_sequences=3, do_sample=True)
+
+    suggestions = []
+    for output in outputs:
+        # Decode each generated sequence into text
+        text = tokenizer.decode(output, skip_special_tokens=True)
+        # Assuming the prompt is part of the text, we isolate the continuation part
+        continuation = text[len(prompt):].strip()
+        # Assuming suggestions are individual words, we split the continuation and take the first word
+        suggestion = continuation.split()[0] if continuation else ''
+        if suggestion not in suggestions:
+            suggestions.append(suggestion)
+
+    return suggestions
+
 @shared_task
 def generate_content_task(prompt):
     inputs = tokenizer.encode(prompt, return_tensors='pt')
