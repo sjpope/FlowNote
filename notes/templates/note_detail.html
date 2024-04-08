@@ -39,18 +39,19 @@
   <!-- <button id="analyzeNoteBtn" data-note-id="{{ note.id }}" data-analyze-url="{% url 'notes:analyze' note.id %}">Analyze Note</button> -->
   <div id="analysisResult"></div>
 
+  <h3>Auto Grouping</h3>
   <form action="{% url 'notes:auto_group_note' note.id %}" method="post">
     {% csrf_token %}
     <button type="submit" class="btn btn-secondary">Auto Group This Note</button>
   </form>
 
-  <!-- Input field for prompts, button triggers content generation -->
+  <!-- Content Generation -->
   <div class="generate-content-form">
     <input type="text" id="prompt-input" placeholder="Enter a prompt..." class="form-control">
     <button id="generate-content-btn" class="btn btn-success">Generate Content</button>
-</div>
+  </div>
 
-<div id="content-container" class="content-display-area"></div>
+  <div id="content-container" class="content-display-area"></div>
 
 </div>
 <style>
@@ -147,7 +148,7 @@
     const contentInput = document.getElementById('note-content-input');
     const suggestionsContainer = document.getElementById('autocomplete-suggestions');
 
-    contentInput.addEventListener('input', _.debounce(function() {  // Using lodash debounce to limit request frequency
+    contentInput.addEventListener('input', _.debounce(function() {  
         const currentText = contentInput.value;
         fetch(`/autocomplete?text=${encodeURIComponent(currentText)}`, {
             method: 'GET',
@@ -157,22 +158,22 @@
         })
         .then(response => response.json())
         .then(data => {
-            suggestionsContainer.innerHTML = '';  // Clear previous suggestions
+            suggestionsContainer.innerHTML = '';  
             data.suggestions.forEach(suggestion => {
                 const suggestionElement = document.createElement('div');
                 suggestionElement.textContent = suggestion;
                 suggestionElement.classList.add('autocomplete-suggestion');
                 
                 suggestionElement.addEventListener('click', function() {
-                    contentInput.value += ' ' + suggestion.split(' ').slice(-2).join(' ');  // Append the suggestion
-                    suggestionsContainer.innerHTML = '';  // Clear suggestions
+                    contentInput.value += ' ' + suggestion.split(' ').slice(-2).join(' ');  
+                    suggestionsContainer.innerHTML = ''; 
                 });
                 
                 suggestionsContainer.appendChild(suggestionElement);
             });
         })
         .catch(error => console.error('Error fetching autocomplete suggestions:', error));
-    }, 300));  // 300 ms debounce
+    }, 300));  
 
     function getCookie(name) {
       let cookieValue = null;
