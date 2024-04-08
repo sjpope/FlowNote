@@ -217,7 +217,11 @@ We are a team of Texas State University students developing this project as part
 
 ## Next Steps (Sprint 3) ##
 * **Israel Ibinayin:**
-    * "Fill in"
+    * Will finish tasks from User Stories that did not make it to sprint 2
+    * Will add functionality to allow the user to move the AI Assistant around (without intefering with the toggle assistant button)
+    * Integrate TTS functionality for user notes that reads it out loud to increase accessibility
+    * Make the information provided in the home page more interactive and reactive to user
+    * Integrate the home page screenshots with the user theme to make it flow better within the app
 * **Samuel Pope**
     * "Fill in"
 * **Matthew Ruiz**
