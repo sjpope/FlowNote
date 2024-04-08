@@ -3,6 +3,19 @@ from django.core.cache import cache
 
 from notes.models import Note
 from AIEngine.analyze import *
+from transformers import GPT2LMHeadModel, GPT2Tokenizer
+
+""""""
+tokenizer = GPT2Tokenizer.from_pretrained('./tokenizer')
+model = GPT2LMHeadModel.from_pretrained('./models')
+
+@shared_task
+def generate_content_task(prompt):
+    inputs = tokenizer.encode(prompt, return_tensors='pt')
+    outputs = model.generate(inputs, max_length=100, num_return_sequences=1)
+    content = tokenizer.decode(outputs[0], skip_special_tokens=True)
+    return content
+
 
 """ Auto Grouping Methods"""
 def auto_group_note(note_id, threshold=0.25):
