@@ -27,6 +27,8 @@ openai.api_key = os.getenv('OPENAI_API_KEY')
 """ AI, ML Views """
 def auto_group_note_view(request, note_id):
     if request.method == "POST":
+        messages.info(request, 'Auto-grouping for this note has been initiated.')
+
         new_group = auto_group_note(note_id)
         
         if new_group:
@@ -41,6 +43,8 @@ def auto_group_note_view(request, note_id):
 
 def auto_group_all_view(request):
     if request.method == "POST":
+        messages.info(request, 'Auto-grouping for all notes has been initiated.')
+
         new_groups = auto_group_all()
         
         if new_groups:
@@ -56,7 +60,7 @@ def analyze(request, note_id):
             note = get_object_or_404(Note, pk=note_id)
 
             # analyze_note_task.delay(note_id)          # TO-DO: Trigger the Celery task to analyze the note asynchronously
-
+            messages.info(request, 'Note analysis has been initiated.')
             result = perform_note_analysis(note_id)
             
             if 'Summary' not in result:                 # Likely caused by note content less than 25 words.
