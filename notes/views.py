@@ -25,14 +25,21 @@ from .ai import generate_response
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
 """ AI, ML Views """
+def autocomplete_view(request):
+    if request.method == 'GET':
+        current_text = request.GET.get('text', '')      # Get text input from q parms
+        suggestions = get_autocomplete_suggestions.delay(current_text)
+        return JsonResponse({'suggestions': suggestions})
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
+
 def generate_content_view(request):
     if request.method == 'GET':
         prompt = request.GET.get('prompt')
         if prompt:
-            # Async Call
-            task = generate_content_task.delay(prompt)
+            task = generate_content_task.delay(prompt)  # Async Call
             
-            content = task.get(timeout=10)      # Wait for task to finish and get result. Timeout after 10 seconds.
+            content = task.get(timeout=10)              # Wait for task to finish and get result. Timeout after 10 seconds.
             return JsonResponse({'content': content})
         else:
             return JsonResponse({'error': 'Prompt is empty'}, status=400)
