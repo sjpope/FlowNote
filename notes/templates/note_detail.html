@@ -11,7 +11,7 @@
         {% endfor %}
     </ul>
   {% endif %}
-  
+
   <p><strong>Created At:</strong> {{ note.created_at|date:"F d, Y H:i" }}</p>
   <p><strong>Last Updated:</strong> {{ note.updated_at|date:"F d, Y H:i" }}</p>
   <p><strong>Summary:</strong> {{ note.summary }}</p>
@@ -125,7 +125,7 @@
       const prompt = document.getElementById('prompt-input').value;
   
       // Step 1: Initiate content generation
-      fetch(`/generate-content/${noteId}?prompt=${encodeURIComponent(prompt)}`)
+      fetch(`/notes/generate-content/${noteId}/?prompt=${encodeURIComponent(prompt)}`)
         .then(response => response.json())
         .then(data => {
             // Step 2: Start polling for task status
