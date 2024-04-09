@@ -115,54 +115,51 @@
 <script>
   // GENERATE CONTENT
   document.addEventListener("DOMContentLoaded", function() {
-
-    function generateContent() {
-    const prompt = document.getElementById('prompt-input').value;
-    fetch(`/generate-content?prompt=${encodeURIComponent(prompt)}`)
+    const generateContentBtn = document.getElementById('generate-content-btn');
+    const contentContainer = document.getElementById('content-container');
+  
+    generateContentBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      const noteId = this.getAttribute('data-note-id');  
+      const prompt = document.getElementById('prompt-input').value;
+  
+      // Step 1: Initiate content generation
+      fetch(`/generate-content/${noteId}?prompt=${encodeURIComponent(prompt)}`)
         .then(response => response.json())
         .then(data => {
-            pollTaskStatus(data.task_id); // Start polling for task status
+            // Step 2: Start polling for task status
+            const taskId = data.task_id;
+            pollTaskStatus(taskId);
         })
         .catch(error => console.error('Error generating content:', error));
-    }
-
-    function pollTaskStatus(taskId) {
-      const interval = setInterval(() => {
-        fetch(`/task-status/${taskId}`)
+  
+      function pollTaskStatus(taskId) {
+        const interval = setInterval(() => {
+          fetch(`/task-status/${taskId}`)
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'SUCCESS') {
-                    clearInterval(interval);
-                    document.getElementById('content-container').innerText = data.result;
+                    clearInterval(interval);  // Stop polling once the task is complete
+  
+                    // Step 3: Update the UI with the generated content
+                    contentContainer.innerHTML = '';  // Clear previous content
+                    const contentParagraph = document.createElement('p');
+                    contentParagraph.textContent = data.result;  // Assuming 'data.result' contains the generated content
+                    contentContainer.appendChild(contentParagraph);
+                } else if (data.status === 'FAILURE') {
+                    clearInterval(interval);  // Stop polling if the task fails
+                    console.error('Task failed:', data.error);  // Handle task failure
+                    contentContainer.innerHTML = '<p>Content generation failed. Please try again.</p>';
                 }
-                // TO-DO: Handle FAILURE status.
+                // Handle 'PENDING' status ?
             })
             .catch(error => {
                 clearInterval(interval);
                 console.error('Error polling task status:', error);
             });
-      }, 2000);  // Run every 2 seconds
-    }
-
-    document.getElementById('generate-content-btn').addEventListener('click', function(e) {
-      e.preventDefault(); 
-      generateContent();
-    });
-
-    function getCookie(name) {
-      let cookieValue = null;
-      if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-          const cookie = cookies[i].trim();
-          if (cookie.substring(0, name.length + 1) === (name + '=')) {
-            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-            break;
-          }
-        }
+        }, 2000);  // Poll every 2 seconds
       }
-      return cookieValue;
-    }
+    });
   });
 
   // AUTOCOMPLETE

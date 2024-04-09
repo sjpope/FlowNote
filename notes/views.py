@@ -42,14 +42,18 @@ def autocomplete_view(request):
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-def generate_content_view(request):
+def generate_content_view(request, note_id):
     if request.method == 'GET':
-        prompt = request.GET.get('prompt')
-        if prompt:
-            task = generate_content_task.delay(prompt)
+        note = get_object_or_404(Note, pk=note_id)  
+        prompt = request.GET.get('prompt', '')  
+        
+        input = f"{note.content}\n{prompt}"
+
+        if input.strip():
+            task = generate_content_task.delay(input)
             return JsonResponse({'task_id': str(task.id)})
         else:
-            return JsonResponse({'error': 'Prompt is empty'}, status=400)
+            return JsonResponse({'error': 'Note content and prompt are empty'}, status=400)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 def auto_group_note_view(request, note_id):
@@ -69,10 +73,10 @@ def auto_group_note_view(request, note_id):
         return render(request, 'notes/auto_group_note.html', {'note': note})
 
 def auto_group_all_view(request):
-    if request.method == "POST":
+    if request.method == "POST"and request.user.is_authenticated:
         messages.info(request, 'Auto-grouping for all notes has been initiated.')
 
-        new_groups = auto_group_all()
+        new_groups = auto_group_all(owner=request.user)
         
         if new_groups:
             logging.debug(f"Auto Grouping for all notes successful. Created {new_groups.count} new groups: {new_groups}")
