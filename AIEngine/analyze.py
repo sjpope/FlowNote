@@ -62,7 +62,7 @@ def group_note(target_note, other_notes, similarities, threshold=0.5):
         note_group.notes.add(target_note, *similar_notes)
         return note_group
 
-def group_all_notes(notes, similarity_matrix, threshold=0.5):
+def group_all_notes(notes, similarity_matrix, threshold=0.5, owner=None):
     note_groups = []
     visited = set()
 
@@ -70,16 +70,18 @@ def group_all_notes(notes, similarity_matrix, threshold=0.5):
         if idx in visited:
             continue
 
-        similar_indices = np.where(similarities > threshold)[0]
+        similar_indices = [int(i) for i in np.where(similarities > threshold)[0]]
         group = [notes[i] for i in similar_indices if i not in visited]
 
         visited.update(similar_indices)
 
         if group:
-            note_group = NoteGroup(title=f"Auto Group {len(note_groups) + 1} - {now().strftime('%Y-%m-%d %H:%M:%S')}")
+            note_group = NoteGroup(
+                title=f"Auto Group {len(note_groups) + 1} - {now().strftime('%Y-%m-%d %H:%M:%S')}",
+                owner=owner  # Set the owner of the NoteGroup
+            )
             note_group.save()
             note_group.notes.set(group)
-            note_group.save()
             note_groups.append(note_group)
 
     return note_groups

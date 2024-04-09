@@ -27,8 +27,8 @@ def get_autocomplete_suggestions(prompt):
     return suggestions
 
 @shared_task
-def generate_content_task(prompt):
-    inputs = tokenizer.encode(prompt, return_tensors='pt')
+def generate_content_task(input):
+    inputs = tokenizer.encode(input, return_tensors='pt')
     outputs = model.generate(inputs, max_length=100, num_return_sequences=1)
     content = tokenizer.decode(outputs[0], skip_special_tokens=True)
     return content
@@ -52,7 +52,7 @@ def auto_group_note(note_id, threshold=0.25):
     return group_note(target_note, other_notes, similarities, threshold)
 
 
-def auto_group_all(threshold=0.25):
+def auto_group_all(threshold=0.25, owner=None):
     """
     Group all notes based on overall similarity.
     """
@@ -60,7 +60,8 @@ def auto_group_all(threshold=0.25):
     preprocessed_list = [get_preprocessed_content(note) for note in notes]
     sim_matrix = compute_similarity_matrix(preprocessed_list)
 
-    return group_all_notes(notes, sim_matrix, threshold)
+    # Pass the owner to the group_all_notes function
+    return group_all_notes(notes, sim_matrix, threshold, owner=owner)
 
 def get_preprocessed_content(note):
     cache_key = f"preprocessed_{note.pk}"

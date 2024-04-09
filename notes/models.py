@@ -33,19 +33,10 @@ class Note(models.Model):
     def __str__(self):
         return self.title
 
+
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     theme = models.CharField(max_length=10, default='light')
 
-#TO-DO: Implement a BlogPost model with the following fields:
-# class BlogPost(models.Model):
-#     title = models.CharField(max_length=100)
-#     content = models.TextField()
-#     published = models.BooleanField(default=False)
-#     created_at = models.DateTimeField(auto_now_add=True)
-#     last_modified = models.DateTimeField(auto_now=True)
-#     owner = models.ForeignKey(User, related_name='blog_posts', on_delete=models.CASCADE)
 
-#     def __str__(self):
-#         return self.title
 
