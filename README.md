@@ -187,7 +187,7 @@ We are a team of Texas State University students developing this project as part
         * [SCRUM-95](https://cs3398s24klingons.atlassian.net/browse/SCRUM-95), [BitBucket](https://bitbucket.org/cs3398s24klingons/%7Bb2711573-9b30-4954-9eb2-f53fdeb8c451%7D/commits/7b8be26924778a14d0e806b8f130b8179a11b467)
     * `Jira Task SCRUM-96: URL Configuration.`
         * [SCRUM-96](https://cs3398s24klingons.atlassian.net/browse/SCRUM-96), [BitBucket](https://bitbucket.org/cs3398s24klingons/%7Bb2711573-9b30-4954-9eb2-f53fdeb8c451%7D/commits/1d5dfb00f81d02a56a31371671260b9bcd96494c)
-* **Matthew Ruiz:** "Fill in"
+* **Matthew Ruiz:** "Site-wide toggleable light/dark colorschemes, Assistant Toggle Button, and a Settings Page."
     * `Jira Task SCRUM-83: Create a toggle view for AI assistant.`
         * [SCRUM-83](https://cs3398s24klingons.atlassian.net/browse/SCRUM-83), [BitBucket](https://bitbucket.org/cs3398s24klingons/%7Bb2711573-9b30-4954-9eb2-f53fdeb8c451%7D/commits/c9701e2f9eece3fff1040d4efc816424dec9f7ed)
     * `Jira Task SCRUM-113: Add a settings page where users can select their preferred theme.`
@@ -225,7 +225,9 @@ We are a team of Texas State University students developing this project as part
 * **Samuel Pope**
     * "Fill in"
 * **Matthew Ruiz**
-    * "Fill in"
+    * Work on reintegrating social account login/registration.
+    * Keep colorschemes up to date with any new pages added in Sprint 3.
+    * Expand Profile/Settings page, adding more options.
 * **John Yamamoto**
     * "Fill in"
 
