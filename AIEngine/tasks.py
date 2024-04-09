@@ -35,7 +35,7 @@ def generate_content_task(input):
 
 
 """ Auto Grouping Methods"""
-def auto_group_note(note_id, threshold=0.25):
+def auto_group_note(note_id, threshold=0.15):
     """
     Create a group for a specified note based on similarity with other notes.
     """

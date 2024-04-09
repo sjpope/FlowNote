@@ -54,14 +54,16 @@ def compute_similarity_matrix(contents):
 
 def group_note(target_note, other_notes, similarities, threshold=0.5):
     similar_indices = np.where(similarities > threshold)[0]  # Indices of notes similar to the target note
+    # Convert np.int64 indices to standard Python int
+    similar_indices = [int(i) for i in similar_indices]
     similar_notes = [other_notes[i] for i in similar_indices]
 
     if similar_notes:
-        note_group = NoteGroup(title=f"Group for Note {target_note.pk} - {now().strftime('%Y-%m-%d %H:%M:%S')}")
+        note_group = NoteGroup(title=f"Group for Note {target_note.pk} - {now().strftime('%Y-%m-%d %H:%M:%S')}", owner=target_note.owner)
         note_group.save()
         note_group.notes.add(target_note, *similar_notes)
         return note_group
-
+    
 def group_all_notes(notes, similarity_matrix, threshold=0.5, owner=None):
     note_groups = []
     visited = set()
