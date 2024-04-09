@@ -20,7 +20,7 @@ urlpatterns = [
     path('task-status/<str:task_id>/', task_status, name='task-status'),
     
     # Trained GPT-2 Model URLs
-    path('generate-content/', generate_content_view, name='generate-content'),
+    path('generate-content/<int:note_id>/', generate_content_view, name='generate-content'),    
     path('autocomplete', autocomplete_view, name='autocomplete'),
 
     # Analysis URLs

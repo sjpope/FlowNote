@@ -260,4 +260,7 @@ class NoteUpdateView(UpdateView):
     model = Note
     form_class = NoteForm
     template_name = 'note_update.html'
-    success_url = reverse_lazy('notes:note_detail')
+    
+    def get_success_url(self):
+        pk = self.object.pk
+        return reverse('notes:note_detail', kwargs={'pk': pk})
