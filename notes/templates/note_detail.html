@@ -30,11 +30,12 @@
     <button><a href="{% url 'notes:note_delete' note.id %}" class="btn btn-danger">Delete</a></button>
   </div>
 
-  <form action="{% url 'notes:analyze' note.id%}" method="post">
+
+  {% comment %} <form action="{% url 'notes:analyze' note.id%}" method="post">
     {% csrf_token %}
     <input type="hidden" id="ajaxAnalyzeUrl" value="{% url 'notes:analyze' note.id %}">
     <button type="submit" class="btn btn-secondary">Analyze Note</button>
-  </form>
+  </form> {% endcomment %}
 
   {% include 'assistant.html' %}
 
@@ -48,12 +49,16 @@
   </form>
 
   <!-- Content Generation -->
-  <div class="generate-content-form">
+<div class="generate-content-form">
+  <label for="prompt-input" class="form-label">Enter a prompt:</label>
+  <div class="input-group mb-3">
     <input type="text" id="prompt-input" placeholder="Enter a prompt..." class="form-control">
-    <button id="generate-content-btn" class="btn btn-success">Generate Content</button>
+    <button id="generate-content-btn" data-note-id="{{ note.id }}" class="btn btn-success">Generate</button>
   </div>
+</div>
 
-  <div id="content-container" class="content-display-area"></div>
+<div id="content-container" class="content-display-area mt-4 p-3" style="background-color: #f8f9fa; border-radius: 5px;"></div>
+
 
 </div>
 <style>
