@@ -26,7 +26,6 @@ def get_autocomplete_suggestions(prompt):
 
     return suggestions
 
-@shared_task
 def generate_content_task(input):
     inputs = tokenizer.encode(input, return_tensors='pt')
     outputs = model.generate(inputs, max_length=100, num_return_sequences=1)
