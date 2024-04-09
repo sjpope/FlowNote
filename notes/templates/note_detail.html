@@ -3,6 +3,15 @@
 {% block content %}
 <div class="full-page">
   <h2 style="text-decoration: underline;">{{ note.title }}</h2>
+
+  {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+  {% endif %}
+  
   <p><strong>Created At:</strong> {{ note.created_at|date:"F d, Y H:i" }}</p>
   <p><strong>Last Updated:</strong> {{ note.updated_at|date:"F d, Y H:i" }}</p>
   <p><strong>Summary:</strong> {{ note.summary }}</p>
@@ -12,18 +21,10 @@
   
   <p>By: {{ note.owner }}</p>
 
-  {% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}
-    </ul>
-  {% endif %}
-
-  {% if note.analysis %}
+  {% comment %} {% if note.analysis %}
     <h3>Analysis</h3>
     <p>{{ note.analysis }}</p>
-  {% endif %}
+  {% endif %} {% endcomment %}
 
   <div class="button-group">
     <button><a href="{% url 'notes:note_update' note.id %}" class="btn btn-primary">Update</a></button>
