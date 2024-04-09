@@ -6,3 +6,8 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'FlowNoteSettings.settings')
 app = Celery('FlowNoteSettings')
 app.config_from_object('django.conf:settings', namespace='CELERY')
 app.autodiscover_tasks()
+
+# app.conf.update(
+#     broker_url='django://',
+#     result_backend='django-db',
+# )

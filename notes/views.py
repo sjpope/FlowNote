@@ -50,7 +50,7 @@ def generate_content_view(request, note_id):
         input = f"{note.content}\n{prompt}"
 
         if input.strip():
-            task = generate_content_task.delay(input)
+            task = generate_content_task(input)
             return JsonResponse({'task_id': str(task.id)})
         else:
             return JsonResponse({'error': 'Note content and prompt are empty'}, status=400)
