@@ -229,7 +229,9 @@ We are a team of Texas State University students developing this project as part
     * Keep colorschemes up to date with any new pages added in Sprint 3.
     * Expand Profile/Settings page, adding more options.
 * **John Yamamoto**
-    * "Fill in"
+    * Work to enable the addition of adding images to notes
+    * Work on any bugs for final demo
+    * Assist in making features user friendly
 
 ## Screenshots
 ![FlowNote Screenshot](notes/static/notes/css/images/notePage.png)
