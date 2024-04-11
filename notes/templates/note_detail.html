@@ -54,12 +54,16 @@
     <label for="prompt-input" class="form-label">Enter a prompt:</label>
     <div class="input-group mb-3">
       <input type="text" id="prompt-input" placeholder="Enter a prompt..." class="form-control">
+      
+      <!-- Hidden CSRF Token Input -->
+      <input type="hidden" id="csrf-token" value="{{ csrf_token }}">
       <button id="generate-content-btn" data-note-id="{{ note.id }}" class="btn btn-success">Generate</button>
     </div>
   </div>
 
-  <div id="content-container" class="content-display-area mt-4 p-3" style="background-color: #f8f9fa; border-radius: 5px;">
-  </div> 
+<div id="content-container" class="content-display-area mt-4 p-3" style="background-color: #f8f9fa; border-radius: 5px;">
+</div>
+
 
   
 </div>
@@ -119,31 +123,55 @@
   document.addEventListener("DOMContentLoaded", function() {
     const generateContentBtn = document.getElementById('generate-content-btn');
     const contentContainer = document.getElementById('content-container');
+    const promptInput = document.getElementById('prompt-input');
 
     generateContentBtn.addEventListener('click', function(e) {
         e.preventDefault();
         const noteId = this.getAttribute('data-note-id');
-        const prompt = document.getElementById('prompt-input').value;
-
-        fetch(`/notes/generate-content/${noteId}/?prompt=${encodeURIComponent(prompt)}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.error) {
-                    console.error('Error generating content:', data.error);
-                } else {
-                    contentContainer.innerHTML = '';  // Clear previous content
-                    const contentParagraph = document.createElement('p');
-                    contentParagraph.textContent = data.generated_content;  
-                    contentContainer.appendChild(contentParagraph);
-                }
-            })
-            .catch(error => console.error('Error generating content:', error));
+        const prompt = promptInput.value;
+        const generateContentUrl = `/notes/generate-content/${noteId}/`; 
+        const csrfToken = document.getElementById('csrf-token').value;
+        fetch(generateContentUrl, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken, //getCookie('csrftoken'),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ 'prompt': prompt })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.error) {
+                console.error('Error generating content:', data.error);
+            } else {
+                contentContainer.innerHTML = '';  
+                const contentParagraph = document.createElement('p');
+                contentParagraph.textContent = data.generated_content;  
+                contentContainer.appendChild(contentParagraph);
+            }
+        })
+        .catch(error => console.error('Error generating content:', error));
     });
+
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
 });
 
   // AUTOCOMPLETE

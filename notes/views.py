@@ -2,6 +2,7 @@
 # from rest_framework import viewsets
 import os
 import openai
+import logging
 
 from AIEngine.analyze import analyze
 from AIEngine.tasks import *
@@ -34,6 +35,15 @@ def task_status(request, task_id):
         return JsonResponse({'status': task.status})
 
 """ AI, ML Views """
+def generate_flashcards_view(request):
+    if request.method == 'POST':
+        key_concepts = request.POST.get('key_concepts')
+        # Asynchronously generate flashcards
+        result = generate_flashcards_task.delay(key_concepts)
+        return JsonResponse({'task_id': result.task_id})
+    else:
+        return JsonResponse({'error': 'Invalid request'}, status=405)
+
 def autocomplete_view(request):
     if request.method == 'GET':
         text = request.GET.get('text', '')
@@ -43,21 +53,20 @@ def autocomplete_view(request):
         return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 def generate_content_view(request, note_id):
-    if request.method == 'GET':
+    if request.method == 'POST':
         note = get_object_or_404(Note, pk=note_id)
-        prompt = request.GET.get('prompt', '')
+        prompt = request.POST.get('prompt', '')
 
         input_text = f"{note.content}\n{prompt}"
-        logging.info('Attempting to generate content (view)\n')
+        
+
         if input_text.strip():
             generated_content = generate_content_task(input_text)
-            # return JsonResponse({'generated_content': generated_content})
-            return render(request, 'note_detail.html', {'note': note, 'generated_content': generated_content})
-
+            return JsonResponse({'generated_content': generated_content})
         else:
             return JsonResponse({'error': 'Note content and prompt are empty'}, status=400)
-    return JsonResponse({'error': 'Invalid request method'}, status=405)
-
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 def auto_group_note_view(request, note_id):
     if request.method == "POST":
