@@ -160,7 +160,7 @@ We are a team of Texas State University students developing this project as part
         * [SCRUM-110](https://cs3398s24klingons.atlassian.net/browse/SCRUM-110), [BitBucket](https://bitbucket.org/cs3398s24klingons/%7Bb2711573-9b30-4954-9eb2-f53fdeb8c451%7D/commits/2c3572956c41d3cb7954b38a228fe6a45f4d6640)
     * `Jira Task SCRUM-122: Clear the text box after sending a message to OpenAI Assistant and other bugs.`
         * [SCRUM-122](https://cs3398s24klingons.atlassian.net/browse/SCRUM-122), [BitBucket](https://bitbucket.org/cs3398s24klingons/%7Bb2711573-9b30-4954-9eb2-f53fdeb8c451%7D/commits/439a875faff14c5944349a4f4224f4dc0e7a0a50)
-* **Samuel Pope:** "Fill in"
+* **Samuel Pope:** "App Infrastructure and Analysis Engine Improvements, Note Grouping and Auto Grouping Features."
     * `Jira Task SCRUM-59: Implement Asynchronous Communication for Real-time Analysis.`
         * [SCRUM-59](https://cs3398s24klingons.atlassian.net/browse/SCRUM-59), [BitBucket](https://bitbucket.org/cs3398s24klingons/%7Bb2711573-9b30-4954-9eb2-f53fdeb8c451%7D/commits/f9646bac5998673c1c838682598dcf2d95f2d687)
     * `Jira Task SCRUM-60: Integrate Analysis Feature with Note Data Model.`
@@ -223,7 +223,9 @@ We are a team of Texas State University students developing this project as part
     * Make the information provided in the home page more interactive and reactive to user
     * Integrate the home page screenshots with the user theme to make it flow better within the app
 * **Samuel Pope**
-    * "Fill in"
+    * Power Analysis Engine using GPT-2 Transformer. 
+    * Improve Note Grouping and Auto Grouping UI.
+    * Implement note content autocompletion feature. 
 * **Matthew Ruiz**
     * Work on reintegrating social account login/registration.
     * Keep colorschemes up to date with any new pages added in Sprint 3.
