@@ -21,7 +21,7 @@ nltk.download('stopwords')
 import logging
 import spacy
 import re
-from .tasks import *
+
 
 nlp = spacy.load('en_core_web_sm')
 from django.utils.timezone import now
