@@ -58,9 +58,10 @@
     </div>
   </div>
 
-  <div id="content-container" class="content-display-area mt-4 p-3" style="background-color: #f8f9fa; border-radius: 5px;"></div>
+  <div id="content-container" class="content-display-area mt-4 p-3" style="background-color: #f8f9fa; border-radius: 5px;">
+  </div> 
 
-
+  
 </div>
 <style>
   .generate-content-form {
@@ -118,50 +119,32 @@
   document.addEventListener("DOMContentLoaded", function() {
     const generateContentBtn = document.getElementById('generate-content-btn');
     const contentContainer = document.getElementById('content-container');
-  
+
     generateContentBtn.addEventListener('click', function(e) {
-      e.preventDefault();
-      const noteId = this.getAttribute('data-note-id');  
-      const prompt = document.getElementById('prompt-input').value;
-  
-      // Step 1: Initiate content generation
-      fetch(`/notes/generate-content/${noteId}/?prompt=${encodeURIComponent(prompt)}`)
-        .then(response => response.json())
-        .then(data => {
-            // Step 2: Start polling for task status
-            const taskId = data.task_id;
-            pollTaskStatus(taskId);
-        })
-        .catch(error => console.error('Error generating content:', error));
-  
-      function pollTaskStatus(taskId) {
-        const interval = setInterval(() => {
-          fetch(`/task-status/${taskId}`)
-            .then(response => response.json())
+        e.preventDefault();
+        const noteId = this.getAttribute('data-note-id');
+        const prompt = document.getElementById('prompt-input').value;
+
+        fetch(`/notes/generate-content/${noteId}/?prompt=${encodeURIComponent(prompt)}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
             .then(data => {
-                if (data.status === 'SUCCESS') {
-                    clearInterval(interval);  // Stop polling once the task is complete
-  
-                    // Step 3: Update the UI with the generated content
+                if (data.error) {
+                    console.error('Error generating content:', data.error);
+                } else {
                     contentContainer.innerHTML = '';  // Clear previous content
                     const contentParagraph = document.createElement('p');
-                    contentParagraph.textContent = data.result;  // Assuming 'data.result' contains the generated content
+                    contentParagraph.textContent = data.generated_content;  
                     contentContainer.appendChild(contentParagraph);
-                } else if (data.status === 'FAILURE') {
-                    clearInterval(interval);  // Stop polling if the task fails
-                    console.error('Task failed:', data.error);  // Handle task failure
-                    contentContainer.innerHTML = '<p>Content generation failed. Please try again.</p>';
                 }
-                // Handle 'PENDING' status ?
             })
-            .catch(error => {
-                clearInterval(interval);
-                console.error('Error polling task status:', error);
-            });
-        }, 2000);  // Poll every 2 seconds
-      }
+            .catch(error => console.error('Error generating content:', error));
     });
-  });
+});
 
   // AUTOCOMPLETE
   document.addEventListener("DOMContentLoaded", function() {

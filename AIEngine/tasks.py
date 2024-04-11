@@ -26,10 +26,21 @@ def get_autocomplete_suggestions(prompt):
 
     return suggestions
 
-def generate_content_task(input):
-    inputs = tokenizer.encode(input, return_tensors='pt')
-    outputs = model.generate(inputs, max_length=100, num_return_sequences=1)
+def generate_content_task(input_text):
+    logging.info("Generating content...\n")
+    inputs = tokenizer.encode_plus(input_text, return_tensors='pt', add_special_tokens=True, max_length=512, truncation=True)
+
+    outputs = model.generate(
+        inputs['input_ids'], 
+        max_new_tokens=100,  # Limits the number of generated tokens
+        pad_token_id=tokenizer.eos_token_id,
+        attention_mask=inputs['attention_mask']
+    )
+
+    # Decode the output tokens to a string
     content = tokenizer.decode(outputs[0], skip_special_tokens=True)
+    logging.info(f"GPT-2 Response: {content}")
+
     return content
 
 
