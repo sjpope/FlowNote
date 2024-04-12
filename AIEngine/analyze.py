@@ -1,3 +1,8 @@
+import logging
+from .utils import preprocess_text, strip_html_tags, remove_prompt_from_content
+from transformers import GPT2LMHeadModel, GPT2Tokenizer
+import torch
+
 from notes.models import Note, NoteGroup
 
 from sklearn.feature_extraction.text import CountVectorizer
@@ -5,26 +10,50 @@ from sklearn.decomposition import LatentDirichletAllocation
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize
+tokenizer = GPT2Tokenizer.from_pretrained('./tokenizer')
+model = GPT2LMHeadModel.from_pretrained('./models')
 
-import string
-import numpy as np
-from sumy.parsers.plaintext import PlaintextParser
-from sumy.nlp.tokenizers import Tokenizer
-from sumy.summarizers.lsa import LsaSummarizer
+def generate_content(prompt, max_length=150, num_return_sequences=2, additional_tokens=500):
+    encoding = tokenizer(prompt, return_tensors='pt', truncation=True)
+    input_ids = encoding['input_ids']
+    attention_mask = encoding['attention_mask']
 
-import nltk
-nltk.download('punkt')
-nltk.download('stopwords')
+    total_max_length = input_ids.shape[1] + additional_tokens
 
-import logging
-import spacy
-import re
+    with torch.no_grad():
+        generated_ids = model.generate(
+            input_ids=input_ids,
+            attention_mask=attention_mask,
+            max_length=total_max_length,
+            min_length=input_ids.shape[1] + 20,  
+            temperature=0.8, 
+            top_k=50,
+            top_p=0.92,
+            no_repeat_ngram_size=3,  
+            num_return_sequences=num_return_sequences,
+            do_sample=True,
+            pad_token_id=tokenizer.eos_token_id
+        )
 
+    suggestions = [tokenizer.decode(generated_id, skip_special_tokens=True) for generated_id in generated_ids]
+    return suggestions
 
-nlp = spacy.load('en_core_web_sm')
-from django.utils.timezone import now
+def analyze(content):
+    processed_content = preprocess_text(content)
+    if len(processed_content.split()) < 25:
+        logging.warning("Text too short for analysis.")
+        return "Text too short for analysis."
+    keywords = preprocess_and_extract_keywords(processed_content)
+    summary = generate_content(f"Summarize this content: {content}", num_return_sequences=1)[0]
+    cleaned_summary = remove_prompt_from_content(f"Summarize this content: {content}", summary)
+    return {
+        "keywords": ', '.join(keywords),
+        "summary": cleaned_summary
+    }
+    
+"""
+TO-DO: ITERATE THROUGH THESE OLD FUNCTIONS AND KEEP WHAT'S NEEDED
+"""
 
 """ Auto Grouping Methods"""
 def compute_similarity_matrix(contents):
@@ -71,14 +100,14 @@ def group_all_notes(notes, similarity_matrix, threshold=0.5, owner=None):
 """ Analysis Methods (Summary, Keywords)"""
 
 # Create function to make sentence count dynamic based on input size.
-def summarize_text_with_lsa(text, sentence_count=3):
+# def summarize_text_with_lsa(text, sentence_count=3):
     
-    parser = PlaintextParser.from_string(text, Tokenizer("english"))
-    summarizer = LsaSummarizer()
-    summary = summarizer(parser.document, sentence_count)
-    summary_text = " ".join([str(sentence) for sentence in summary])
+#     parser = PlaintextParser.from_string(text, Tokenizer("english"))
+#     summarizer = LsaSummarizer()
+#     summary = summarizer(parser.document, sentence_count)
+#     summary_text = " ".join([str(sentence) for sentence in summary])
     
-    return summary_text
+#     return summary_text
 
 # def summarize_with_gpt2(note_content):
 #     prompt = f"Summarize this content: {note_content}"
@@ -141,5 +170,4 @@ def summarize_text_with_lsa(text, sentence_count=3):
 #     analysis_result = f"Keywords: {keywords_str}\n\nSummary: {summary_gpt2}"
     
 #     return analysis_result
-
 
