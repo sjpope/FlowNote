@@ -2,7 +2,7 @@ import re
 import spacy
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
-
+from django.core.cache import cache
 nlp = spacy.load('en_core_web_sm')
 
 def preprocess_text(text):
@@ -20,6 +20,17 @@ def remove_prompt_from_content(prompt, content):
     except ValueError:
         start_index = 0
     return content[start_index:].strip()
+
+def get_preprocessed_content(note):
+    cache_key = f"preprocessed_{note.pk}"
+    preprocessed_content = cache.get(cache_key)
+
+    if not preprocessed_content or note.updated_at > cache.get(f"{cache_key}_timestamp", note.updated_at):
+        preprocessed_content = preprocess_text(note.content)
+        cache.set(cache_key, preprocessed_content, None)        # None timeout means it's cached forever
+        cache.set(f"{cache_key}_timestamp", note.updated_at, None)
+
+    return preprocessed_content
 
 def preprocess_and_extract_keywords(text):
     text = text.lower()

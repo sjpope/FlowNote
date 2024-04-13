@@ -3,8 +3,9 @@ from celery import shared_task
 from django.core.cache import cache
 
 from notes.models import Note
-from AIEngine.analyze import *
-# from .analyze import *
+from .utils import *
+from .analyze import *
+
 
 from transformers import GPT2LMHeadModel, GPT2Tokenizer
 import torch
@@ -18,24 +19,6 @@ model = GPT2LMHeadModel.from_pretrained('./models')
 Autocompletion Generation Configuration. 
 If the note ends on complete sentence, it regurgitates the prompt. 
 """
-
-# def generate_content_task(input_text):
-#     logging.info("Generating content...\n")
-#     input_text = "As artificial intelligence systems become more integrated into various aspects of life,"
-#     inputs = tokenizer.encode_plus(input_text, return_tensors='pt', add_special_tokens=True, max_length=512, truncation=True)
-
-#     outputs = model.generate(
-#         inputs['input_ids'], 
-#         max_new_tokens=100,  
-#         pad_token_id=tokenizer.eos_token_id,
-#         attention_mask=inputs['attention_mask']
-#     )
-
-    
-#     content = tokenizer.decode(outputs[0], skip_special_tokens=True)
-#     logging.info(f"GPT-2 Response: {content}")
-
-#     return content
 
 def extract_keywords_with_gpt2(note_content):
     prompt = f"Identify the key concepts in this text: {note_content}"
@@ -128,27 +111,6 @@ def auto_group_all(threshold=0.25, owner=None):
 
     return group_all_notes(notes, sim_matrix, threshold, owner=owner)
 
-""" Utility Methods """
-def get_preprocessed_content(note):
-    cache_key = f"preprocessed_{note.pk}"
-    preprocessed_content = cache.get(cache_key)
-
-    if not preprocessed_content or note.updated_at > cache.get(f"{cache_key}_timestamp", note.updated_at):
-        preprocessed_content = preprocess_text(note.content)
-        cache.set(cache_key, preprocessed_content, None)  # None timeout means it's cached forever
-        cache.set(f"{cache_key}_timestamp", note.updated_at, None)
-
-    return preprocessed_content
-
-def remove_prompt_from_content(prompt, content):
-    
-    try:
-        start_index = content.index(prompt) + len(prompt)
-    except ValueError:
-        start_index = 0
-    
-    return content[start_index:].strip()
-
 """ Analysis Methods"""
 def perform_note_analysis(note_id):
     note = Note.objects.get(pk=note_id)
@@ -162,11 +124,6 @@ def perform_note_analysis(note_id):
 
     return results
 
-@shared_task
-def perform_note_analysis_async(note_id):
-    # TO-DO: Perform note analysis asynchronously
-    pass
-    
 def analyze(content, model, tokenizer):
     processed_notes = preprocess_text(content)  
     logging.debug(f"Processed Notes: {processed_notes}")
@@ -177,9 +134,7 @@ def analyze(content, model, tokenizer):
 
     keywords = preprocess_and_extract_keywords(processed_notes)
     logging.info(f"Extracted Keywords: {keywords}")
-
-    # summary = summarize_text_with_lsa(processed_notes)
-    # logging.info(f"Summary (LSA): {summary}\n\n\n")
+    
     summary_gpt2 = ""
     try:
         summary_gpt2 = summarize_with_gpt2(content)
