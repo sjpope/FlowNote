@@ -1,8 +1,7 @@
-from transformers import GPT2LMHeadModel, GPT2Tokenizer
-import torch
-
 from notes.models import Note, NoteGroup
+
 from .utils import *
+from .config import model, tokenizer
 
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.decomposition import LatentDirichletAllocation
@@ -10,11 +9,13 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 import logging
+import torch
+import numpy as np
 
-tokenizer = GPT2Tokenizer.from_pretrained('./tokenizer')
-model = GPT2LMHeadModel.from_pretrained('./models')
+from datetime import datetime as dt
+from datetime import datetime as dt
 
-def generate_content(prompt, max_length=150, num_return_sequences=2, additional_tokens=500):
+def generate_content(prompt, max_length=150, num_return_sequences=1, additional_tokens=500):
     
     # inputs = tokenizer.encode_plus(input_text, return_tensors='pt', add_special_tokens=True, max_length=512, truncation=True)
     encoding = tokenizer(prompt, return_tensors='pt', truncation=True)
@@ -54,17 +55,14 @@ def analyze(content):
         return "Text too short for analysis."
     keywords = preprocess_and_extract_keywords(processed_content)
     summary = generate_content(f"Summarize this content: {content}", num_return_sequences=1)[0]
-    cleaned_summary = remove_prompt_from_content(f"Summarize this content: {content}", summary)
+    cleaned_summary = strip_prompt(f"Summarize this content: {content}", summary)
     return {
         "keywords": ', '.join(keywords),
         "summary": cleaned_summary
     }
     
-"""
-TO-DO: ITERATE THROUGH THESE OLD FUNCTIONS AND KEEP WHAT'S NEEDED
-"""
-
 """ Auto Grouping Methods"""
+
 def compute_similarity_matrix(contents):
     vectorizer = TfidfVectorizer()
     tfidf_matrix = vectorizer.fit_transform(contents)
@@ -77,7 +75,8 @@ def group_note(target_note, other_notes, similarities, threshold=0.5):
     similar_notes = [other_notes[i] for i in similar_indices]
 
     if similar_notes:
-        note_group = NoteGroup(title=f"Group for Note {target_note.pk} - {now().strftime('%Y-%m-%d %H:%M:%S')}", owner=target_note.owner)
+        note_group = NoteGroup(title=f"Group for Note {target_note.pk} - {dt.now().strftime('%Y-%m-%d %H:%M:%S')}", owner=target_note.owner)
+        note_group = NoteGroup(title=f"Group for Note {target_note.pk} - {dt.now().strftime('%Y-%m-%d %H:%M:%S')}", owner=target_note.owner)
         note_group.save()
         note_group.notes.add(target_note, *similar_notes)
         return note_group
@@ -97,7 +96,7 @@ def group_all_notes(notes, similarity_matrix, threshold=0.5, owner=None):
 
         if group:
             note_group = NoteGroup(
-                title=f"Auto Group {len(note_groups) + 1} - {now().strftime('%Y-%m-%d %H:%M:%S')}",
+                title=f"Auto Group {len(note_groups) + 1} - {dt.now().strftime('%Y-%m-%d %H:%M:%S')}",
                 owner=owner 
             )
             note_group.save()
@@ -108,13 +107,24 @@ def group_all_notes(notes, similarity_matrix, threshold=0.5, owner=None):
 
 """ Analysis Methods (Summary, Keywords)"""
 
+def generate_keywords(note_content):
+    
+    prompt = f"Identify the key concepts in this text: {note_content}"
+    
+    content = generate_content(prompt, num_return_sequences=1)[0]
+    
+    keywords = strip_prompt(prompt, content)
+    
+    return keywords
 
-
-# def summarize_with_gpt2(note_content):
-#     prompt = f"Summarize this content: {note_content}"
-#     summary = generate_content_task(prompt, num_return_sequences=1)[0]
-#     cleaned_summary = remove_prompt_from_content(prompt, summary)
-#     return cleaned_summary
+def generate_summary(note_content):
+    
+    prompt = f"Summarize this content: {note_content}"
+    
+    summary = generate_content(prompt, num_return_sequences=1)[0]
+    summary = strip_prompt(prompt, summary)
+    
+    return summary
 
 
 

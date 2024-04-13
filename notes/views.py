@@ -56,15 +56,10 @@ def generate_content_view(request, note_id):
     if request.method == 'POST':
         note = get_object_or_404(Note, pk=note_id)
         prompt = request.POST.get('prompt', '')
-
-        input_text = f"{note.content}\n{prompt}"
         
-
-        if input_text.strip():
-            generated_content = generate_content_task(input_text)
-            return JsonResponse({'generated_content': generated_content})
-        else:
-            return JsonResponse({'error': 'Note content and prompt are empty'}, status=400)
+        generated_content = generate_content_task(note.content, prompt)
+        return JsonResponse({'generated_content': generated_content})
+        
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=405)
 
@@ -104,7 +99,7 @@ def analyze(request, note_id):
 
             # analyze_note_task.delay(note_id)          # TO-DO: Trigger the Celery task to analyze the note asynchronously
             messages.info(request, 'Note analysis has been initiated.')
-            result = perform_note_analysis(note_id)
+            result = analyze_note(note_id)
             
             if 'Summary' not in result:                 # Likely caused by note content less than 25 words.
                 return JsonResponse({'result': result})
