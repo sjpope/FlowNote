@@ -5,21 +5,32 @@ from rest_framework.test import APITestCase
 from django.contrib.auth.models import User
 from .models import Note
 
-"""
-class NoteAPITests(APITestCase):
-    def setUp(self):
-        # Create a user for authentication
-        self.user = User.objects.create_user(username='testuser', password='testpassword')
-        self.client.login(username='testuser', password='testpassword')
+# notes = Note.objects.all().order_by('-id')[:k]
+Note.objects.get(id in [6,7])
 
-        # Create a note
-        self.note = Note.objects.create(title='Test Note', content='Test Content', owner=self.user)
+from notes.models import Note  
+from AIEngine.tasks import analyze_note  
 
-    def test_create_note(self):
-        url = reverse('note-list')  # You might need to adjust this based on your URL naming
-        data = {'title': 'New Note', 'content': 'New Content'}
-        response = self.client.post(url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Note.objects.count(), 2)
-        self.assertEqual(Note.objects.latest('id').title, 'New Note')
-"""
+
+def test_analysis():
+    # Fetch FIRST k notes from db
+    # notes = Note.objects.all()[:k]
+    notes = Note.objects.filter(id__in=[6, 7])
+    
+    if not notes:
+        print(f"No notes found. Please check your database.")
+        return
+    
+    for idx, note in enumerate(notes, start=1):
+        print(f"\n\n--- Note {idx} Analysis ---")
+        print("Note Content:")
+        print(note.content)
+        print("\n--- Performing Analysis ---\n")
+        
+        result = analyze_note(note.pk)  
+        
+        print("Analysis Results:")
+        print(f"Summary: {result['summary']}")
+        print(f"Keywords: {result['keywords']}")
+
+test_analysis()
