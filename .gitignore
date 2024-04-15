@@ -84,6 +84,5 @@ obj/
 Any CPU/
 *.pyproj
 
-models
-tokenizer
-obj
+/models 
+/tokenizer
