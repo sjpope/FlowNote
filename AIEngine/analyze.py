@@ -50,15 +50,18 @@ def generate_content(prompt, max_length=150, num_return_sequences=1, additional_
 
 def analyze(content):
     processed_content = preprocess_text(content)
+    
     if len(processed_content.split()) < 25:
         logging.warning("Text too short for analysis.")
         return "Text too short for analysis."
-    keywords = preprocess_and_extract_keywords(processed_content)
-    summary = generate_content(f"Summarize this content: {content}", num_return_sequences=1)[0]
-    cleaned_summary = strip_prompt(f"Summarize this content: {content}", summary)
+    
+    # keywords = preprocess_and_extract_keywords(processed_content)
+    keywords = generate_keywords(content)
+    summary = generate_summary(content)
+    
     return {
         "keywords": ', '.join(keywords),
-        "summary": cleaned_summary
+        "summary": summary
     }
     
 """ Auto Grouping Methods"""
@@ -109,18 +112,24 @@ def group_all_notes(notes, similarity_matrix, threshold=0.5, owner=None):
 
 def generate_keywords(note_content):
     
-    prompt = f"Identify the key concepts in this text: {note_content}"
+    prompt = f"Return only a comma separated list of the most important keywords relevant to this text: {note_content}"
     
-    content = generate_content(prompt, num_return_sequences=1)[0]
+    # Send these arguments to generate_content
+    # additional_tokens=50
+    # temperature=0.5,
+    #       top_k=20,
+    #      top_p=0.75,
     
-    keywords = strip_prompt(prompt, content)
+    keywords = generate_content(prompt, num_return_sequences=1)[0]
+    keywords = strip_prompt(prompt, keywords)
+    
+    # TO-DO: Add Post Processing Here in case the model gets any funny ideas.
     
     return keywords
 
 def generate_summary(note_content):
     
     prompt = f"Summarize this content: {note_content}"
-    
     summary = generate_content(prompt, num_return_sequences=1)[0]
     summary = strip_prompt(prompt, summary)
     
