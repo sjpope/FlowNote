@@ -10,6 +10,7 @@ from .config import model, tokenizer
 
 import torch
 import re
+import datetime as dt
 
 """ Content Generation Methods"""
 
@@ -87,11 +88,17 @@ def auto_group_all(threshold=0.25, owner=None):
 def analyze_note(note_id):
     
     note = Note.objects.get(pk=note_id)
-    note_content = note.content
+    
+    # if note.updated_at < cache.get(f"analysis_{note_id}_timestamp", note.updated_at):
+    #     logging.info("Analysis already up-to-date.")
+    #     return note.analysis
+    
+    cache.set(f"analysis_{note_id}_timestamp", note.updated_at, None)
+    note_content = strip_html_tags(note.content)
 
     results = analyze(note_content)
 
-    note = Note.objects.get(pk=note_id)
+    
     note.analysis = results  # Store (non-parsed) analysis in Note.analysis field.
     note.save()
 
