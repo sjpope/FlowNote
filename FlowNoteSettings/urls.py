@@ -23,9 +23,11 @@ from notes.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', home, name='home'),
+    path('home/', home, name='home'),
     path('notes/', include('notes.urls')),
     path('accounts/', include('allauth.urls')),
-    path('', home, name='home'),
+    
     
     path('generate-response/', generate_response_from_prompt, name='generate-response'), # Move this to notes.urls.py
 ]

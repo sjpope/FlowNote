@@ -16,6 +16,24 @@ urlpatterns = [
     path('<int:pk>/delete/', NoteDeleteView.as_view(), name='note_delete'),
     path('<int:pk>/update/', NoteUpdateView.as_view(), name='note_update'),
 
+    # Task Status URL
+    path('task-status/<str:task_id>/', task_status, name='task-status'),
+    
+    # Trained GPT-2 Model URLs
+    path('generate-content/<int:note_id>/', generate_content_view, name='generate-content'),    
+    path('autocomplete', autocomplete_view, name='autocomplete'),
+
+    # Analysis URLs
+    path('analyze/<int:note_id>/', analyze, name='analyze'),
+    
+    # AI Assistant URL
+    path('generate-response/', generate_response_from_prompt, name='generate-response'),
+
+    # Note Group URLs - Auto Grouping
+    path('notes/<int:note_id>/auto-group/', auto_group_note_view, name='auto_group_note'),
+    path('notes/auto-group-all/', auto_group_all_view, name='auto_group_all'),
+    
+    # Note Group URLs - User Grouping
     path('note-groups/', group_list, name='group_list'),
     path('note-groups/<int:pk>/', group_detail, name='group_detail'),
     path('note-groups/create/', group_create, name='group_create'),
@@ -34,10 +52,5 @@ urlpatterns = [
     # Search URLs
     path('search/', NoteSearchView.as_view(), name='note_search'),
 
-    # Analysis URLs
-    path('analyze/<int:note_id>/', analyze, name='analyze'),
     
-    # AI Assistant URLs
-    path('generate-response/', generate_response_from_prompt, name='generate-response'),
-
 ]

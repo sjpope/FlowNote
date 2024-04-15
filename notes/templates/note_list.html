@@ -11,6 +11,18 @@
       </form>
     </div>
 
+    <form action="{% url 'notes:auto_group_all' %}" method="post">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-secondary">Auto Group All Notes</button>
+    </form>
+
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
 
     <ul class="notes-list">
       {% for note in notes %}
@@ -31,3 +43,27 @@
     </ul>
   </div>
 {% endblock %}
+
+<style>
+.messages {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.messages li {
+  margin-bottom: 10px;
+}
+
+.success {
+  color: green;
+}
+
+.error {
+  color: red;
+}
+
+.warning {
+  color: orange;
+}
+</style>

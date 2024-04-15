@@ -2,6 +2,7 @@
 # from rest_framework import viewsets
 import os
 import openai
+import logging
 
 from AIEngine.analyze import analyze
 from AIEngine.tasks import *
@@ -20,19 +21,85 @@ from django.http import JsonResponse
 from django.views.generic import ListView, DetailView, UpdateView, DeleteView
 from django.views.decorators.csrf import csrf_exempt
 
+from celery.result import AsyncResult
 from .ai import generate_response
 
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
+""" Async Task Status Views """
+def task_status(request, task_id):
+    task = AsyncResult(task_id)
+    if task.state == 'SUCCESS' or task.ready():
+        return JsonResponse({'status': task.status, 'result': task.get()})
+    else:
+        return JsonResponse({'status': task.status})
+
 """ AI, ML Views """
+def generate_flashcards_view(request):
+    if request.method == 'POST':
+        key_concepts = request.POST.get('key_concepts')
+        # Asynchronously generate flashcards
+        result = generate_flashcards_task.delay(key_concepts)
+        return JsonResponse({'task_id': result.task_id})
+    else:
+        return JsonResponse({'error': 'Invalid request'}, status=405)
+
+def autocomplete_view(request):
+    if request.method == 'GET':
+        text = request.GET.get('text', '')
+        suggestions = get_autocomplete_suggestions(text)  
+        return JsonResponse({'suggestions': suggestions})
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+def generate_content_view(request, note_id):
+    if request.method == 'POST':
+        note = get_object_or_404(Note, pk=note_id)
+        prompt = request.POST.get('prompt', '')
+        
+        generated_content = generate_content_task(note.content, prompt)
+        return JsonResponse({'generated_content': generated_content})
+        
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+def auto_group_note_view(request, note_id):
+    if request.method == "POST":
+        messages.info(request, 'Auto-grouping for this note has been initiated.')
+
+        new_group = auto_group_note(note_id)
+        
+        if new_group:
+            logging.debug(f"Auto Grouping for note {note_id} successful. Group: {new_group}")
+            # Display a success message / notification to the user.
+        
+
+        return redirect('notes:note_detail', pk=note_id)  
+    else:
+        note = get_object_or_404(Note, pk=note_id)
+        return render(request, 'notes/auto_group_note.html', {'note': note})
+
+def auto_group_all_view(request):
+    if request.method == "POST"and request.user.is_authenticated:
+        messages.info(request, 'Auto-grouping for all notes has been initiated.')
+
+        new_groups = auto_group_all(owner=request.user)
+        
+        if new_groups:
+            logging.debug(f"Auto Grouping for all notes successful. Created {new_groups.count} new groups: {new_groups}")
+            
+        # Display a success message / notification to the user.
+        return redirect('notes:group_list') 
+    return render(request, 'notes/auto_group_all.html')
+
 def analyze(request, note_id):
     try:
         if request.method == "POST" :
             note = get_object_or_404(Note, pk=note_id)
 
             # analyze_note_task.delay(note_id)          # TO-DO: Trigger the Celery task to analyze the note asynchronously
-
-            result = perform_note_analysis(note_id)
+            messages.info(request, 'Note analysis has been initiated.')
+            result = analyze_note(note_id)
             
             if 'Summary' not in result:                 # Likely caused by note content less than 25 words.
                 return JsonResponse({'result': result})
@@ -204,4 +271,7 @@ class NoteUpdateView(UpdateView):
     model = Note
     form_class = NoteForm
     template_name = 'note_update.html'
-    success_url = reverse_lazy('notes:note_list')
+    
+    def get_success_url(self):
+        pk = self.object.pk
+        return reverse('notes:note_detail', kwargs={'pk': pk})

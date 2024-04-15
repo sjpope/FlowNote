@@ -5,8 +5,8 @@ from django.urls import reverse_lazy
 import dj_database_url
 load_dotenv()
 
-CELERY_BROKER_URL = 'redis://localhost:6379/0' # Celery is using 'Redis' as broker
-REDIS_URL = os.environ.get('REDIS_URL', 'redis://127.0.0.1:6379')
+# CELERY_BROKER_URL = 'redis://localhost:6379/0' # Celery is using 'Redis' as broker
+# REDIS_URL = os.environ.get('REDIS_URL', 'redis://127.0.0.1:6379')
 LOGIN_URL = 'notes:login'
 LOGIN_REDIRECT_URL = reverse_lazy('notes:profile')
 LOGOUT_REDIRECT_URL = '/'
@@ -51,12 +51,24 @@ INSTALLED_APPS = [
     'rest_framework',
     'channels',
     'ckeditor',
-    
+    # 'django_celery_results',
+    # 'django_q',
     # Internal Apps
     'notes',
     'AIEngine',
     
 ]
+
+
+# Q_CLUSTER = {
+#     'name': 'DjangORM',
+#     'workers': 4,
+#     'timeout': 90,
+#     'retry': 120,
+#     'queue_limit': 50,
+#     'bulk': 10,
+#     'orm': 'default',
+# }
 
 MIDDLEWARE = [
     # Use the Associated Middleware Stack instead.
@@ -73,6 +85,24 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'FlowNoteSettings.urls'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'level': 'DEBUG',
+        },
+    },
+    'loggers': {
+        '': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
 
 TEMPLATES = [
     {
@@ -93,14 +123,14 @@ TEMPLATES = [
 ASGI_APPLICATION = 'FlowNoteSettings.asgi.application'
 WSGI_APPLICATION = 'FlowNoteSettings.wsgi.application'
 
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            "hosts": [REDIS_URL],
-        },
-    },
-}
+# CHANNEL_LAYERS = {
+#     'default': {
+#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
+#         'CONFIG': {
+#             "hosts": [REDIS_URL],
+#         },
+#     },
+# }
 
 
 REST_FRAMEWORK = {
@@ -141,6 +171,8 @@ DATABASES = {
         }
     }
 }
+
+# AUTH_USER_MODEL = 'notes.UserProfile'
 
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 AUTH_PASSWORD_VALIDATORS = [
