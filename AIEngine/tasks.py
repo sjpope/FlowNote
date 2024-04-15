@@ -29,6 +29,7 @@ def generate_content_task(prompt, content):
     return suggestions
 
 def generate_flashcards_task(key_concepts):
+    
     flashcards = []
     
     # flashcards = generate_flashcards(key_concepts)
