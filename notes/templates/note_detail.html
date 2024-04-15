@@ -3,6 +3,15 @@
 {% block content %}
 <div class="full-page">
   <h2 style="text-decoration: underline;">{{ note.title }}</h2>
+
+  {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+  {% endif %}
+
   <p><strong>Created At:</strong> {{ note.created_at|date:"F d, Y H:i" }}</p>
   <p><strong>Last Updated:</strong> {{ note.updated_at|date:"F d, Y H:i" }}</p>
   <p><strong>Summary:</strong> {{ note.summary }}</p>
@@ -11,27 +20,68 @@
   </div>
   
   <p>By: {{ note.owner }}</p>
-  
-  {% if note.analysis %}
+
+  {% comment %} {% if note.analysis %}
     <h3>Analysis</h3>
     <p>{{ note.analysis }}</p>
-  {% endif %}
+  {% endif %} {% endcomment %}
 
   <div class="button-group">
     <button><a href="{% url 'notes:note_update' note.id %}" class="btn btn-primary">Update</a></button>
     <button><a href="{% url 'notes:note_delete' note.id %}" class="btn btn-danger">Delete</a></button>
   </div>
 
-  <form action="{% url 'notes:analyze' note.id%}" method="post">
+
+  {% comment %} <form action="{% url 'notes:analyze' note.id%}" method="post">
     {% csrf_token %}
     <input type="hidden" id="ajaxAnalyzeUrl" value="{% url 'notes:analyze' note.id %}">
     <button type="submit" class="btn btn-secondary">Analyze Note</button>
-  </form>
+  </form> {% endcomment %}
+
   {% include 'assistant.html' %}
-  <!-- <button id="analyzeNoteBtn" data-note-id="{{ note.id }}" data-analyze-url="{% url 'notes:analyze' note.id %}">Analyze Note</button> -->
+
+  <button id="analyzeNoteBtn" data-note-id="{{ note.id }}" data-analyze-url="{% url 'notes:analyze' note.id %}">Analyze Note</button>
   <div id="analysisResult"></div>
+
+  <h3>Auto Grouping</h3>
+  <form action="{% url 'notes:auto_group_note' note.id %}" method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-secondary">Auto Group This Note</button>
+  </form>
+
+  <!-- Content Generation -->
+  <div class="generate-content-form">
+    <label for="prompt-input" class="form-label">Enter a prompt:</label>
+    <div class="input-group mb-3">
+      <input type="text" id="prompt-input" placeholder="Enter a prompt..." class="form-control">
+      
+      <!-- Hidden CSRF Token Input -->
+      <input type="hidden" id="csrf-token" value="{{ csrf_token }}">
+      <button id="generate-content-btn" data-note-id="{{ note.id }}" class="btn btn-success">Generate</button>
+    </div>
+  </div>
+
+<div id="content-container" class="content-display-area mt-4 p-3" style="background-color: #f8f9fa; border-radius: 5px;">
+</div>
+
+
+  
 </div>
 <style>
+  .generate-content-form {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .content-display-area {
+    margin-top: 20px;
+    background: #f2f2f2;
+    padding: 20px;
+    border-radius: 10px;
+  }
+
   .container {
     text-align: left;
     display: flex;
@@ -69,6 +119,110 @@
 
 {% block javascript %}
 <script>
+  // GENERATE CONTENT
+  document.addEventListener("DOMContentLoaded", function() {
+    const generateContentBtn = document.getElementById('generate-content-btn');
+    const contentContainer = document.getElementById('content-container');
+    const promptInput = document.getElementById('prompt-input');
+
+    generateContentBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        const noteId = this.getAttribute('data-note-id');
+        const prompt = promptInput.value;
+        const generateContentUrl = `/notes/generate-content/${noteId}/`; 
+        const csrfToken = document.getElementById('csrf-token').value;
+        fetch(generateContentUrl, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken, //getCookie('csrftoken'),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ 'prompt': prompt })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.error) {
+                console.error('Error generating content:', data.error);
+            } else {
+                contentContainer.innerHTML = '';  
+                const contentParagraph = document.createElement('p');
+                contentParagraph.textContent = data.generated_content;  
+                contentContainer.appendChild(contentParagraph);
+            }
+        })
+        .catch(error => console.error('Error generating content:', error));
+    });
+
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+});
+
+  // AUTOCOMPLETE
+  document.addEventListener("DOMContentLoaded", function() {
+    const contentInput = document.getElementById('note-content-input');
+    const suggestionsContainer = document.getElementById('autocomplete-suggestions');
+
+    contentInput.addEventListener('input', _.debounce(function() {  
+        const currentText = contentInput.value;
+        fetch(`/autocomplete?text=${encodeURIComponent(currentText)}`, {
+            method: 'GET',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            suggestionsContainer.innerHTML = '';  
+            data.suggestions.forEach(suggestion => {
+                const suggestionElement = document.createElement('div');
+                suggestionElement.textContent = suggestion;
+                suggestionElement.classList.add('autocomplete-suggestion');
+                
+                suggestionElement.addEventListener('click', function() {
+                    contentInput.value += ' ' + suggestion.split(' ').slice(-2).join(' ');  
+                    suggestionsContainer.innerHTML = ''; 
+                });
+                
+                suggestionsContainer.appendChild(suggestionElement);
+            });
+        })
+        .catch(error => console.error('Error fetching autocomplete suggestions:', error));
+    }, 300));  
+
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';');
+          for (let i = 0; i < cookies.length; i++) {
+              const cookie = cookies[i].trim();
+              if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+              }
+          }
+      }
+      return cookieValue;
+    }
+  });
+
+  // ANALYZE NOTE BUTTON
   document.addEventListener("DOMContentLoaded", function() {
     const analyzeBtn = document.getElementById("analyzeNoteBtn");
   
@@ -107,7 +261,7 @@
         console.error('Error:', error);
       });
     });
-  
+
     function getCookie(name) {
       let cookieValue = null;
       if (document.cookie && document.cookie !== '') {
@@ -123,5 +277,6 @@
       return cookieValue;
     }
   });
+
 </script>
 {% endblock %}
