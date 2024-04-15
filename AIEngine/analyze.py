@@ -50,12 +50,16 @@ def generate_content(prompt, max_length=150, num_return_sequences=1, additional_
 
 def analyze(content):
     processed_content = preprocess_text(content)
+    
     if len(processed_content.split()) < 25:
         logging.warning("Text too short for analysis.")
         return "Text too short for analysis."
-    keywords = preprocess_and_extract_keywords(processed_content)
+    
+    #vkeywords = preprocess_and_extract_keywords(processed_content)
+    keywords = generate_keywords(content)
     summary = generate_content(f"Summarize this content: {content}", num_return_sequences=1)[0]
     cleaned_summary = strip_prompt(f"Summarize this content: {content}", summary)
+    
     return {
         "keywords": ', '.join(keywords),
         "summary": cleaned_summary
