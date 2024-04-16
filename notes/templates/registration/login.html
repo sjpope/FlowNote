@@ -3,7 +3,7 @@
 {% block content %}
     <div class="login-container">
         <h2 style="text-align: center;">Login</h2>
-        <form method="post" class="login-form">
+        <form style="margin-top: 25px;" method="post" class="login-form">
             {% csrf_token %}
             <div class="form-group">
                 <label for="username">Username:</label>
@@ -13,7 +13,7 @@
                 <label for="password">Password:</label>
                 {{ form.password }}
             </div>
-            <button type="submit" class="btn btn-primary">Login</button>
+            <button style="margin-top: 140px;" type="submit" class="btn btn-primary">Login</button>
         </form>
         
         <form method="get" action="{% url 'account_reset_password' %}">

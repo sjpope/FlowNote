@@ -35,12 +35,12 @@
   {% comment %} <form action="{% url 'notes:analyze' note.id%}" method="post">
     {% csrf_token %}
     <input type="hidden" id="ajaxAnalyzeUrl" value="{% url 'notes:analyze' note.id %}">
-    <button type="submit" class="btn btn-secondary">Analyze Note</button>
+    <button type="submit" class="btn-secondary">Analyze Note</button>
   </form> {% endcomment %}
 
   {% include 'assistant.html' %}
 
-  <button id="analyzeNoteBtn" data-note-id="{{ note.id }}" data-analyze-url="{% url 'notes:analyze' note.id %}">Analyze Note</button>
+  <button class="btn-secondary" id="analyzeNoteBtn" data-note-id="{{ note.id }}" data-analyze-url="{% url 'notes:analyze' note.id %}">Analyze Note</button>
   <div id="analysisResult"></div>
 
   <h3>Auto Grouping</h3>
@@ -56,8 +56,8 @@
       <input type="text" id="prompt-input" placeholder="Enter a prompt..." class="form-control">
       
       <!-- Hidden CSRF Token Input -->
-      <input type="hidden" id="csrf-token" value="{{ csrf_token }}">
-      <button id="generate-content-btn" data-note-id="{{ note.id }}" class="btn btn-success">Generate</button>
+      <input class="gen-prompt-input" type="hidden" id="csrf-token" value="{{ csrf_token }}">
+      <button id="generate-content-btn" data-note-id="{{ note.id }}" class="btn-secondary">Generate</button>
     </div>
   </div>
 
@@ -95,6 +95,14 @@
     margin-bottom: 20px;
   }
 
+  .btn-secondary {
+    margin-right: 10px;
+    background-color: var(--navbar-link-bg-color);
+    padding: 10px;
+    border-radius: 9px;
+    border: none;
+    width: 125px;
+  }
   .button-group button {
     margin-right: 10px;
     background-color: var(--button-bg-color);

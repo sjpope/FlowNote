@@ -11,7 +11,7 @@
       </form>
     </div>
 
-    <div class="button-container" style="text-align: left; margin-bottom: 20px;">
+    <div class="button-container" style="margin-bottom: 20px;">
       <form action="{% url 'notes:auto_group_all' %}" method="post" style="display: inline-block; margin-right: 10px;">
         {% csrf_token %}
         <button type="submit" class="btn btn-secondary">Auto Group All Notes</button>
@@ -46,6 +46,14 @@
       {% endfor %}
     </ul>
   </div>
+
+  <style>
+    .button-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+  </style>
 
   <script>
     function sortNotesAlphabetically() {
@@ -90,7 +98,6 @@
   padding: 0;
   margin: 0;
 }
-
 .messages li {
   margin-bottom: 10px;
 }
