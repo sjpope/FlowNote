@@ -8,11 +8,6 @@ body {
   margin: 0;
 }
 
-.container {
-  width: 60%;
-  margin: 0 auto;
-}
-
 .full-page {
   display: flex;
   align-items: start;
@@ -85,8 +80,8 @@ nav ul li a:hover {
 }
 
 .container {
-  max-width: 100%;
   flex: 1;
+  margin: 25px;
 }
 
 .form-group {
@@ -103,6 +98,7 @@ input[type="text"],
 input[type="email"],
 input[type="password"] {
   width: calc(100% - 170px); /* Adjust the width to accommodate label */
+  min-width: 120px;
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
