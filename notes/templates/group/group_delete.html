@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
+<div class="delete-form-1">
   <h2>Are you sure you want to delete "{{ group.title }}"?</h2>
 
   <form method="post" action="">
@@ -8,5 +10,27 @@
     <button type="submit">Yes, delete it</button>
   </form>
 
-  <a href="{% url 'notes:group_list' %}">Cancel</a>
+  <a class="grp-button" href="{% url 'notes:group_list' %}">Cancel</a>
+</div>
+  
+<style>
+  .delete-form-1{
+    margin-top: 200px;
+    text-align: center;
+  }
+  .grp-button {
+        display: inline-block;
+        background-color: var(--navbar-bg-color);
+        color: var(--navbar-text-color);
+        padding: 5px 10px;
+        margin: 10px;
+        width: 100px;
+        text-align: center;
+        text-decoration: none;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+</style>
 {% endblock %}
