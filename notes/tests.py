@@ -4,36 +4,66 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from django.contrib.auth.models import User
 from .models import Note
-
-# notes = Note.objects.all().order_by('-id')[:k]
-Note.objects.get(id in [6,7])
-
-from notes.models import Note  
 from AIEngine.tasks import analyze_note  
 
+# python manage.py test
 
-def test_analysis():
-    # Fetch FIRST k notes from db
-    # notes = Note.objects.all()[:k]
-    notes = Note.objects.filter(id__in=[6, 7])
-    
-    if not notes:
-        print(f"No notes found. Please check your database.")
-        return
-    
-    for idx, note in enumerate(notes, start=1):
-        print(f"\n\n--- Note {idx} Analysis ---")
-        print("Note Content:")
-        print(note.content)
-        print("\n--- Performing Analysis ---\n")
-        
-        result = analyze_note(note.pk)  
-        
-        print("Analysis Results:")
-        print(f"Summary: {result['summary']}")
-        print(f"Keywords: {result['keywords']}")
+class NoteAnalysisTestCase(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        # Set up data for the whole TestCase
+        cls.user = User.objects.create_user(username='testuser', password='12345')
+        cls.note1 = Note.objects.create(owner=cls.user, content="Sample Note 1")
+        cls.note2 = Note.objects.create(owner=cls.user, content="Sample Note 2")
 
-test_analysis()
+    def test_note_analysis(self):
+        # This will fetch notes with id 1 and 2, adjust as needed
+        notes = Note.objects.filter(id__in=[self.note1.id, self.note2.id])
+        
+        if not notes:
+            print("No notes found. Please check your database.")
+            return
+
+        for idx, note in enumerate(notes, start=1):
+            print(f"\n\n--- Note {idx} Analysis ---")
+            print("Note Content:")
+            print(note.content)
+            print("\n--- Performing Analysis ---\n")
+
+            result = analyze_note(note.pk)
+
+            print("Analysis Results:")
+            print(f"Summary: {result['summary']}")
+            print(f"Keywords: {result['keywords']}")
+
+
+""" DJANGO SHELL TESTS """
+
+# notes = Note.objects.all().order_by('-id')[:k]
+# from notes.models import Note  
+# from AIEngine.tasks import analyze_note  
+# def test_analysis():
+#     # Fetch FIRST k notes from db
+#     # notes = Note.objects.all()[:k]
+#     notes = Note.objects.filter(id__in=[6, 7])
+    
+#     if not notes:
+#         print(f"No notes found. Please check your database.")
+#         return
+    
+#     for idx, note in enumerate(notes, start=1):
+#         print(f"\n\n--- Note {idx} Analysis ---")
+#         print("Note Content:")
+#         print(note.content)
+#         print("\n--- Performing Analysis ---\n")
+        
+#         result = analyze_note(note.pk)  
+        
+#         print("Analysis Results:")
+#         print(f"Summary: {result['summary']}")
+#         print(f"Keywords: {result['keywords']}")
+
+# test_analysis()
 
 """
 
@@ -83,7 +113,6 @@ Extracted Keywords:
 Neurolinguitists have also developed cognitive-behavioral approaches that enhance cognitive functions such as visuo-spatial skills and inhibitory control, and are increasingly applied in cognitive neuroscience research.
 """
 
-
 """
 RUN #2
 
@@ -129,7 +158,6 @@ Neurolinguistics explores the brain mechanisms underlying language comprehension
 Extracted Keywords:
 Neuropsychological research has also uncovered connections between cognitive function and neural processing, suggesting that these processes influence language processing.
 """
-
 
 """
 RUN 3 (1.8 of 3, 60%)
