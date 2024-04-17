@@ -11,10 +11,15 @@ nlp = spacy.load('en_core_web_sm')
 
 def preprocess_text(text):
     
-    doc = nlp(text)
-    lemmatized = [token.lemma_ for token in doc if not token.is_stop and not token.is_punct and not token.is_space]
+    # TO-DO: Test performance of Vocab Extraction between these two Lemmatization methods.
+    # doc = nlp(text)
+    # lemmatized = [token.lemma_ for token in doc if not token.is_stop and not token.is_punct and not token.is_space]
+    # return " ".join(lemmatized)
     
-    return " ".join(lemmatized)
+    doc = nlp(text)
+    keywords = [token.lemma_ for token in doc if not token.is_stop and token.pos_ in ('NOUN', 'PROPN', 'VERB', 'ADJ') and not token.is_punct]
+    
+    return list(set(keywords))
 
 def strip_html_tags(input_string):
     
