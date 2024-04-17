@@ -58,31 +58,47 @@ db.sqlite3
 *.pyo
 *.pyd
 *.swp
-.env
-venv/
+
 .idea/
+
+/.vs
 .vscode/
+
 *.bak
 *.log
+
 staticfiles/
 media/
+
+# Environments
 /venv-3
 /venv
-/note-env
+.env
+venv/
 /env
-/.vs
+
 *.cache
+
+# sql files
 /db.sqlite3
 *.sql
 .fake
+
+# Jupyter Notebooks, checkpoints, 
 *.ipynb
 .ipynb_checkpoints/Untitled-checkpoint.ipynb
 Untitled.ipynb
 .ipynb_checkpoints
-staticfiles/
-obj/
-Any CPU/
-*.pyproj
 
+# Hugging Face Transformer models, cache
+*/hf_*
+**/hf_*
 /models 
 /tokenizer
+
+obj/
+Any CPU/
+
+*.pyproj
+/flownote.pyproj
+
