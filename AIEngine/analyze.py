@@ -48,15 +48,16 @@ def generate_content(prompt, max_length=150, num_return_sequences=1, additional_
     suggestions = [tokenizer.decode(generated_id, skip_special_tokens=True) for generated_id in generated_ids]
     return suggestions
 
-def analyze(content):
-    processed_content = preprocess_text(content)
+""" Analysis Methods (Summary, Keywords)"""
+
+def analyze(content, processed_content):
     
-    if len(processed_content.split()) < 25:
-        logging.warning("Text too short for analysis.")
-        return "Text too short for analysis."
+    # if len(processed_content.split()) < 25:
+    #     logging.warning("Text too short for analysis.")
+    #     return "Text too short for analysis."
     
     # keywords = preprocess_and_extract_keywords(processed_content)
-    keywords = generate_keywords(content)
+    keywords = generate_keywords(content, processed_content)
     summary = generate_summary(content)
     
     return {
@@ -64,6 +65,31 @@ def analyze(content):
         "summary": summary
     }
     
+def generate_keywords(note_content, processed_content):
+    
+    prompt = f"From this list of words: {', '.join(processed_content)} Return only a comma separated list of the most important keywords relevant to this text: {note_content}"
+    
+    # Send these arguments to generate_content
+    # additional_tokens=50
+    # temperature=0.5,
+    #       top_k=20,
+    #      top_p=0.75,
+    
+    keywords = generate_content(prompt, num_return_sequences=1)[0]
+    keywords = strip_prompt(prompt, keywords)
+    
+    # TO-DO: Add Post Processing Here in case the model gets any funny ideas.
+    
+    return keywords
+
+def generate_summary(note_content):
+    
+    prompt = f"Summarize this content: {note_content}"
+    summary = generate_content(prompt, num_return_sequences=1)[0]
+    summary = strip_prompt(prompt, summary)
+    
+    return summary    
+
 """ Auto Grouping Methods"""
 
 def compute_similarity_matrix(contents):
@@ -108,32 +134,7 @@ def group_all_notes(notes, similarity_matrix, threshold=0.5, owner=None):
 
     return note_groups
 
-""" Analysis Methods (Summary, Keywords)"""
 
-def generate_keywords(note_content):
-    
-    prompt = f"Return only a comma separated list of the most important keywords relevant to this text: {note_content}"
-    
-    # Send these arguments to generate_content
-    # additional_tokens=50
-    # temperature=0.5,
-    #       top_k=20,
-    #      top_p=0.75,
-    
-    keywords = generate_content(prompt, num_return_sequences=1)[0]
-    keywords = strip_prompt(prompt, keywords)
-    
-    # TO-DO: Add Post Processing Here in case the model gets any funny ideas.
-    
-    return keywords
-
-def generate_summary(note_content):
-    
-    prompt = f"Summarize this content: {note_content}"
-    summary = generate_content(prompt, num_return_sequences=1)[0]
-    summary = strip_prompt(prompt, summary)
-    
-    return summary
 
 
 
