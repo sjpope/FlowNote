@@ -35,7 +35,10 @@ def get_preprocessed_content(note):
     preprocessed_content = cache.get(cache_key)
 
     if not preprocessed_content or note.updated_at > cache.get(f"{cache_key}_timestamp", note.updated_at):
-        preprocessed_content = preprocess_text(note.content)
+        
+        note_content = strip_html_tags(note.content)
+        preprocessed_content = preprocess_text(note_content)
+        
         cache.set(cache_key, preprocessed_content, None)        # None timeout means it's cached forever
         cache.set(f"{cache_key}_timestamp", note.updated_at, None)
 

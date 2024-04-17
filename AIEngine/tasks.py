@@ -89,15 +89,17 @@ def analyze_note(note_id):
     
     note = Note.objects.get(pk=note_id)
     
+    # Turned off for Testing/Debugging
     # if note.updated_at < cache.get(f"analysis_{note_id}_timestamp", note.updated_at):
     #     logging.info("Analysis already up-to-date.")
     #     return note.analysis
     
     cache.set(f"analysis_{note_id}_timestamp", note.updated_at, None)
+    
     note_content = strip_html_tags(note.content)
-
-    results = analyze(note_content)
-
+    preprocessed_content = get_preprocessed_content(note)
+    
+    results = analyze(note_content, preprocessed_content)
     
     note.analysis = results  # Store (non-parsed) analysis in Note.analysis field.
     note.save()
