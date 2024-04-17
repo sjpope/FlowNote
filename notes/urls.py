@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import *
+from . import views
 from django.contrib.auth import views as auth_views
 
 app_name = 'notes' 
@@ -48,6 +49,7 @@ urlpatterns = [
     path('accounts/profile/', profile, name='profile'),
     path('accounts/profile/settings/', settings, name='settings'),
     path('accounts/profile/settings/update-theme/', update_theme, name='update_theme'),
+    path('contact/', views.contact, name='contact'),
 
     # Search URLs
     path('search/', NoteSearchView.as_view(), name='note_search'),
