@@ -11,14 +11,30 @@ nlp = spacy.load('en_core_web_sm')
 
 def preprocess_text(text):
     
-    doc = nlp(text)
-    lemmatized = [token.lemma_ for token in doc if not token.is_stop and not token.is_punct and not token.is_space]
+    # TO-DO: Test performance of Vocab Extraction between these two Lemmatization methods.
+    # doc = nlp(text)
+    # lemmatized = [token.lemma_ for token in doc if not token.is_stop and not token.is_punct and not token.is_space]
+    # return " ".join(lemmatized)
     
-    return " ".join(lemmatized)
+    doc = nlp(text)
+    keywords = [token.lemma_ for token in doc if not token.is_stop and token.pos_ in ('NOUN', 'PROPN', 'VERB', 'ADJ') and not token.is_punct]
+    
+    return list(set(keywords))
 
 def strip_html_tags(input_string):
     
     html_tag_pattern = re.compile('<.*?>')
+    cleaned = html_tag_pattern.sub('', input_string)
+    
+    cleaned = cleaned.replace('&nbsp;', ' ')
+    cleaned = cleaned.replace('&amp;', '&')
+    cleaned = cleaned.replace('&lt;', '<')
+    cleaned = cleaned.replace('&gt;', '>')
+    cleaned = cleaned.replace('&quot;', '"')
+    cleaned = cleaned.replace('&apos;', "'")
+    cleaned = cleaned.replace('&#39;', "'")
+    cleaned = cleaned.replace('&#34;', '"')
+    
     
     return html_tag_pattern.sub('', input_string)
 
@@ -35,7 +51,10 @@ def get_preprocessed_content(note):
     preprocessed_content = cache.get(cache_key)
 
     if not preprocessed_content or note.updated_at > cache.get(f"{cache_key}_timestamp", note.updated_at):
-        preprocessed_content = preprocess_text(note.content)
+        
+        note_content = strip_html_tags(note.content)
+        preprocessed_content = preprocess_text(note_content)
+        
         cache.set(cache_key, preprocessed_content, None)        # None timeout means it's cached forever
         cache.set(f"{cache_key}_timestamp", note.updated_at, None)
 
