@@ -15,7 +15,7 @@ import numpy as np
 from datetime import datetime as dt
 from datetime import datetime as dt
 
-def generate_content(prompt, max_length=150, num_return_sequences=1, additional_tokens=500):
+def generate_content(prompt, num_return_sequences=1, additional_tokens=500, temperature=0.8, top_k=50, top_p=0.92):
     
     # inputs = tokenizer.encode_plus(input_text, return_tensors='pt', add_special_tokens=True, max_length=512, truncation=True)
     encoding = tokenizer(prompt, return_tensors='pt', truncation=True)
@@ -36,9 +36,9 @@ def generate_content(prompt, max_length=150, num_return_sequences=1, additional_
             no_repeat_ngram_size=3,  
             num_return_sequences=num_return_sequences,
             
-            temperature=0.8, 
-            top_k=50,
-            top_p=0.92,
+            temperature=temperature, 
+            top_k=top_k,
+            top_p=top_p,
             
             do_sample=True,
             pad_token_id=tokenizer.eos_token_id
@@ -52,14 +52,14 @@ def generate_content(prompt, max_length=150, num_return_sequences=1, additional_
 
 def analyze(content, processed_content):
     
-    # if len(processed_content.split()) < 25:
+    #if len(processed_content.split()) < 25:
     #     logging.warning("Text too short for analysis.")
     #     return "Text too short for analysis."
-    
-    # keywords = preprocess_and_extract_keywords(processed_content)
+    logging.info(f'Content: {content}\n\nProcessed Content: {processed_content}\n\n')
     keywords = generate_keywords(content, processed_content)
     summary = generate_summary(content)
-    
+    logging.info(f'KEYWORDS\n\n{(keywords)}\n\n')
+    logging.info(f'SUMMARY\n\n{summary}\n\n')
     return {
         "keywords": ', '.join(keywords),
         "summary": summary
@@ -67,7 +67,7 @@ def analyze(content, processed_content):
     
 def generate_keywords(note_content, processed_content):
     
-    prompt = f"From this list of words: {', '.join(processed_content)} Return only a comma separated list of the most important keywords relevant to this text: {note_content}"
+    prompt = f"From this list of words: {processed_content} Return only a comma separated list of the most important keywords relevant to this text: {note_content}"
     
     # Send these arguments to generate_content
     # additional_tokens=50
@@ -75,7 +75,7 @@ def generate_keywords(note_content, processed_content):
     #       top_k=20,
     #      top_p=0.75,
     
-    keywords = generate_content(prompt, num_return_sequences=1)[0]
+    keywords = generate_content(prompt, num_return_sequences=1, additional_tokens=50, temperature=0.5, top_k=20, top_p=0.75)[0]
     keywords = strip_prompt(prompt, keywords)
     
     # TO-DO: Add Post Processing Here in case the model gets any funny ideas.

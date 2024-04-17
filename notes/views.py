@@ -93,28 +93,17 @@ def auto_group_all_view(request):
     return render(request, 'notes/auto_group_all.html')
 
 def analyze(request, note_id):
-    try:
-        if request.method == "POST" :
-            note = get_object_or_404(Note, pk=note_id)
-
-            # analyze_note_task.delay(note_id)          # TO-DO: Trigger the Celery task to analyze the note asynchronously
-            messages.info(request, 'Note analysis has been initiated.')
-            result = analyze_note(note_id)
-            
-            if 'Summary' not in result:                 # Likely caused by note content less than 25 words.
-                return JsonResponse({'result': result})
-            
-            keywords, summary = result.split('Summary: ')
-            keywords = keywords.replace('Keywords: ', '')
-
-            print('Analysis Complete: ', JsonResponse({'keywords': keywords, 'summary': summary}))
-
-            # return redirect('notes:note_detail', pk=note.pk) 
-            return JsonResponse({'keywords': keywords, 'summary': summary})
-        else:
-            return JsonResponse({'error': 'Invalid request'}, status=400)
-    except Exception as e:
-        return JsonResponse({'error': str(e)})
+    if request.method == "POST":
+        note = get_object_or_404(Note, pk=note_id)
+        result = analyze_note(note_id)
+        
+        if 'Summary' not in result:
+            return JsonResponse({'result': result})
+        
+        keywords, summary = result['keywords'], result['summary']
+        return JsonResponse({'keywords': keywords, 'summary': summary})
+    else:
+        return JsonResponse({'error': 'Invalid request'}, status=400)
 
 def generate_response_from_prompt(request):
     if request.method == 'GET':

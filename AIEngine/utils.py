@@ -24,6 +24,17 @@ def preprocess_text(text):
 def strip_html_tags(input_string):
     
     html_tag_pattern = re.compile('<.*?>')
+    cleaned = html_tag_pattern.sub('', input_string)
+    
+    cleaned = cleaned.replace('&nbsp;', ' ')
+    cleaned = cleaned.replace('&amp;', '&')
+    cleaned = cleaned.replace('&lt;', '<')
+    cleaned = cleaned.replace('&gt;', '>')
+    cleaned = cleaned.replace('&quot;', '"')
+    cleaned = cleaned.replace('&apos;', "'")
+    cleaned = cleaned.replace('&#39;', "'")
+    cleaned = cleaned.replace('&#34;', '"')
+    
     
     return html_tag_pattern.sub('', input_string)
 
