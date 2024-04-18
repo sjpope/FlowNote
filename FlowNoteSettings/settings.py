@@ -5,6 +5,8 @@ from django.urls import reverse_lazy
 import dj_database_url
 load_dotenv()
 
+
+HF_HOME=os.environ.get('HF_HOME')
 # CELERY_BROKER_URL = 'redis://localhost:6379/0' # Celery is using 'Redis' as broker
 # REDIS_URL = os.environ.get('REDIS_URL', 'redis://127.0.0.1:6379')
 LOGIN_URL = 'notes:login'
@@ -151,26 +153,26 @@ DATABASES = {
     #     'ENGINE': 'django.db.backends.sqlite3',
     #     'NAME': os.environ.get('DB1_PATH', BASE_DIR / 'db.sqlite3'),
     # },
-    'mssql': {
-        'ENGINE': 'mssql',
-        'NAME': os.environ.get('MSSQL_DB_NAME'),
-        'USER': os.environ.get('MSSQL_USER'),
-        'PASSWORD': os.environ.get('MSSQL_PASSWORD'),
-        'HOST': os.environ.get('MSSQL_HOST'),
-        'PORT': os.environ.get('MSSQL_PORT'),
+    # 'mssql': {
+    #     'ENGINE': 'mssql',
+    #     'NAME': os.environ.get('MSSQL_DB_NAME'),
+    #     'USER': os.environ.get('MSSQL_USER'),
+    #     'PASSWORD': os.environ.get('MSSQL_PASSWORD'),
+    #     'HOST': os.environ.get('MSSQL_HOST'),
+    #     'PORT': os.environ.get('MSSQL_PORT'),
 
-        'OPTIONS': {
-            'driver': os.environ.get('MSSQL_DRIVER'),
-        },
-    },
-    'mongodb': {
-        'ENGINE': 'djongo',
-        'NAME': os.environ.get('MONGO_DB_NAME'),
-        'ENFORCE_SCHEMA': False,
-        'CLIENT': {
-            'host': os.environ.get('MONGO_URI'),
-        }
-    }
+    #     'OPTIONS': {
+    #         'driver': os.environ.get('MSSQL_DRIVER'),
+    #     },
+    # },
+    # 'mongodb': {
+    #     'ENGINE': 'djongo',
+    #     'NAME': os.environ.get('MONGO_DB_NAME'),
+    #     'ENFORCE_SCHEMA': False,
+    #     'CLIENT': {
+    #         'host': os.environ.get('MONGO_URI'),
+    #     }
+    # }
 }
 
 # AUTH_USER_MODEL = 'notes.UserProfile'
