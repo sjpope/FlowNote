@@ -102,3 +102,7 @@ Any CPU/
 *.pyproj
 /flownote.pyproj
 
+
+/models 
+/tokenizer
+/notebooks
