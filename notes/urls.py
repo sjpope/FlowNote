@@ -48,7 +48,7 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('accounts/profile/', profile, name='profile'),
     path('accounts/profile/settings/', settings, name='settings'),
-    path('accounts/profile/settings/update-theme/', update_theme, name='update_theme'),
+    path('accounts/profile/update-theme/', update_theme, name='update_theme'),
     path('contact/', views.contact, name='contact'),
 
     # Search URLs
