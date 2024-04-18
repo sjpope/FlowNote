@@ -247,6 +247,17 @@ def user_logout(request):
     logout(request)
     return redirect('home')  # TO-DO: Redirect to success page, or add a success message
 
+@login_required
+def update_username(request):
+    if request.method == 'POST':
+        form = UpdateUsernameForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('notes:profile')
+    else:
+        form = UpdateUsernameForm(instance=request.user)
+    return render(request, 'update_username.html', {'form': form})
+
 def home(request):
     return render(request, 'home.html')  
 
