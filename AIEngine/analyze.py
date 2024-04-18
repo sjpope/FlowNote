@@ -55,25 +55,20 @@ def analyze(content, processed_content):
     #if len(processed_content.split()) < 25:
     #     logging.warning("Text too short for analysis.")
     #     return "Text too short for analysis."
-    logging.info(f'Content: {content}\n\nProcessed Content: {processed_content}\n\n')
+    # logging.info(f'Content: {content}\n\nProcessed Content: {processed_content}\n\n')
     keywords = generate_keywords(content, processed_content)
     summary = generate_summary(content)
-    logging.info(f'KEYWORDS\n\n{(keywords)}\n\n')
-    logging.info(f'SUMMARY\n\n{summary}\n\n')
+    # logging.info(f'KEYWORDS\n\n{(keywords)}\n\n')
+    # logging.info(f'SUMMARY\n\n{summary}\n\n')
+    
     return {
-        "keywords": ', '.join(keywords),
+        "keywords": keywords,
         "summary": summary
     }
     
 def generate_keywords(note_content, processed_content):
     
     prompt = f"From this list of words: {processed_content} Return only a comma separated list of the most important keywords relevant to this text: {note_content}"
-    
-    # Send these arguments to generate_content
-    # additional_tokens=50
-    # temperature=0.5,
-    #       top_k=20,
-    #      top_p=0.75,
     
     keywords = generate_content(prompt, num_return_sequences=1, additional_tokens=50, temperature=0.5, top_k=20, top_p=0.75)[0]
     keywords = strip_prompt(prompt, keywords)

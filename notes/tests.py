@@ -1,9 +1,11 @@
 from django.test import TestCase
+
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 from django.contrib.auth.models import User
-from .models import Note
+
+from notes.models import Note, NoteGroup
 from AIEngine.tasks import *  
 
 # python manage.py test
@@ -12,9 +14,12 @@ class NoteAnalysisTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user = User.objects.create_user(username='testuser', password='12345')
-        # Creating sample notes with varied lengths and content for robust testing
-        cls.note1 = Note.objects.create(owner=cls.user, title="Complex Note", content="This is a complex note with multiple keywords like Python, AI, Django, Testing and more.")
-        cls.note2 = Note.objects.create(owner=cls.user, title="Simple Note", content="A simple note for testing.")
+        # Reusing notes GPT-2 Medium scored poorly on during analysis testing 
+        cls.note1 = Note.objects.create(owner=cls.user, title="Neuro AI", content=
+                                        """The interface between neuroscience and artificial intelligence (AI) represents a frontier of interdisciplinary research with transformative potential. Neuroscience, through the study of the brains structure and function, provides insights into cognition, perception, and learning processes. AI, particularly in the realm of machine learning and neural networks, seeks to emulate these cognitive functions computationally. The synergy between these fields is evident in the development of algorithms inspired by neural processing, enhancing AIs capabilities in pattern recognition, decision-making, and natural language processing. Conversely, AI techniques are employed in analyzing neurological data, advancing our understanding of brain function and disorders. This reciprocal relationship not only propels AI towards more sophisticated and human-like intelligence but also opens new avenues in brain research, with implications for neurology, psychology, and cognitive science."""
+                                        )
+        cls.note2 = Note.objects.create(owner=cls.user, title="Economics - Market Structures", content=
+                                        """Market structures in economics refer to the competitive environment within a market. These structures range from perfect competition, where many firms are price takers, to monopoly, where a single firm controls the market. Other types include oligopoly, characterized by a few firms, and monopolistic competition, where many firms compete but have differentiated products. Each structure affects pricing, efficiency, and consumer choice differently.""")
 
     def test_note_analysis(self):
         notes = Note.objects.filter(id__in=[self.note1.id, self.note2.id])
@@ -22,8 +27,8 @@ class NoteAnalysisTestCase(TestCase):
             print(f"\n--- {note.title} Analysis ---")
             result = analyze_note(note.pk)
             print("Analysis Results:")
-            print(f"Summary: {result['summary']}")
-            print(f"Keywords: {result['keywords']}")
+            print(f"SUMMARY: {result['summary']}")
+            print(f"KEYWORDS: {result['keywords']}")
 
 class AutoGroupTestCase(TestCase):
     @classmethod
