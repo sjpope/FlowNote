@@ -53,10 +53,9 @@
                 <ul>
                     <li><a href="{% url 'home' %}" class="{% if request.path == '/' %}active{% endif %}">Home</a></li>
                     {% if user.is_authenticated %}
-                        <li><a href="{% url 'notes:note_list' %}" class="{% if request.path == '/notes/list/' %}active{% endif %}">Note List</a></li>
-                        <li><a href="{% url 'notes:create_note' %}" class="{% if request.path == '/notes/create/' %}active{% endif %}">Create Note</a></li>
+                        <li><a href="{% url 'notes:note_list' %}" class="{% if request.path == '/notes/list/' %}active{% endif %}">Notes</a></li>
+                        <li><a href="{% url 'notes:create_note' %}" class="{% if request.path == '/notes/create/' %}active{% endif %}">New Note</a></li>
                         {% comment %} <li><a href="{% url 'notes:search' %}" class="{% if request.path == '/notes/search/' %}active{% endif %}">Search</a></li> {% endcomment %}
-                        <li><a href="{% url 'notes:group_list' %}">Note Groups</a></li>
                         <form action="{% url 'notes:logout' %}" method="post">
                             {% csrf_token %}
                             <button type="submit">Logout</button>
