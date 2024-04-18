@@ -1,11 +1,64 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-<h2>Profile Page</h2>
-<div>
-    <!--<p><a href="{% url 'home' %}">Home</a></p>-->
-    <p>Username: {{ request.user.username }}</p>
-    <p>Email: {{ user.email }}</p>
-    <p><a href="{% url 'notes:settings' %}" class="link">Settings</a></p>
+<div class="profile-container">
+    <h2>Profile Page</h2>
+    <div class="profile-card">
+        <div class="profile-item">
+            <i class="fas fa-user"></i>
+            <p>Username: {{ request.user.username }}</p>
+        </div>
+        <div class="profile-item">
+            <i class="fas fa-envelope"></i>
+            <p>Email: {{ user.email }}</p>
+        </div>
+        <div class="profile-item">
+            <a href="{% url 'notes:settings' %}" class="btn btn-settings">
+                <i class="fas fa-cog"></i>
+                Settings
+            </a>
+        </div>
+    </div>
 </div>
+
+<style>
+    .profile-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    
+    .profile-card {
+        background-color: var(--card-bg-color);
+        border-radius: 4px;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .profile-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    
+    .profile-item i {
+        margin-right: 10px;
+        color: var(--icon-color);
+    }
+    
+    .btn-settings {
+        display: inline-block;
+        background-color: var(--button-bg-color);
+        color: var(--button-text-color);
+        padding: 10px 20px;
+        border-radius: 4px;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+    }
+    
+    .btn-settings:hover {
+        background-color: var(--button-hover-bg-color);
+    }
+</style>
 {% endblock %}
