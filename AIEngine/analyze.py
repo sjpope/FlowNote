@@ -52,12 +52,11 @@ def generate_content(prompt, num_return_sequences=1, additional_tokens=500, temp
 
 def analyze(content, processed_content):
     
-    #if len(processed_content.split()) < 25:
-    #     logging.warning("Text too short for analysis.")
-    #     return "Text too short for analysis."
     # logging.info(f'Content: {content}\n\nProcessed Content: {processed_content}\n\n')
+    
     keywords = generate_keywords(content, processed_content)
     summary = generate_summary(content)
+    
     # logging.info(f'KEYWORDS\n\n{(keywords)}\n\n')
     # logging.info(f'SUMMARY\n\n{summary}\n\n')
     
@@ -134,10 +133,16 @@ def group_all_notes(notes, similarity_matrix, threshold=0.5, owner=None):
 
     return note_groups
 
-
-
-
-
-
-
-
+def find_existing_group(note, threshold=0.5) -> NoteGroup:
+    """
+    Find an existing group with high similarity to the note's content.
+    """
+    existing_groups = NoteGroup.objects.filter(owner=note.owner)
+    for group in existing_groups:
+        group_contents = [get_preprocessed_content(n) for n in group.notes.all()]
+        group_contents.append(get_preprocessed_content(note))
+        sim_matrix = compute_similarity_matrix(group_contents)
+        avg_similarity = np.mean(sim_matrix[-1][:-1])  # Average similarity of 'note' with all notes in the group
+        if avg_similarity > threshold:
+            return group
+    return None
