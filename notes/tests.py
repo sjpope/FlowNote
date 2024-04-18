@@ -4,39 +4,49 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from django.contrib.auth.models import User
 from .models import Note
-from AIEngine.tasks import analyze_note  
+from AIEngine.tasks import *  
 
 # python manage.py test
 
 class NoteAnalysisTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
-        # Set up data for the whole TestCase
         cls.user = User.objects.create_user(username='testuser', password='12345')
-        cls.note1 = Note.objects.create(owner=cls.user, content="Sample Note 1")
-        cls.note2 = Note.objects.create(owner=cls.user, content="Sample Note 2")
+        # Creating sample notes with varied lengths and content for robust testing
+        cls.note1 = Note.objects.create(owner=cls.user, title="Complex Note", content="This is a complex note with multiple keywords like Python, AI, Django, Testing and more.")
+        cls.note2 = Note.objects.create(owner=cls.user, title="Simple Note", content="A simple note for testing.")
 
     def test_note_analysis(self):
-        # This will fetch notes with id 1 and 2, adjust as needed
         notes = Note.objects.filter(id__in=[self.note1.id, self.note2.id])
-        
-        if not notes:
-            print("No notes found. Please check your database.")
-            return
-
-        for idx, note in enumerate(notes, start=1):
-            print(f"\n\n--- Note {idx} Analysis ---")
-            print("Note Content:")
-            print(note.content)
-            print("\n--- Performing Analysis ---\n")
-
+        for note in notes:
+            print(f"\n--- {note.title} Analysis ---")
             result = analyze_note(note.pk)
-
             print("Analysis Results:")
             print(f"Summary: {result['summary']}")
             print(f"Keywords: {result['keywords']}")
 
+class AutoGroupTestCase(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = User.objects.create_user(username='testuser', password='12345')
+        # Notes potentially similar to test effective grouping
+        cls.note1 = Note.objects.create(owner=cls.user, title="Django Testing", content="Testing in Django can be tricky.")
+        cls.note2 = Note.objects.create(owner=cls.user, title="Django Models", content="Django models are essential for database interaction.")
+        cls.note3 = Note.objects.create(owner=cls.user, title="Testing Basics", content="Basics of testing in software development.")
 
+    def test_auto_grouping(self):
+        notes = Note.objects.filter(id__in=[self.note1.id, self.note2.id, self.note3.id])
+        print("\n--- Auto Grouping Test ---")
+        for note in notes:
+            group = auto_group_note(note.pk)
+            if group:
+                print(f"\nGroup Title: {group.title}")
+                print("Grouped Notes:")
+                for grouped_note in group.notes.all():
+                    print(f"- {grouped_note.title}")
+
+    
+    
 """ DJANGO SHELL TESTS """
 
 # notes = Note.objects.all().order_by('-id')[:k]
