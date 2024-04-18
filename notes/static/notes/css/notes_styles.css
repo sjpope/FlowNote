@@ -98,7 +98,7 @@ input[type="text"],
 input[type="email"],
 input[type="password"] {
   width: calc(100% - 170px); /* Adjust the width to accommodate label */
-  min-width: 120px;
+  min-width: 190px;
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
