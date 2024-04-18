@@ -15,6 +15,9 @@ class NoteGroup(models.Model):
     def __str__(self):
         return self.title
     
+    class Meta:  
+        app_label = 'notes'
+    
 
 class Note(models.Model):
     title = models.CharField(max_length=100)
@@ -33,10 +36,15 @@ class Note(models.Model):
     def __str__(self):
         return self.title
 
+    class Meta:  
+        app_label = 'notes'
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     theme = models.CharField(max_length=10, default='light')
+    
+    class Meta:  
+        app_label = 'notes'
 
 
 
