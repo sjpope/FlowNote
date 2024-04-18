@@ -57,21 +57,21 @@ def get_autocomplete_suggestions(prompt):
 
 """ Auto Grouping Methods"""
 def auto_group_note(note_id, threshold=0.15):
-    """
-    Create a group for a specified note based on similarity with other notes.
-    """
+    
     target_note = Note.objects.get(pk=note_id)
     other_notes = Note.objects.exclude(pk=note_id)
-
+    
     target_content = get_preprocessed_content(target_note)
     other_contents = [get_preprocessed_content(note) for note in other_notes]
     
-    preprocessed_list = [target_content] + other_contents 
-
-    sim_matrix = compute_similarity_matrix(preprocessed_list)
-    similarities = sim_matrix[0, 1:]  
-
-    return group_note(target_note, other_notes, similarities, threshold)
+    contents = [target_content] + other_contents
+    sim_matrix = compute_similarity_matrix(contents)
+    similarities = sim_matrix[0, 1:]
+    
+    group_title = generate_group_title(contents)
+    group = group_note(target_note, other_notes, similarities, threshold, group_title)
+    
+    return group
 
 def auto_group_all(threshold=0.25, owner=None):
     """
@@ -82,6 +82,14 @@ def auto_group_all(threshold=0.25, owner=None):
     sim_matrix = compute_similarity_matrix(preprocessed_list)
 
     return group_all_notes(notes, sim_matrix, threshold, owner=owner)
+
+def generate_group_title(contents):
+    
+    prompt = "Generate a meaningful title based on these contents: " + ' '.join(contents)
+    title = generate_content(prompt, num_return_sequences=1)[0]
+    title = strip_prompt(prompt, title)
+    
+    return title.strip()
 
 """ Analysis Methods"""
 

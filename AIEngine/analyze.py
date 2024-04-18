@@ -55,25 +55,20 @@ def analyze(content, processed_content):
     #if len(processed_content.split()) < 25:
     #     logging.warning("Text too short for analysis.")
     #     return "Text too short for analysis."
-    logging.info(f'Content: {content}\n\nProcessed Content: {processed_content}\n\n')
+    # logging.info(f'Content: {content}\n\nProcessed Content: {processed_content}\n\n')
     keywords = generate_keywords(content, processed_content)
     summary = generate_summary(content)
-    logging.info(f'KEYWORDS\n\n{(keywords)}\n\n')
-    logging.info(f'SUMMARY\n\n{summary}\n\n')
+    # logging.info(f'KEYWORDS\n\n{(keywords)}\n\n')
+    # logging.info(f'SUMMARY\n\n{summary}\n\n')
+    
     return {
-        "keywords": ', '.join(keywords),
+        "keywords": keywords,
         "summary": summary
     }
     
 def generate_keywords(note_content, processed_content):
     
     prompt = f"From this list of words: {processed_content} Return only a comma separated list of the most important keywords relevant to this text: {note_content}"
-    
-    # Send these arguments to generate_content
-    # additional_tokens=50
-    # temperature=0.5,
-    #       top_k=20,
-    #      top_p=0.75,
     
     keywords = generate_content(prompt, num_return_sequences=1, additional_tokens=50, temperature=0.5, top_k=20, top_p=0.75)[0]
     keywords = strip_prompt(prompt, keywords)
@@ -98,16 +93,20 @@ def compute_similarity_matrix(contents):
     cosine_sim = cosine_similarity(tfidf_matrix, tfidf_matrix)
     return cosine_sim
 
-def group_note(target_note, other_notes, similarities, threshold=0.5):
+def group_note(target_note, other_notes, similarities, threshold=0.5, group_title=''):
     similar_indices = np.where(similarities > threshold)[0] 
     similar_indices = [int(i) for i in similar_indices]
     similar_notes = [other_notes[i] for i in similar_indices]
 
     if similar_notes:
-        note_group = NoteGroup(title=f"Group for Note {target_note.pk} - {dt.now().strftime('%Y-%m-%d %H:%M:%S')}", owner=target_note.owner)
-        note_group = NoteGroup(title=f"Group for Note {target_note.pk} - {dt.now().strftime('%Y-%m-%d %H:%M:%S')}", owner=target_note.owner)
+        if group_title:
+            note_group = NoteGroup(title=group_title, owner=target_note.owner)
+        else:
+            note_group = NoteGroup(title=f"Group for Note {target_note.pk} - {dt.now().strftime('%Y-%m-%d %H:%M:%S')}", owner=target_note.owner)
+        
         note_group.save()
         note_group.notes.add(target_note, *similar_notes)
+        # Is another save needed after adding notes?
         return note_group
     
 def group_all_notes(notes, similarity_matrix, threshold=0.5, owner=None):
@@ -124,6 +123,7 @@ def group_all_notes(notes, similarity_matrix, threshold=0.5, owner=None):
         visited.update(similar_indices)
 
         if group:
+            # generate_group_title(group)
             note_group = NoteGroup(
                 title=f"Auto Group {len(note_groups) + 1} - {dt.now().strftime('%Y-%m-%d %H:%M:%S')}",
                 owner=owner 
