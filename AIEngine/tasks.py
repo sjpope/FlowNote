@@ -69,8 +69,9 @@ def auto_group_note(note_id, threshold=0.15):
     similarities = sim_matrix[0, 1:]
     
     group_title = generate_group_title(contents)
+    group = group_note(target_note, other_notes, similarities, threshold, group_title)
     
-    return group_note(target_note, other_notes, similarities, threshold, group_title)
+    return group
 
 def auto_group_all(threshold=0.25, owner=None):
     """

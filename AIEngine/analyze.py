@@ -93,16 +93,20 @@ def compute_similarity_matrix(contents):
     cosine_sim = cosine_similarity(tfidf_matrix, tfidf_matrix)
     return cosine_sim
 
-def group_note(target_note, other_notes, similarities, threshold=0.5):
+def group_note(target_note, other_notes, similarities, threshold=0.5, group_title=''):
     similar_indices = np.where(similarities > threshold)[0] 
     similar_indices = [int(i) for i in similar_indices]
     similar_notes = [other_notes[i] for i in similar_indices]
 
     if similar_notes:
-        note_group = NoteGroup(title=f"Group for Note {target_note.pk} - {dt.now().strftime('%Y-%m-%d %H:%M:%S')}", owner=target_note.owner)
-        note_group = NoteGroup(title=f"Group for Note {target_note.pk} - {dt.now().strftime('%Y-%m-%d %H:%M:%S')}", owner=target_note.owner)
+        if group_title:
+            note_group = NoteGroup(title=group_title, owner=target_note.owner)
+        else:
+            note_group = NoteGroup(title=f"Group for Note {target_note.pk} - {dt.now().strftime('%Y-%m-%d %H:%M:%S')}", owner=target_note.owner)
+        
         note_group.save()
         note_group.notes.add(target_note, *similar_notes)
+        # Is another save needed after adding notes?
         return note_group
     
 def group_all_notes(notes, similarity_matrix, threshold=0.5, owner=None):
@@ -119,6 +123,7 @@ def group_all_notes(notes, similarity_matrix, threshold=0.5, owner=None):
         visited.update(similar_indices)
 
         if group:
+            # generate_group_title(group)
             note_group = NoteGroup(
                 title=f"Auto Group {len(note_groups) + 1} - {dt.now().strftime('%Y-%m-%d %H:%M:%S')}",
                 owner=owner 
