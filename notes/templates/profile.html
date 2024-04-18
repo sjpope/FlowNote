@@ -9,6 +9,19 @@
             <i class="fas fa-user"></i>
             <p>Username: {{ request.user.username }}</p>
         </div>
+
+        <div class="profile-item">
+            <form id="update_username-form" action="{% url 'notes:update_username' %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-settings">
+                    <i class="fas fa-envelope"></i>
+                    Update
+                    <i class="fas fa-envelope"></i>
+                    Username
+                </button>
+            </form>
+        </div>
+
         <div class="profile-item">
             <i class="fas fa-envelope"></i>
             <p>Email: {{ user.email }}</p>
@@ -39,7 +52,7 @@
                 </div>
             </div>
         </form>
-
+        <br><br>
         <h3>Contact Support</h3>
         <p>Questions, feedback, or issues? Contact us!</p>
         <form id="contact-form" action="{% url 'notes:contact' %}" method="post">
@@ -107,16 +120,19 @@
         padding: 20px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
-    
+
     .profile-item {
         display: flex;
         align-items: center;
-        margin-bottom: 10px;
+        margin-bottom: 20px;
+        margin-top: 20px;
     }
-    
     .profile-item i {
         margin-right: 10px;
         color: var(--icon-color);
+    }
+    .profile-item p {
+        margin: 0;
     }
 </style>
 {% endblock %}
