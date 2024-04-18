@@ -1,39 +1,88 @@
 from django.test import TestCase
+
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 from django.contrib.auth.models import User
-from .models import Note
+
+from notes.models import Note, NoteGroup
+from AIEngine.tasks import *  
+
+# python manage.py test
+
+class NoteAnalysisTestCase(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = User.objects.create_user(username='testuser', password='12345')
+        # Reusing notes GPT-2 Medium scored poorly on during analysis testing 
+        cls.note1 = Note.objects.create(owner=cls.user, title="Neuro AI", content=
+                                        """The interface between neuroscience and artificial intelligence (AI) represents a frontier of interdisciplinary research with transformative potential. Neuroscience, through the study of the brains structure and function, provides insights into cognition, perception, and learning processes. AI, particularly in the realm of machine learning and neural networks, seeks to emulate these cognitive functions computationally. The synergy between these fields is evident in the development of algorithms inspired by neural processing, enhancing AIs capabilities in pattern recognition, decision-making, and natural language processing. Conversely, AI techniques are employed in analyzing neurological data, advancing our understanding of brain function and disorders. This reciprocal relationship not only propels AI towards more sophisticated and human-like intelligence but also opens new avenues in brain research, with implications for neurology, psychology, and cognitive science."""
+                                        )
+        cls.note2 = Note.objects.create(owner=cls.user, title="Economics - Market Structures", content=
+                                        """Market structures in economics refer to the competitive environment within a market. These structures range from perfect competition, where many firms are price takers, to monopoly, where a single firm controls the market. Other types include oligopoly, characterized by a few firms, and monopolistic competition, where many firms compete but have differentiated products. Each structure affects pricing, efficiency, and consumer choice differently.""")
+
+    def test_note_analysis(self):
+        notes = Note.objects.filter(id__in=[self.note1.id, self.note2.id])
+        for note in notes:
+            print(f"\n--- {note.title} Analysis ---")
+            result = analyze_note(note.pk)
+            print("Analysis Results:")
+            print(f"SUMMARY: {result['summary']}")
+            print(f"KEYWORDS: {result['keywords']}")
+
+class AutoGroupTestCase(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = User.objects.create_user(username='testuser', password='12345')
+        cls.note1 = Note.objects.create(owner=cls.user, title="Django Testing", content="Testing in Django can be tricky.")
+        cls.note2 = Note.objects.create(owner=cls.user, title="Django Models", content="Django models are essential for database interaction.")
+        cls.note3 = Note.objects.create(owner=cls.user, title="Testing Basics", content="Basics of testing in software development.")
+
+    def test_auto_grouping(self):
+        notes = Note.objects.filter(id__in=[self.note1.id, self.note2.id, self.note3.id])
+        print("\n--- Auto Grouping Test ---")
+        for note in notes:
+            threshold = 0.15
+            group = auto_group_note(note.pk)
+            if group:
+                print(f"\nGroup Title: {group.title}")
+                print("Grouped Notes (Threshold 0.15):")
+                for grouped_note in group.notes.all():
+                    print(f"- {grouped_note.title}")
+                    
+            else:
+                print(f"\nNo similar notes found for {note.title}")
+                
+
+    
+    
+""" DJANGO SHELL TESTS """
 
 # notes = Note.objects.all().order_by('-id')[:k]
-Note.objects.get(id in [6,7])
-
-from notes.models import Note  
-from AIEngine.tasks import analyze_note  
-
-
-def test_analysis():
-    # Fetch FIRST k notes from db
-    # notes = Note.objects.all()[:k]
-    notes = Note.objects.filter(id__in=[6, 7])
+# from notes.models import Note  
+# from AIEngine.tasks import analyze_note  
+# def test_analysis():
+#     # Fetch FIRST k notes from db
+#     # notes = Note.objects.all()[:k]
+#     notes = Note.objects.filter(id__in=[6, 7])
     
-    if not notes:
-        print(f"No notes found. Please check your database.")
-        return
+#     if not notes:
+#         print(f"No notes found. Please check your database.")
+#         return
     
-    for idx, note in enumerate(notes, start=1):
-        print(f"\n\n--- Note {idx} Analysis ---")
-        print("Note Content:")
-        print(note.content)
-        print("\n--- Performing Analysis ---\n")
+#     for idx, note in enumerate(notes, start=1):
+#         print(f"\n\n--- Note {idx} Analysis ---")
+#         print("Note Content:")
+#         print(note.content)
+#         print("\n--- Performing Analysis ---\n")
         
-        result = analyze_note(note.pk)  
+#         result = analyze_note(note.pk)  
         
-        print("Analysis Results:")
-        print(f"Summary: {result['summary']}")
-        print(f"Keywords: {result['keywords']}")
+#         print("Analysis Results:")
+#         print(f"Summary: {result['summary']}")
+#         print(f"Keywords: {result['keywords']}")
 
-test_analysis()
+# test_analysis()
 
 """
 
@@ -83,7 +132,6 @@ Extracted Keywords:
 Neurolinguitists have also developed cognitive-behavioral approaches that enhance cognitive functions such as visuo-spatial skills and inhibitory control, and are increasingly applied in cognitive neuroscience research.
 """
 
-
 """
 RUN #2
 
@@ -129,7 +177,6 @@ Neurolinguistics explores the brain mechanisms underlying language comprehension
 Extracted Keywords:
 Neuropsychological research has also uncovered connections between cognitive function and neural processing, suggesting that these processes influence language processing.
 """
-
 
 """
 RUN 3 (1.8 of 3, 60%)

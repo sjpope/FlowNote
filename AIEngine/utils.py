@@ -35,8 +35,7 @@ def strip_html_tags(input_string):
     cleaned = cleaned.replace('&#39;', "'")
     cleaned = cleaned.replace('&#34;', '"')
     
-    
-    return html_tag_pattern.sub('', input_string)
+    return cleaned
 
 def strip_prompt(prompt, content):
     try:
