@@ -196,8 +196,7 @@ def update_theme(request):
         user_profile, _ = UserProfile.objects.get_or_create(user=request.user)
         user_profile.theme = theme
         user_profile.save()
-        messages.success(request, 'Theme updated successfully')
-    return redirect('notes:settings')
+    return redirect('notes:profile')
 
 def register(request):
     if request.method == 'POST':
