@@ -1,4 +1,6 @@
 from os import name
+
+from attr import fields
 from .models import *
 
 from django import forms
@@ -81,3 +83,8 @@ class ContactForm(forms.Form):
     email = forms.EmailField()
     subject = forms.CharField(max_length=100)
     message = forms.CharField(widget=forms.Textarea)
+
+class UpdateUsernameForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username']
