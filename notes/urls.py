@@ -29,11 +29,14 @@ urlpatterns = [
     # AI Assistant URL
     path('generate-response/', generate_response_from_prompt, name='generate-response'),
 
-    # Note Group URLs - Auto Grouping
+    # Note Group URLs
+    path('note-groups/search', GroupSearchView.as_view(), name='group_search'),
+    
+    # Auto Grouping
     path('notes/<int:note_id>/auto-group/', auto_group_note_view, name='auto_group_note'),
     path('notes/auto-group-all/', auto_group_all_view, name='auto_group_all'),
     
-    # Note Group URLs - User Grouping
+    # User Grouping
     path('note-groups/', group_list, name='group_list'),
     path('note-groups/<int:pk>/', group_detail, name='group_detail'),
     path('note-groups/create/', group_create, name='group_create'),

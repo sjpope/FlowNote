@@ -114,6 +114,20 @@ def generate_response_from_prompt(request):
     return JsonResponse({'error': 'Invalid request'}, status=400) #more error handling
 
 """ Group Views """
+
+class GroupSearchView(ListView):
+    model = NoteGroup
+    template_name = 'group_search.html'
+    context_object_name = 'groups'
+
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        if query:
+            # SEARCH BY TITLE
+            return NoteGroup.objects.filter(Q(title__icontains=query), owner=self.request.user)
+        else:
+            return NoteGroup.objects.filter(owner=self.request.user)
+        
 def assign_note_to_group(request):
     if request.method == 'POST':
         form = NoteGroupAssignmentForm(request.POST)
@@ -148,7 +162,18 @@ def group_delete(request, pk):
 
 def group_detail(request, pk):
     group = get_object_or_404(NoteGroup, pk=pk)
-    notes = group.notes.all()  # Grab all notes associated with the group
+    notes = group.notes.all()  
+    
+    # FILTER BY TITLE
+    title_query = request.GET.get('title')
+    if title_query:
+        notes = notes.filter(title__icontains=title_query)  
+
+    # FILTER BY DATE
+    date_query = request.GET.get('date')
+    if date_query:
+        notes = notes.filter(created_at__date=date_query)
+        
     return render(request, 'group/group_detail.html', {'group': group, 'notes': notes})
 
 def group_create(request):
