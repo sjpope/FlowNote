@@ -186,10 +186,6 @@ class NoteSearchView(ListView):
 def profile(request):
     return render(request, 'profile.html', {'user': request.user})
 
-@login_required
-def settings(request):
-    return render(request, 'settings.html', {'user': request.user})
-
 def update_theme(request):
     if request.method == 'POST':
         theme = request.POST.get('theme')
