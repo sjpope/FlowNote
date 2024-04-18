@@ -34,7 +34,6 @@ class AutoGroupTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user = User.objects.create_user(username='testuser', password='12345')
-        # Notes potentially similar to test effective grouping
         cls.note1 = Note.objects.create(owner=cls.user, title="Django Testing", content="Testing in Django can be tricky.")
         cls.note2 = Note.objects.create(owner=cls.user, title="Django Models", content="Django models are essential for database interaction.")
         cls.note3 = Note.objects.create(owner=cls.user, title="Testing Basics", content="Basics of testing in software development.")
@@ -43,12 +42,17 @@ class AutoGroupTestCase(TestCase):
         notes = Note.objects.filter(id__in=[self.note1.id, self.note2.id, self.note3.id])
         print("\n--- Auto Grouping Test ---")
         for note in notes:
+            threshold = 0.15
             group = auto_group_note(note.pk)
             if group:
                 print(f"\nGroup Title: {group.title}")
-                print("Grouped Notes:")
+                print("Grouped Notes (Threshold 0.15):")
                 for grouped_note in group.notes.all():
                     print(f"- {grouped_note.title}")
+                    
+            else:
+                print(f"\nNo similar notes found for {note.title}")
+                
 
     
     
