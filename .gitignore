@@ -95,6 +95,10 @@ Untitled.ipynb
 **/hf_*
 /models 
 /tokenizer
+# Weird hugging face cache hub directory
+D:/
+D:/huggingface_cache/hub/version.txt
+D:/huggingface_cache/hub/
 
 obj/
 Any CPU/
