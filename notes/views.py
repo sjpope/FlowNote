@@ -12,6 +12,8 @@ from .models import *
 
 from django.urls import reverse, reverse_lazy
 from django.shortcuts import *   # render, redirect, get_object_or_404
+from django.core.mail import send_mail
+from django.conf import settings as django_settings
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate, logout
@@ -209,18 +211,13 @@ class NoteSearchView(ListView):
 def profile(request):
     return render(request, 'profile.html', {'user': request.user})
 
-@login_required
-def settings(request):
-    return render(request, 'settings.html', {'user': request.user})
-
 def update_theme(request):
     if request.method == 'POST':
         theme = request.POST.get('theme')
         user_profile, _ = UserProfile.objects.get_or_create(user=request.user)
         user_profile.theme = theme
         user_profile.save()
-        messages.success(request, 'Theme updated successfully')
-    return redirect('notes:settings')
+    return redirect('notes:profile')
 
 def register(request):
     if request.method == 'POST':
@@ -289,3 +286,29 @@ class NoteUpdateView(UpdateView):
     def get_success_url(self):
         pk = self.object.pk
         return reverse('notes:note_detail', kwargs={'pk': pk})
+
+""" Contact """
+def contact(request):
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            email = form.cleaned_data['email']
+            subject = form.cleaned_data['subject']
+            message = form.cleaned_data['message']
+            
+            # Send email to your support team
+            send_mail(
+                subject,
+                f'Name: {name}\nEmail: {email}\n\n{message}',
+                email,
+                [django_settings.SUPPORT_EMAIL],
+                fail_silently=False,
+            )
+            
+            # Redirect to a success page
+            return redirect('home')
+    else:
+        form = ContactForm()
+    
+    return render(request, 'contact.html', {'form': form})
