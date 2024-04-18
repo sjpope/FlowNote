@@ -93,22 +93,34 @@ def compute_similarity_matrix(contents):
     return cosine_sim
 
 def group_note(target_note, other_notes, similarities, threshold=0.5, group_title=''):
-    similar_indices = np.where(similarities > threshold)[0] 
-    similar_indices = [int(i) for i in similar_indices]
+    """
+    Group a target note with other similar notes, updating an existing group or creating a new one.
+    """
+    similar_indices = np.where(similarities > threshold)[0]
     similar_notes = [other_notes[i] for i in similar_indices]
 
     if similar_notes:
-        if group_title:
-            note_group = NoteGroup(title=group_title, owner=target_note.owner)
-        else:
-            note_group = NoteGroup(title=f"Group for Note {target_note.pk} - {dt.now().strftime('%Y-%m-%d %H:%M:%S')}", owner=target_note.owner)
         
-        note_group.save()
-        note_group.notes.add(target_note, *similar_notes)
-        # Is another save needed after adding notes?
-        return note_group
+        existing_group = find_existing_group(target_note, threshold)
+        if existing_group:
+            for note in similar_notes:
+                existing_group.notes.add(note)
+            existing_group.notes.add(target_note)
+            existing_group.save()
+            return existing_group
+        else:
+            if group_title:
+                note_group = NoteGroup(title=group_title, owner=target_note.owner)
+            else:
+                note_group = NoteGroup(title=f"Group for Note {target_note.pk} - {dt.now().strftime('%Y-%m-%d %H:%M:%S')}", owner=target_note.owner)
+            note_group.save()
+            note_group.notes.add(target_note, *similar_notes)
+            return note_group
     
-def group_all_notes(notes, similarity_matrix, threshold=0.5, owner=None):
+def group_all_notes(notes, similarity_matrix, threshold=0.5, owner=None, group_title='') -> list[NoteGroup]:
+    """
+    Attempt to group all notes based on overall similarity, updating existing groups where applicable.
+    """
     note_groups = []
     visited = set()
 
@@ -122,14 +134,21 @@ def group_all_notes(notes, similarity_matrix, threshold=0.5, owner=None):
         visited.update(similar_indices)
 
         if group:
-            # generate_group_title(group)
-            note_group = NoteGroup(
-                title=f"Auto Group {len(note_groups) + 1} - {dt.now().strftime('%Y-%m-%d %H:%M:%S')}",
-                owner=owner 
-            )
-            note_group.save()
-            note_group.notes.set(group)
-            note_groups.append(note_group)
+            
+            for note in group:
+                existing_group = find_existing_group(note, threshold)
+                if existing_group:
+                    for n in group:
+                        existing_group.notes.add(n)
+                    existing_group.save()
+                    note_groups.append(existing_group)
+                    break
+                else:
+                    # We're clear to create a new group. Use group_title.
+                    note_group = NoteGroup(title=f"Auto Group {len(note_groups) + 1} - {dt.now().strftime('%Y-%m-%d %H:%M:%S')}", owner=owner)
+                    note_group.save()
+                    note_group.notes.set(group)
+                    note_groups.append(note_group)
 
     return note_groups
 
@@ -142,7 +161,10 @@ def find_existing_group(note, threshold=0.5) -> NoteGroup:
         group_contents = [get_preprocessed_content(n) for n in group.notes.all()]
         group_contents.append(get_preprocessed_content(note))
         sim_matrix = compute_similarity_matrix(group_contents)
-        avg_similarity = np.mean(sim_matrix[-1][:-1])  # Average similarity of 'note' with all notes in the group
+        
+        # Average similarity of 'note' across all notes in the group
+        avg_similarity = np.mean(sim_matrix[-1][:-1])  
         if avg_similarity > threshold:
             return group
+        
     return None
