@@ -11,6 +11,7 @@ from .config import model, tokenizer
 import torch
 import re
 import datetime as dt
+import logging
 
 """ Content Generation Methods"""
 
@@ -39,6 +40,7 @@ def generate_flashcards_task(key_concepts):
     return flashcards
 
 def get_autocomplete_suggestions(prompt):
+    logging.info("Getting autocomplete suggestions...")
     
     prompt = strip_html_tags(prompt.strip())
     
@@ -60,26 +62,31 @@ def get_autocomplete_suggestions(prompt):
     suggestions = [ tokenizer.decode(output, skip_special_tokens=True) for output in outputs]
         
     completions = [strip_prompt(prompt, suggestion) for suggestion in suggestions]       
-
+    
+    logging.info("Autocomplete suggestions retrieved.")
+    
     return completions
 
 """ Auto Grouping Methods"""
 def auto_group_note(note_id, threshold=0.15):
-    
-    target_note = Note.objects.get(pk=note_id)
-    other_notes = Note.objects.exclude(pk=note_id)
-    
-    target_content = get_preprocessed_content(target_note)
-    other_contents = [get_preprocessed_content(note) for note in other_notes]
-    
-    contents = [target_content] + other_contents
-    sim_matrix = compute_similarity_matrix(contents)
-    similarities = sim_matrix[0, 1:]
-    
-    group_title = generate_group_title(contents)
-    group = group_note(target_note, other_notes, similarities, threshold, group_title)
-    
-    return group
+    try:
+        target_note = Note.objects.get(pk=note_id)
+        other_notes = Note.objects.exclude(pk=note_id)
+
+        target_content = get_preprocessed_content(target_note).lower()
+        other_contents = [get_preprocessed_content(note).lower() for note in other_notes]
+
+        contents = [target_content] + other_contents
+        sim_matrix = compute_similarity_matrix(contents)
+        similarities = sim_matrix[0, 1:]
+
+        group_title = generate_group_title(contents)
+        group = group_note(target_note, other_notes, similarities, threshold, group_title)
+
+        return group
+    except Exception as e:
+        logging.error(f"An error occurred while auto grouping note: {str(e)}")
+        return None
 
 def auto_group_all(threshold=0.25, owner=None) -> list[NoteGroup]:
     """
