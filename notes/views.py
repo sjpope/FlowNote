@@ -48,8 +48,13 @@ def generate_flashcards_view(request):
 
 def autocomplete_view(request):
     if request.method == 'GET':
+        logging.info('Autocomplete Request Received.')
         text = request.GET.get('text', '')
-        suggestions = get_autocomplete_suggestions(text)  
+        note_id = request.GET.get('noteId', None)
+        suggestions = get_autocomplete_suggestions(note_id, text) 
+        
+        resLog = ' \n'.join(suggestions)
+        logging.info(f'AUTOCOMPLETE RESPONSE: {resLog}\n')
         return JsonResponse({'suggestions': suggestions})
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=405)
