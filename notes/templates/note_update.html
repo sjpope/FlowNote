@@ -3,11 +3,15 @@
 {% block content %}
 <div class="update-note">
   <h2>Update Note</h2>
+
     <form method="post" class="update-form">
       {% csrf_token %}
       {{ form.as_p }}
+      <input type="hidden" id="note-id" value="{{ note.id }}" />
       <button type="submit">Update</button>
     </form>
+    <button type="button" id="autocomplete-trigger">Autocomplete</button>
+
     {% include 'assistant.html' %}
 </div>
 <style>
@@ -84,59 +88,116 @@
 <script src="https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"></script>
 <script>
   document.addEventListener("DOMContentLoaded", function() {
-      var editor = CKEDITOR.replace('id_content', {
-          toolbar: 'Custom',
-          toolbar_Custom: [
-              { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline'] },
-              { name: 'colors', items: ['TextColor', 'BGColor'] },
-              { name: 'fonts', items: ['Font', 'FontSize'] },
-              { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent'] },
-              { name: 'links', items: ['Link', 'Unlink'] },
-              { name: 'tools', items: ['RemoveFormat', 'Source'] }
-          ],
-          removePlugins: 'elementspath',
-          extraPlugins: 'autocomplete',
-      });
-  
-      CKEDITOR.plugins.add('autocomplete', {
-          init: function(editor) {
-              editor.showTextSuggestions = function(suggestions) {
-                  var dialogContentHtml = '<div style="padding:10px;">';
-                  suggestions.forEach(function(suggestion) {
-                      dialogContentHtml += '<div class="suggestion-item" onclick="applySuggestion(\'' + suggestion.replace("'", "\\'") + '\')">' + suggestion + '</div>';
-                  });
-                  dialogContentHtml += '</div>';
-  
-                  if (editor.suggestionDialog) {
-                      editor.suggestionDialog.destroy();
-                  }
-                  editor.suggestionDialog = new CKEDITOR.dialog(editor, {
-                      title: 'Autocomplete Suggestions',
-                      contents: [{
-                          id: 'tab-basic',
-                          label: 'Basic Settings',
-                          elements: [{
-                              type: 'html',
-                              html: dialogContentHtml
-                          }]
-                      }],
-                      onOk: function() {
-                        // Insert da 1st suggestion iuser click OK 
-                        var firstSuggestion = document.querySelector('.suggestion-item');
-                        if (firstSuggestion) {
-                          editor.insertHtml(firstSuggestion.textContent + ' ');
-                        }                      
-                      }
-                  });
-                  editor.suggestionDialog.show();
-              };
-  
-              window.applySuggestion = function(suggestion) {
-                  editor.insertHtml(suggestion + ' ');
-                  editor.suggestionDialog.hide();
-              };
+
+    var editor = CKEDITOR.replace('id_content', {
+      toolbar: 'Custom',
+      toolbar_Custom: [
+        { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline'] },
+        { name: 'colors', items: ['TextColor', 'BGColor'] },
+        { name: 'fonts', items: ['Font', 'FontSize'] },
+        { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent'] },
+        { name: 'links', items: ['Link', 'Unlink'] },
+        { name: 'tools', items: ['RemoveFormat', 'Source'] }
+      ],
+      removePlugins: 'elementspath',
+      extraPlugins: 'autocomplete',
+    });
+
+    var noteId = window.location.pathname.match(/\/(\d+)\/update\//);
+    noteId = noteId ? noteId[1] : 'default';
+
+    CKEDITOR.plugins.add('autocomplete', {
+      init: function(editor) {
+        editor.addCommand('autocomplete', {
+        exec: function(editor) {
+          var content = editor.getData();
+          fetch(`/notes/autocomplete?text=${encodeURIComponent(content)}&noteId=${noteId}`, {
+            method: 'GET',
+            headers: {
+              'X-CSRFToken': getCookie('csrftoken'),
+            },
+          })
+          .then(response => response.json())
+          .then(data => {
+            editor.showTextSuggestions(data.suggestions);
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+        }
+        });
+
+        editor.showTextSuggestions = function(suggestions) {
+          var suggestionsList = document.getElementById('suggestions-list');
+          // If the suggestions list already exists, remove it to replace with new suggestions
+          if (suggestionsList) {
+            suggestionsList.parentNode.removeChild(suggestionsList);
           }
+      
+          // Create a new suggestions list if there are suggestions to display
+          if (suggestions && suggestions.length) {
+            suggestionsList = document.createElement('ul');
+            suggestionsList.id = 'suggestions-list';
+            suggestionsList.style.position = 'fixed';
+            suggestionsList.style.bottom = '50px'; // Adjust the position as needed
+            suggestionsList.style.left = '50%';
+            suggestionsList.style.transform = 'translateX(-50%)';
+            suggestionsList.style.zIndex = '10000';
+            suggestionsList.style.padding = '10px';
+            suggestionsList.style.backgroundColor = '#fff';
+            suggestionsList.style.listStyle = 'none';
+          suggestionsList.style.border = '1px solid #ccc';
+          suggestionsList.style.borderRadius = '4px';
+          suggestionsList.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+          suggestionsList.style.maxHeight = '150px';
+          suggestionsList.style.overflowY = 'auto';
+      
+          suggestions.forEach(function(suggestion) {
+            var listItem = document.createElement('li');
+            listItem.textContent = suggestion;
+            listItem.style.padding = '5px 10px';
+            listItem.style.cursor = 'pointer';
+            listItem.style.borderBottom = '1px solid #eee';
+            listItem.onclick = function() {
+              editor.insertHtml(this.textContent + ' ');
+              editor.focus();
+              suggestionsList.remove();
+            };
+            suggestionsList.appendChild(listItem);
+          });
+      
+          document.body.appendChild(suggestionsList);
+        }
+      };
+    
+      }
+    });
+
+    var autocompleteTrigger = document.getElementById('autocomplete-trigger');
+    if (autocompleteTrigger) {
+      autocompleteTrigger.addEventListener('click', function(event) {
+        event.preventDefault(); // Prevent any default action
+        editor.execCommand('autocomplete');
       });
+    } else {
+      console.error('Autocomplete trigger button not found.');
+    }
+
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+    
   });
-  </script>
+</script>
 {% endblock %}
