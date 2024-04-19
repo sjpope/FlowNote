@@ -65,7 +65,7 @@ def analyze(content, processed_content):
         "summary": summary
     }
     
-def generate_keywords(note_content, processed_content):
+def generate_keywords(note_content, processed_content) -> list[str]:
     
     prompt = f"From this list of words: {processed_content} Return only a comma separated list of the most important keywords relevant to this text: {note_content}"
     
@@ -76,7 +76,7 @@ def generate_keywords(note_content, processed_content):
     
     return keywords
 
-def generate_summary(note_content):
+def generate_summary(note_content) -> str:
     
     prompt = f"Summarize this content: {note_content}"
     summary = generate_content(prompt, num_return_sequences=1)[0]
