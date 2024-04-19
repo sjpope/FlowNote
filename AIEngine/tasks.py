@@ -11,6 +11,7 @@ from .config import model, tokenizer
 import torch
 import re
 import datetime as dt
+import logging
 
 """ Content Generation Methods"""
 
@@ -38,50 +39,86 @@ def generate_flashcards_task(key_concepts):
    
     return flashcards
 
-def get_autocomplete_suggestions(prompt):
-    inputs = tokenizer.encode(prompt, return_tensors='pt')
+def get_autocomplete_suggestions(note_id, prompt):
     
-    # TO-DO: Allow users to specify parameter (max_length, num_return_sequences) size in their settings. Use Slider? 
-    outputs = model.generate(inputs, max_length=len(inputs[0]) + 10, num_return_sequences=3, do_sample=True)
+    
+    prompt = strip_html_tags(prompt.strip())
+    logging.info(f"Getting autocomplete suggestions...\n\n{prompt}\n\n")
+    # if prompt.endswith('.') or prompt.endswith('?') or prompt.endswith('!'):
+    #     # Indicate to GPT-2 that it must continue on new sentence.
+    #     prompt = prompt[:-1] + ' ' + tokenizer.eos_token
+    # elif prompt.endswith(','):
+    #     # We can pass as normal, GPT-2 should pick up on it.
+    #     prompt = prompt[:-1] + ' '
+    # else:
+    #     prompt = prompt + '...'
+    if not prompt.strip().endswith(('.', '?', '!')):
+        prompt = prompt.strip() + ' '
 
-    suggestions = []
-    for output in outputs:
-        text = tokenizer.decode(output, skip_special_tokens=True)
-        continuation = text[len(prompt):].strip()           # Isolate the prompt from the suggestion
-        suggestion = continuation.split()[0] if continuation else ''
-        
-        if suggestion not in suggestions:
-            suggestions.append(suggestion)
+    prompt = f"Continue the following text: {prompt}"
+    
+    # Generate inputs for the model
+    inputs = tokenizer.encode(prompt, return_tensors='pt', add_special_tokens=True)
+    attention_mask = inputs.ne(tokenizer.pad_token_id).int()
+    
+    # Generate continuation sequences with the model
+    outputs = model.generate(
+        input_ids=inputs,
+        attention_mask=attention_mask,
+        max_length=inputs.shape[-1] + 50,  # Generate sequences that continue beyond the length of the input
+        num_return_sequences=3,
+        do_sample=True,
+        temperature=0.7,  # Adjust sampling temperature if necessary
+        top_k=50,  # Use top-k sampling
+        top_p=0.9,  # Use nucleus sampling
+        pad_token_id=tokenizer.eos_token_id,
+    )
+    
+    # Decode the output tokens to strings
+    suggestions = [tokenizer.decode(output, skip_special_tokens=True) for output in outputs]
+    
+    # Strip the original prompt from the suggestions to get the continuations
+    completions = [s[len(prompt):].strip() for s in suggestions]
 
-    return suggestions
+    return completions
 
 """ Auto Grouping Methods"""
 def auto_group_note(note_id, threshold=0.15):
-    
-    target_note = Note.objects.get(pk=note_id)
-    other_notes = Note.objects.exclude(pk=note_id)
-    
-    target_content = get_preprocessed_content(target_note)
-    other_contents = [get_preprocessed_content(note) for note in other_notes]
-    
-    contents = [target_content] + other_contents
-    sim_matrix = compute_similarity_matrix(contents)
-    similarities = sim_matrix[0, 1:]
-    
-    group_title = generate_group_title(contents)
-    group = group_note(target_note, other_notes, similarities, threshold, group_title)
-    
-    return group
+    try:
+        target_note = Note.objects.get(pk=note_id)
+        other_notes = Note.objects.exclude(pk=note_id)
 
-def auto_group_all(threshold=0.25, owner=None):
+        target_content = get_preprocessed_content(target_note).lower()
+        other_contents = [get_preprocessed_content(note).lower() for note in other_notes]
+
+        contents = [target_content] + other_contents
+        sim_matrix = compute_similarity_matrix(contents)
+        similarities = sim_matrix[0, 1:]
+
+        group_title = generate_group_title(contents)
+        group = group_note(target_note, other_notes, similarities, threshold, group_title)
+
+        return group
+    except Exception as e:
+        logging.error(f"An error occurred while auto grouping note: {str(e)}")
+        return None
+
+def auto_group_all(threshold=0.25, owner=None) -> list[NoteGroup]:
     """
     Group all notes based on overall similarity.
     """
-    notes = Note.objects.all()
-    preprocessed_list = [get_preprocessed_content(note) for note in notes]
-    sim_matrix = compute_similarity_matrix(preprocessed_list)
+    try:
+        notes = Note.objects.all()
+        preprocessed_list = [get_preprocessed_content(note).lower() for note in notes]
+    
+        sim_matrix = compute_similarity_matrix(preprocessed_list)
+        all_groups = group_all_notes(notes, sim_matrix, threshold, owner=owner)
+        
+    except Exception as e:
+        logging.error(f"An error occurred while grouping notes: {str(e)}")
+        all_groups = []
 
-    return group_all_notes(notes, sim_matrix, threshold, owner=owner)
+    return all_groups
 
 def generate_group_title(contents):
     
