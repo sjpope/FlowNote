@@ -11,6 +11,11 @@
     {% include 'assistant.html' %}
 </div>
 <style>
+  :root {
+    --bg-color: #f8f9fa;  
+    --text-color: #333;    
+  }
+
   #assistant_body {
     display: flex;
   }
@@ -33,8 +38,8 @@
       border-radius: 5px;
       margin-bottom: 10px;
       box-sizing: border-box;
-      background-color: var(--bg-color);
-      color: var(--text-color);
+      background-color: var(--bg-color, #ffffff);
+      color: var(--text-color, #000000);
     }
 
     .update-form input[type="text"]:focus,
@@ -79,69 +84,59 @@
 <script src="https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"></script>
 <script>
   document.addEventListener("DOMContentLoaded", function() {
-    CKEDITOR.replace('id_content', {
-      toolbar: 'Custom',
-      toolbar_Custom: [
-        { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline'] },
-        { name: 'colors', items: ['TextColor', 'BGColor'] },
-        { name: 'fonts', items: ['Font', 'FontSize'] },
-        { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent'] },
-        { name: 'links', items: ['Link', 'Unlink'] },
-        { name: 'tools', items: ['RemoveFormat', 'Source'] }
-      ],
-      removePlugins: 'elementspath',
-      extraPlugins: 'autocomplete',
-        on: {
-            instanceReady: function() {
-                this.dataProcessor.htmlFilter.addRules( {
-                    elements: {
-                        div: function( element ) {
-                            // Remove these divs classes when pasting HTML into the editor
-                            if (element.attributes.class == 'autocomplete-suggestion') {
-                                delete element.name;
-                            }
-                        }
-                    }
-                });
-            }
-        }
-    });
+      var editor = CKEDITOR.replace('id_content', {
+          toolbar: 'Custom',
+          toolbar_Custom: [
+              { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline'] },
+              { name: 'colors', items: ['TextColor', 'BGColor'] },
+              { name: 'fonts', items: ['Font', 'FontSize'] },
+              { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent'] },
+              { name: 'links', items: ['Link', 'Unlink'] },
+              { name: 'tools', items: ['RemoveFormat', 'Source'] }
+          ],
+          removePlugins: 'elementspath',
+          extraPlugins: 'autocomplete',
+      });
+  
+      CKEDITOR.plugins.add('autocomplete', {
+          init: function(editor) {
+              editor.showTextSuggestions = function(suggestions) {
+                  var dialogContentHtml = '<div style="padding:10px;">';
+                  suggestions.forEach(function(suggestion) {
+                      dialogContentHtml += '<div class="suggestion-item" onclick="applySuggestion(\'' + suggestion.replace("'", "\\'") + '\')">' + suggestion + '</div>';
+                  });
+                  dialogContentHtml += '</div>';
+  
+                  if (editor.suggestionDialog) {
+                      editor.suggestionDialog.destroy();
+                  }
+                  editor.suggestionDialog = new CKEDITOR.dialog(editor, {
+                      title: 'Autocomplete Suggestions',
+                      contents: [{
+                          id: 'tab-basic',
+                          label: 'Basic Settings',
+                          elements: [{
+                              type: 'html',
+                              html: dialogContentHtml
+                          }]
+                      }],
+                      onOk: function() {
+                        // Insert da 1st suggestion iuser click OK 
+                        var firstSuggestion = document.querySelector('.suggestion-item');
+                        if (firstSuggestion) {
+                          editor.insertHtml(firstSuggestion.textContent + ' ');
+                        }                      
+                      }
+                  });
+                  editor.suggestionDialog.show();
+              };
+  
+              window.applySuggestion = function(suggestion) {
+                  editor.insertHtml(suggestion + ' ');
+                  editor.suggestionDialog.hide();
+              };
+          }
+      });
   });
-
-  CKEDITOR.plugins.add('autocomplete', {
-    init: function(editor) {
-        editor.showTextSuggestions = function(suggestions) {
-            var dialogContentHtml = '<div style="padding:10px;">';
-            suggestions.forEach(function(suggestion) {
-                dialogContentHtml += '<div class="suggestion-item" onclick="selectSuggestion(\'' + suggestion.replace("'", "\\'") + '\')">' + suggestion + '</div>';
-            });
-            dialogContentHtml += '</div>';
-
-            if (editor.suggestionDialog) {
-                editor.suggestionDialog.destroy();
-            }
-            editor.suggestionDialog = new CKEDITOR.dialog(editor, {
-                title: 'Autocomplete Suggestions',
-                contents: [{
-                    id: 'tab-basic',
-                    label: 'Basic Settings',
-                    elements: [{
-                        type: 'html',
-                        html: dialogContentHtml
-                    }]
-                }],
-                onOk: function() {
-                    editor.insertHtml(document.querySelector('.suggestion-item').innerHTML + ' ');
-                }
-            });
-            editor.suggestionDialog.show();
-        };
-
-        window.selectSuggestion = function(suggestion) {
-            editor.insertHtml(suggestion + ' ');
-            editor.suggestionDialog.hide();
-        };
-    }
-});
-</script>
+  </script>
 {% endblock %}
