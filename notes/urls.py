@@ -52,6 +52,7 @@ urlpatterns = [
     path('accounts/profile/', profile, name='profile'),
     path('accounts/profile/update-theme/', update_theme, name='update_theme'),
     path('contact/', views.contact, name='contact'),
+    path('about/', views.about, name='about'),
     path('update-username/', views.update_username, name='update_username'),
 
     # Search URLs
