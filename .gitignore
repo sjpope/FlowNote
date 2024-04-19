@@ -71,6 +71,7 @@ staticfiles/
 media/
 
 # Environments
+/venv-4
 /venv-3
 /venv
 .env
