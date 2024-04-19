@@ -1,6 +1,6 @@
 from os import name
 
-from attr import fields
+# from attr import fields
 from .models import *
 
 from django import forms

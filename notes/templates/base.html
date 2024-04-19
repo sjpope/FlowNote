@@ -55,10 +55,17 @@
                     {% if user.is_authenticated %}
                         <li><a href="{% url 'notes:note_list' %}" class="{% if request.path == '/notes/list/' %}active{% endif %}">Notes</a></li>
                         <li><a href="{% url 'notes:create_note' %}" class="{% if request.path == '/notes/create/' %}active{% endif %}">New Note</a></li>
+                        <li class="dropdown">
+                            <button class="dropdown-btn" >More</button>
+                            <div class="dropdown-content">
+                                <a href="{% url 'notes:profile' %}">Profile</a>
+                                <a href="{% url 'notes:about' %}">About</a>
+                            </div>
+                        </li>
                         {% comment %} <li><a href="{% url 'notes:search' %}" class="{% if request.path == '/notes/search/' %}active{% endif %}">Search</a></li> {% endcomment %}
-                        <form action="{% url 'notes:logout' %}" method="post">
+                        <form style="padding-left: 35px;" action="{% url 'notes:logout' %}" method="post">
                             {% csrf_token %}
-                            <button type="submit">Logout</button>
+                            <button class="dropdown-btn"  type="submit">Logout</button>
                         </form>
                     {% else %}
                         <a href="{% url 'notes:login' %}">Login</a>
@@ -69,6 +76,62 @@
                 </ul>
             </nav>
         </div>
+        <style>
+            .dropdown {
+            position: relative;
+            display: inline-block;
+            }
+            .dropdown a {
+            color: var(--navbar-text-color);
+            }
+
+            .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: var(--navbar-bg-color);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            min-width: 160px;
+            padding: 12px;
+            border-radius: 4px;
+            z-index: 1;
+            }
+
+            .dropdown-content a {
+            color: var(--navbar-text-color);
+            padding: 10px 20px;
+            margin-bottom: 25px;
+            text-decoration: none;
+            display: block;
+            transition: color 0.3s ease;
+            }
+
+            .dropdown-content a:hover {
+            color: #faf13c;
+            }
+
+            .dropdown:hover .dropdown-content {
+            display: block;
+            }
+
+            .dropdown-btn {
+            display: inline-block;
+            background-color: var(--navbar-link-bg-color);
+            color: var(--navbar-text-color);
+            padding: 10px 20px;
+            margin-bottom: 25px;
+            text-decoration: none;
+            display: block;
+            transition: color 0.3s ease;
+            border: none;
+            font-size: 16px;
+            border-radius: 4px;
+            }
+            
+            .dropdown-btn:hover {
+            color: #e6b237;
+            }
+
+        </style>
     </header>
 
     <div id="content" class="container">
