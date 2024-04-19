@@ -20,23 +20,12 @@
   </div>
   
   <p>By: {{ note.owner }}</p>
-
-  {% comment %} {% if note.analysis %}
-    <h3>Analysis</h3>
-    <p>{{ note.analysis }}</p>
-  {% endif %} {% endcomment %}
+  <p>Group: {{ note.group }}</p>
 
   <div class="button-group">
     <button><a href="{% url 'notes:note_update' note.id %}" class="btn btn-primary">Update</a></button>
     <button><a href="{% url 'notes:note_delete' note.id %}" class="btn btn-danger">Delete</a></button>
   </div>
-
-
-  {% comment %} <form action="{% url 'notes:analyze' note.id%}" method="post">
-    {% csrf_token %}
-    <input type="hidden" id="ajaxAnalyzeUrl" value="{% url 'notes:analyze' note.id %}">
-    <button type="submit" class="btn-secondary">Analyze Note</button>
-  </form> {% endcomment %}
 
   {% include 'assistant.html' %}
 
@@ -64,8 +53,6 @@
 <div id="content-container" class="content-display-area mt-4 p-3" style="background-color: #f8f9fa; border-radius: 5px;">
 </div>
 
-
-  
 </div>
 <style>
   .generate-content-form {
@@ -128,6 +115,64 @@
 
 {% block javascript %}
 <script>
+
+  // AUTOCOMPLETE
+  document.addEventListener("DOMContentLoaded", function() {
+    const contentInput = document.getElementById('note-content-input');
+    const suggestionsContainer = document.getElementById('autocomplete-suggestions');
+  
+    // Handle keydown event for autocomplete activation
+    contentInput.addEventListener('keydown', function(event) {
+      // Activate autocompletion with Ctrl+I
+      if (event.ctrlKey && event.key === 'i') {
+        event.preventDefault();  // Prevent default Ctrl+I behavior
+        const currentText = contentInput.value;
+        const caretPos = contentInput.selectionStart;
+        const textToCursor = currentText.substring(0, caretPos);
+  
+        // Fetch autocomplete suggestions from server
+        fetch(`/autocomplete?text=${encodeURIComponent(textToCursor)}`, {
+          method: 'GET'
+        })
+        .then(response => response.json())
+        .then(data => {
+          suggestionsContainer.innerHTML = '';
+          suggestionsContainer.style.display = 'block';
+  
+          // Display each suggestion in the suggestions container
+          data.suggestions.forEach(suggestion => {
+            const suggestionElement = document.createElement('div');
+            suggestionElement.textContent = suggestion;
+            suggestionElement.classList.add('autocomplete-suggestion');
+  
+            suggestionElement.addEventListener('click', function() {
+              insertTextAtCursor(contentInput, ' ' + suggestion + ' ');
+              suggestionsContainer.innerHTML = '';
+              suggestionsContainer.style.display = 'none';
+            });
+  
+            suggestionsContainer.appendChild(suggestionElement);
+          });
+        })
+        .catch(error => console.error('Error fetching autocomplete suggestions:', error));
+      }
+    });
+  
+    // Function to insert text at cursor position in textarea
+    function insertTextAtCursor(input, text) {
+      const sentence = input.value;
+      const pos = input.selectionStart;
+      const before = sentence.substring(0, pos);
+      const after  = sentence.substring(pos);
+      
+      input.value = before + text + after;
+      input.selectionStart = pos + text.length;
+      input.selectionEnd = pos + text.length;
+      input.focus();
+    }
+  });
+
+
   // GENERATE CONTENT
   document.addEventListener("DOMContentLoaded", function() {
     const generateContentBtn = document.getElementById('generate-content-btn');
@@ -183,7 +228,8 @@
     }
 });
 
-  // AUTOCOMPLETE
+  {% comment %} 
+  // AUTOCOMPLETE (DEBOUNCED)
   document.addEventListener("DOMContentLoaded", function() {
     const contentInput = document.getElementById('note-content-input');
     const suggestionsContainer = document.getElementById('autocomplete-suggestions');
@@ -229,7 +275,8 @@
       }
       return cookieValue;
     }
-  });
+  }); 
+  {% endcomment %}
 
   // ANALYZE NOTE BUTTON
   document.addEventListener("DOMContentLoaded", function() {
