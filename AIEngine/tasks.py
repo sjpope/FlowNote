@@ -39,21 +39,29 @@ def generate_flashcards_task(key_concepts):
     return flashcards
 
 def get_autocomplete_suggestions(prompt):
+    
+    prompt = strip_html_tags(prompt.strip())
+    
+    if prompt.endswith('.') or prompt.endswith('?') or prompt.endswith('!'):
+        # Indicate to GPT-2 that it must continue on new sentence.
+        prompt = prompt[:-1] + ' ' + tokenizer.eos_token
+    elif prompt.endswith(','):
+        # We can pass as normal, GPT-2 should pick up on it.
+        prompt = prompt[:-1] + ' '
+    else:
+        prompt = prompt + '...'
+    
     inputs = tokenizer.encode(prompt, return_tensors='pt')
     
     # TO-DO: Allow users to specify parameter (max_length, num_return_sequences) size in their settings. Use Slider? 
     outputs = model.generate(inputs, max_length=len(inputs[0]) + 10, num_return_sequences=3, do_sample=True)
 
     suggestions = []
-    for output in outputs:
-        text = tokenizer.decode(output, skip_special_tokens=True)
-        continuation = text[len(prompt):].strip()           # Isolate the prompt from the suggestion
-        suggestion = continuation.split()[0] if continuation else ''
+    suggestions = [ tokenizer.decode(output, skip_special_tokens=True) for output in outputs]
         
-        if suggestion not in suggestions:
-            suggestions.append(suggestion)
+    completions = [strip_prompt(prompt, suggestion) for suggestion in suggestions]       
 
-    return suggestions
+    return completions
 
 """ Auto Grouping Methods"""
 def auto_group_note(note_id, threshold=0.15):
