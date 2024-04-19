@@ -221,5 +221,6 @@ CKEDITOR_CONFIGS = {
         ],
         'extraAllowedContent': 'span{background,color};',
         'removePlugins': 'elementspath',
+        'extraPlugins': 'autocomplete,textmatch,ajax',
     }
 }

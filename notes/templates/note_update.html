@@ -90,7 +90,58 @@
         { name: 'tools', items: ['RemoveFormat', 'Source'] }
       ],
       removePlugins: 'elementspath',
+      extraPlugins: 'autocomplete',
+        on: {
+            instanceReady: function() {
+                this.dataProcessor.htmlFilter.addRules( {
+                    elements: {
+                        div: function( element ) {
+                            // Remove these divs classes when pasting HTML into the editor
+                            if (element.attributes.class == 'autocomplete-suggestion') {
+                                delete element.name;
+                            }
+                        }
+                    }
+                });
+            }
+        }
     });
   });
+
+  CKEDITOR.plugins.add('autocomplete', {
+    init: function(editor) {
+        editor.showTextSuggestions = function(suggestions) {
+            var dialogContentHtml = '<div style="padding:10px;">';
+            suggestions.forEach(function(suggestion) {
+                dialogContentHtml += '<div class="suggestion-item" onclick="selectSuggestion(\'' + suggestion.replace("'", "\\'") + '\')">' + suggestion + '</div>';
+            });
+            dialogContentHtml += '</div>';
+
+            if (editor.suggestionDialog) {
+                editor.suggestionDialog.destroy();
+            }
+            editor.suggestionDialog = new CKEDITOR.dialog(editor, {
+                title: 'Autocomplete Suggestions',
+                contents: [{
+                    id: 'tab-basic',
+                    label: 'Basic Settings',
+                    elements: [{
+                        type: 'html',
+                        html: dialogContentHtml
+                    }]
+                }],
+                onOk: function() {
+                    editor.insertHtml(document.querySelector('.suggestion-item').innerHTML + ' ');
+                }
+            });
+            editor.suggestionDialog.show();
+        };
+
+        window.selectSuggestion = function(suggestion) {
+            editor.insertHtml(suggestion + ' ');
+            editor.suggestionDialog.hide();
+        };
+    }
+});
 </script>
 {% endblock %}
