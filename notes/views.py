@@ -74,7 +74,6 @@ def auto_group_note_view(request, note_id):
         if new_group:
             logging.debug(f"Auto Grouping for note {note_id} successful. Group: {new_group}")
             # Display a success message / notification to the user.
-        
 
         return redirect('notes:note_detail', pk=note_id)  
     else:
