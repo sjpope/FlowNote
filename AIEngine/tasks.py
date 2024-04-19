@@ -41,43 +41,31 @@ def generate_flashcards_task(key_concepts):
 
 def get_autocomplete_suggestions(note_id, prompt):
     
-    
     prompt = strip_html_tags(prompt.strip())
-    logging.info(f"Getting autocomplete suggestions...\n\n{prompt}\n\n")
-    # if prompt.endswith('.') or prompt.endswith('?') or prompt.endswith('!'):
-    #     # Indicate to GPT-2 that it must continue on new sentence.
-    #     prompt = prompt[:-1] + ' ' + tokenizer.eos_token
-    # elif prompt.endswith(','):
-    #     # We can pass as normal, GPT-2 should pick up on it.
-    #     prompt = prompt[:-1] + ' '
-    # else:
-    #     prompt = prompt + '...'
+    logging.info(f"Getting autocomplete suggestions...\n\n")
+    
     if not prompt.strip().endswith(('.', '?', '!')):
         prompt = prompt.strip() + ' '
 
     prompt = f"Continue the following text: {prompt}"
     
-    # Generate inputs for the model
     inputs = tokenizer.encode(prompt, return_tensors='pt', add_special_tokens=True)
     attention_mask = inputs.ne(tokenizer.pad_token_id).int()
     
-    # Generate continuation sequences with the model
     outputs = model.generate(
         input_ids=inputs,
         attention_mask=attention_mask,
-        max_length=inputs.shape[-1] + 50,  # Generate sequences that continue beyond the length of the input
+        max_length=inputs.shape[-1] + 50, 
         num_return_sequences=3,
         do_sample=True,
-        temperature=0.7,  # Adjust sampling temperature if necessary
-        top_k=50,  # Use top-k sampling
-        top_p=0.9,  # Use nucleus sampling
+        temperature=0.7,  
+        top_k=50,  
+        top_p=0.9,  
         pad_token_id=tokenizer.eos_token_id,
     )
     
-    # Decode the output tokens to strings
     suggestions = [tokenizer.decode(output, skip_special_tokens=True) for output in outputs]
     
-    # Strip the original prompt from the suggestions to get the continuations
     completions = [s[len(prompt):].strip() for s in suggestions]
 
     return completions
