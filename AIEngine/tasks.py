@@ -73,15 +73,22 @@ def auto_group_note(note_id, threshold=0.15):
     
     return group
 
-def auto_group_all(threshold=0.25, owner=None):
+def auto_group_all(threshold=0.25, owner=None) -> list[NoteGroup]:
     """
     Group all notes based on overall similarity.
     """
-    notes = Note.objects.all()
-    preprocessed_list = [get_preprocessed_content(note) for note in notes]
-    sim_matrix = compute_similarity_matrix(preprocessed_list)
+    try:
+        notes = Note.objects.all()
+        preprocessed_list = [get_preprocessed_content(note).lower() for note in notes]
+    
+        sim_matrix = compute_similarity_matrix(preprocessed_list)
+        all_groups = group_all_notes(notes, sim_matrix, threshold, owner=owner)
+        
+    except Exception as e:
+        logging.error(f"An error occurred while grouping notes: {str(e)}")
+        all_groups = []
 
-    return group_all_notes(notes, sim_matrix, threshold, owner=owner)
+    return all_groups
 
 def generate_group_title(contents):
     
