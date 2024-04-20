@@ -1,5 +1,4 @@
 import logging
-from celery import shared_task
 from django.core.cache import cache
 
 from notes.models import Note
@@ -8,9 +7,6 @@ from .utils import *
 from .analyze import *
 from .config import model, tokenizer
 
-import torch
-import re
-import datetime as dt
 import logging
 
 """ Content Generation Methods"""

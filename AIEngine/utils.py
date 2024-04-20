@@ -7,14 +7,10 @@ from nltk.tokenize import word_tokenize
 
 from django.core.cache import cache
 
-nlp = spacy.load('en_core_web_sm')
+nlp = spacy.load('en_core_web_sm', disable=['parser', 'ner'])
+
 
 def preprocess_text(text):
-    
-    # TO-DO: Test performance of Vocab Extraction between these two Lemmatization methods.
-    # doc = nlp(text)
-    # lemmatized = [token.lemma_ for token in doc if not token.is_stop and not token.is_punct and not token.is_space]
-    # return " ".join(lemmatized)
     
     doc = nlp(text)
     keywords = [token.lemma_ for token in doc if not token.is_stop and token.pos_ in ('NOUN', 'PROPN', 'VERB', 'ADJ') and not token.is_punct]
