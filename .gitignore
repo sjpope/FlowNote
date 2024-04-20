@@ -94,13 +94,10 @@ Untitled.ipynb
 # Hugging Face Transformer models, cache
 */hf_*
 **/hf_*
+huggingface_cache/
 /models 
 /tokenizer
-# Weird hugging face cache hub directory
-# Idk why but adding this broke my branch, commenting it out
-# D:/
-# D:/huggingface_cache/hub/version.txt
-# D:/huggingface_cache/hub/
+
 
 obj/
 Any CPU/
