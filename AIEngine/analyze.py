@@ -3,12 +3,9 @@ from notes.models import Note, NoteGroup
 from .utils import *
 from .config import model, tokenizer
 
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.decomposition import LatentDirichletAllocation
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-import logging
 import torch
 import numpy as np
 
