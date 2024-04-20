@@ -21,9 +21,15 @@
                     <p>Get instant help with any school or class-related questions. Our AI-powered chat assistant is here to assist you throughout your note-taking journey.</p>
                     <div class="feature-card">
                         <div class="row">
-                            <img class="img1" src="../static/notes/css/images/assistant.png" alt="AI-powered chat assistant">
-                            <img class="img2" src="../static/notes/css/images/Arrow-right-512.png" alt="right arrow">
-                            <img class="img1" src="../static/notes/css/images/usedAssistant.png" alt="AI-powered chat assistant explaining what the mitochondria is">
+                            {% if user.userprofile.theme == 'dark' %}
+                                <img class="img1" src="../static/notes/css/images/assistant-dark.png" alt="AI-powered chat assistant">
+                                <img class="img2" src="../static/notes/css/images/right-arrow-dark.png" alt="right arrow">
+                                <img class="img1" src="../static/notes/css/images/usedAssistant-dark.png" alt="AI-powered chat assistant explaining what the mitochondria is">
+                            {% else %}
+                                <img class="img1" src="../static/notes/css/images/assistant.png" alt="AI-powered chat assistant">
+                                <img class="img2" src="../static/notes/css/images/Arrow-right-512.png" alt="right arrow">
+                                <img class="img1" src="../static/notes/css/images/usedAssistant.png" alt="AI-powered chat assistant explaining what the mitochondria is">
+                            {% endif %}
                         </div>
                     </div>
                 </li>
@@ -32,9 +38,15 @@
                     <p>Access your notes seamlessly across all your devices. Whether you're using your laptop, tablet, or smartphone, your notes are always at your fingertips.</p>
                     <div class="feature-card">
                         <div class="column">
-                            <img class="img1" src="../static/notes/css/images/notePage.png" alt="Note sync across devices">
-                            <img class="img3" src="../static/notes/css/images/down-arrow.png" alt="down arrow">
-                            <img class="img1" src="../static/notes/css/images/noteSearch.png" alt="Note search across devices">
+                            {% if user.userprofile.theme == 'dark' %}
+                                <img class="img1" src="../static/notes/css/images/note-list-dark.png\" alt="Note sync across devices">
+                                <img class="img3" src="../static/notes/css/images/down-arrow-dark.png" alt="down arrow">
+                                <img class="img1" src="../static/notes/css/images/note-search-dark.png" alt="Note search across devices">
+                            {% else %}
+                                <img class="img1" src="../static/notes/css/images/note-list-light.png" alt="Note sync across devices">
+                                <img class="img3" src="../static/notes/css/images/down-arrow.png" alt="down arrow">
+                                <img class="img1" src="../static/notes/css/images/note-search-light.png" alt="Note search across devices">
+                            {% endif %}
                         </div>
                     </div>
                 </li>
