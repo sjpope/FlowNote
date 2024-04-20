@@ -6,23 +6,37 @@
 <a href="{% url 'notes:group_create' %}" style="text-align: center; text-decoration: none; margin: 20px; padding: 10px; border-radius: 9px;">Create New Group</a>
 <a href="{% url 'notes:assign-note-to-group' %}">Assign Notes</a>
 
+{% if user.userprofile.theme == 'light' %}
 <div id="all-groups">
     {% for group in groups %}
-    <div id="group-box">
+    <div id="group-box-light">
         <p id="group-title">{{ group.title }}</p>
         <div id="group-buttons">
             <a class="grp-button" href="{% url 'notes:group_detail' group.pk %}">View</a>
             <a class="grp-button" href="{% url 'notes:group_edit' group.pk %}">Edit</a>
             <a class="grp-button" href="{% url 'notes:group_delete' group.pk %}" onclick="return confirm('Are you sure?');">Delete</a>
         </div>
-        
-
     </div>
     {% endfor %}
+{% endif %}
+{% if user.userprofile.theme == 'dark' %}
+<div id="all-groups">
+    {% for group in groups %}
+    <div id="group-box-dark">
+        <p id="group-title">{{ group.title }}</p>
+        <div id="group-buttons">
+            <a class="grp-button" href="{% url 'notes:group_detail' group.pk %}">View</a>
+            <a class="grp-button" href="{% url 'notes:group_edit' group.pk %}">Edit</a>
+            <a class="grp-button" href="{% url 'notes:group_delete' group.pk %}" onclick="return confirm('Are you sure?');">Delete</a>
+        </div>
+    </div>
+    {% endfor %}
+{% endif %}
+
 </div>
 
 <style>
-    #group-box {
+    #group-box-light {
         padding: 15px;
         background-color: var(--bg-color);
         border: none;
@@ -32,11 +46,28 @@
         border-radius: 6px;
         transition: transform 0.3s ease;
     }
-    #group-box:hover {
+    #group-box-dark {
+        padding: 15px;
+        background-color: var(--bg-color);
+        border: none;
+        margin: 10px;
+        box-shadow: 0 0 10px rgba(235, 235, 235, 0.1);
+        padding: 10px;
+        border-radius: 6px;
+        transition: transform 0.3s ease;
+    }
+    #group-box-light:hover {
+        transform: scale(1.1);
+    }
+    #group-box-dark:hover {
         transform: scale(1.1);
     }
 
-    #group-box p{
+    #group-box-light p {
+        text-align: center;
+        align-items: center;
+    }
+    #group-box-dark p{
         text-align: center;
         align-items: center;
     }
