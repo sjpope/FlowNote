@@ -72,9 +72,9 @@ def auto_group_note(note_id, threshold=0.15):
         target_note = Note.objects.get(pk=note_id)
         other_notes = Note.objects.exclude(pk=note_id)
 
-        target_content = get_preprocessed_content(target_note).lower()
-        other_contents = [get_preprocessed_content(note).lower() for note in other_notes]
-
+        target_content = ' '.join(get_preprocessed_content(target_note)).lower()        
+        other_contents = [' '.join(get_preprocessed_content(note)).lower() for note in other_notes]
+        
         contents = [target_content] + other_contents
         sim_matrix = compute_similarity_matrix(contents)
         similarities = sim_matrix[0, 1:]

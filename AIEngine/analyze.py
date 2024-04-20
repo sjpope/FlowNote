@@ -11,6 +11,7 @@ import numpy as np
 
 from datetime import datetime as dt
 from datetime import datetime as dt
+import logging
 
 def generate_content(prompt, num_return_sequences=1, additional_tokens=500, temperature=0.8, top_k=50, top_p=0.92):
     
@@ -93,27 +94,32 @@ def group_note(target_note, other_notes, similarities, threshold=0.5, group_titl
     """
     Group a target note with other similar notes, updating an existing group or creating a new one.
     """
-    similar_indices = np.where(similarities > threshold)[0]
-    similar_notes = [other_notes[i] for i in similar_indices]
+    try:
+        similar_indices = np.where(similarities > threshold)[0]
+        similar_notes = [other_notes[i] for i in similar_indices]
 
-    if similar_notes:
-        
-        existing_group = find_existing_group(target_note, threshold)
-        if existing_group:
-            for note in similar_notes:
-                existing_group.notes.add(note)
-            existing_group.notes.add(target_note)
-            existing_group.save()
-            return existing_group
-        else:
-            if group_title:
-                note_group = NoteGroup(title=group_title, owner=target_note.owner)
+        if similar_notes:
+            existing_group = find_existing_group(target_note, threshold)
+            if existing_group:
+                for note in similar_notes:
+                    existing_group.notes.add(note)
+                existing_group.notes.add(target_note)
+                existing_group.save()
+                return existing_group
             else:
-                note_group = NoteGroup(title=f"Group for Note {target_note.pk} - {dt.now().strftime('%Y-%m-%d %H:%M:%S')}", owner=target_note.owner)
-            note_group.save()
-            note_group.notes.add(target_note, *similar_notes)
-            return note_group
-    
+                if group_title:
+                    note_group = NoteGroup(title=group_title, owner=target_note.owner)
+                else:
+                    note_group = NoteGroup(title=f"Group for Note {target_note.pk} - {dt.now().strftime('%Y-%m-%d %H:%M:%S')}", owner=target_note.owner)
+                note_group.save()
+                note_group.notes.add(target_note, *similar_notes)
+                return note_group
+            
+    except Exception as e:
+        logging.error(f"Error occurred while grouping notes: {e}")
+
+    return None
+
 def group_all_notes(notes, similarity_matrix, threshold=0.5, owner=None, group_title='') -> list[NoteGroup]:
     """
     Attempt to group all notes based on overall similarity, updating existing groups where applicable.
@@ -131,21 +137,24 @@ def group_all_notes(notes, similarity_matrix, threshold=0.5, owner=None, group_t
         visited.update(similar_indices)
 
         if group:
-            
-            for note in group:
-                existing_group = find_existing_group(note, threshold)
-                if existing_group:
-                    for n in group:
-                        existing_group.notes.add(n)
-                    existing_group.save()
-                    note_groups.append(existing_group)
-                    break
-                else:
-                    # We're clear to create a new group. Use group_title.
-                    note_group = NoteGroup(title=f"Auto Group {len(note_groups) + 1} - {dt.now().strftime('%Y-%m-%d %H:%M:%S')}", owner=owner)
-                    note_group.save()
-                    note_group.notes.set(group)
-                    note_groups.append(note_group)
+            try:
+                for note in group:
+                    existing_group = find_existing_group(note, threshold)
+                    if existing_group:
+                        for n in group:
+                            existing_group.notes.add(n)
+                        existing_group.save()
+                        note_groups.append(existing_group)
+                        break
+                    else:
+                        # We're clear to create a new group. Use group_title.
+                        note_group = NoteGroup(title=f"Auto Group {len(note_groups) + 1} - {dt.now().strftime('%Y-%m-%d %H:%M:%S')}", owner=owner)
+                        note_group.save()
+                        note_group.notes.set(group)
+                        note_groups.append(note_group)
+                        
+            except Exception as e:
+                logging.error(f"Error occurred while grouping (all) notes: {e}")
 
     return note_groups
 
@@ -153,15 +162,19 @@ def find_existing_group(note, threshold=0.5) -> NoteGroup:
     """
     Find an existing group with high similarity to the note's content.
     """
-    existing_groups = NoteGroup.objects.filter(owner=note.owner)
-    for group in existing_groups:
-        group_contents = [get_preprocessed_content(n) for n in group.notes.all()]
-        group_contents.append(get_preprocessed_content(note))
-        sim_matrix = compute_similarity_matrix(group_contents)
-        
-        # Average similarity of 'note' across all notes in the group
-        avg_similarity = np.mean(sim_matrix[-1][:-1])  
-        if avg_similarity > threshold:
-            return group
+    try:
+        existing_groups = NoteGroup.objects.filter(owner=note.owner)
+        for group in existing_groups:
+            group_contents = [get_preprocessed_content(n) for n in group.notes.all()]
+            group_contents.append(get_preprocessed_content(note))
+            sim_matrix = compute_similarity_matrix(group_contents)
+
+            # Average similarity of 'note' across all notes in the group
+            avg_similarity = np.mean(sim_matrix[-1][:-1])
+            if avg_similarity > threshold:
+                return group
+
+    except Exception as e:
+        logging.error(f"Error occurred while finding existing group: {e}")
         
     return None
