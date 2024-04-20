@@ -13,7 +13,7 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'UTC'
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 
-HF_HOME=os.environ.get('HF_HOME')
+#HF_HOME=os.environ.get('HF_HOME')
 # CELERY_BROKER_URL = 'redis://localhost:6379/0' # Celery is using 'Redis' as broker
 # REDIS_URL = os.environ.get('REDIS_URL', 'redis://127.0.0.1:6379')
 LOGIN_URL = 'notes:login'
