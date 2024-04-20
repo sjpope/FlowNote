@@ -100,14 +100,23 @@ def auto_group_all_view(request):
 
 def analyze(request, note_id):
     if request.method == "POST":
+        
         note = get_object_or_404(Note, pk=note_id)
+        analysis_type = request.POST.get('type', 'both')
+        
         result = analyze_note(note_id)
         
-        if 'Summary' not in result:
-            return JsonResponse({'result': result})
+        keywords = result.get('keywords', [])
+        summary = result.get('summary', '')  
         
-        keywords, summary = result['keywords'], result['summary']
-        return JsonResponse({'keywords': keywords, 'summary': summary})
+        if analysis_type == 'keywords':
+            result = {'keywords': keywords}
+        elif analysis_type == 'summary':
+            result = {'summary': summary}
+        else:
+            result = {'keywords': keywords, 'summary': summary}
+        
+        return JsonResponse(result)
     else:
         return JsonResponse({'error': 'Invalid request'}, status=400)
 

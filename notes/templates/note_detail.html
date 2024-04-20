@@ -29,7 +29,11 @@
 
   {% include 'assistant.html' %}
 
-  <button class="btn-secondary" id="analyzeNoteBtn" data-note-id="{{ note.id }}" data-analyze-url="{% url 'notes:analyze' note.id %}">Analyze Note</button>
+  {% comment %} <button class="btn-secondary" id="analyzeNoteBtn" data-note-id="{{ note.id }}" data-analyze-url="{% url 'notes:analyze' note.id %}">Analyze Note</button>
+  <div id="analysisResult"></div> {% endcomment %}
+
+  <button class="btn-secondary analyze-btn" data-type="keywords" data-note-id="{{ note.id }}" data-analyze-url="{% url 'notes:analyze' note.id %}">Analyze Keywords</button>
+  <button class="btn-secondary analyze-btn" data-type="summary" data-note-id="{{ note.id }}" data-analyze-url="{% url 'notes:analyze' note.id %}">Analyze Summary</button>
   <div id="analysisResult"></div>
 
   <h3>Auto Grouping</h3>
@@ -228,58 +232,8 @@
     }
 });
 
-  {% comment %} 
-  // AUTOCOMPLETE (DEBOUNCED)
-  document.addEventListener("DOMContentLoaded", function() {
-    const contentInput = document.getElementById('note-content-input');
-    const suggestionsContainer = document.getElementById('autocomplete-suggestions');
-
-    contentInput.addEventListener('input', _.debounce(function() {  
-        const currentText = contentInput.value;
-        fetch(`/autocomplete?text=${encodeURIComponent(currentText)}`, {
-            method: 'GET',
-            headers: {
-                'X-CSRFToken': getCookie('csrftoken'),
-            },
-        })
-        .then(response => response.json())
-        .then(data => {
-            suggestionsContainer.innerHTML = '';  
-            data.suggestions.forEach(suggestion => {
-                const suggestionElement = document.createElement('div');
-                suggestionElement.textContent = suggestion;
-                suggestionElement.classList.add('autocomplete-suggestion');
-                
-                suggestionElement.addEventListener('click', function() {
-                    contentInput.value += ' ' + suggestion.split(' ').slice(-2).join(' ');  
-                    suggestionsContainer.innerHTML = ''; 
-                });
-                
-                suggestionsContainer.appendChild(suggestionElement);
-            });
-        })
-        .catch(error => console.error('Error fetching autocomplete suggestions:', error));
-    }, 300));  
-
-    function getCookie(name) {
-      let cookieValue = null;
-      if (document.cookie && document.cookie !== '') {
-          const cookies = document.cookie.split(';');
-          for (let i = 0; i < cookies.length; i++) {
-              const cookie = cookies[i].trim();
-              if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                  break;
-              }
-          }
-      }
-      return cookieValue;
-    }
-  }); 
-  {% endcomment %}
-
   // ANALYZE NOTE BUTTON
-  document.addEventListener("DOMContentLoaded", function() {
+  {% comment %} document.addEventListener("DOMContentLoaded", function() {
     const analyzeBtn = document.getElementById("analyzeNoteBtn");
   
     analyzeBtn.addEventListener("click", function(e) {
@@ -332,6 +286,55 @@
       }
       return cookieValue;
     }
+  }); {% endcomment %}
+
+  document.querySelectorAll(".analyze-btn").forEach(btn => {
+    btn.addEventListener("click", function(e) {
+      e.preventDefault();
+      
+      const noteId = this.getAttribute("data-note-id");
+      const analyzeType = this.getAttribute("data-type");
+      const analyzeUrl = this.getAttribute("data-analyze-url");
+      const postData = new FormData();
+      postData.append('type', analyzeType);
+      
+      // Animate button while fetching
+      this.textContent = '...';
+      this.disabled = true;
+      
+      fetch(analyzeUrl, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': getCookie('csrftoken'),
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams(postData)
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data); // To check what data you get
+        
+        const analysisContainer = document.getElementById("analysisResult");
+        
+        // Update keywords or summary based on the button pressed
+        if (analyzeType === 'keywords') {
+          analysisContainer.innerHTML += `<p>Keywords: ${data.keywords}</p>`;
+        } else if (analyzeType === 'summary') {
+          analysisContainer.innerHTML += `<p>Summary: ${data.summary}</p>`;
+        }
+        
+        // Reset button text
+        btn.textContent = analyzeType === 'keywords' ? 'Analyze Keywords' : 'Analyze Summary';
+        btn.disabled = false;
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        
+        // Reset button text
+        btn.textContent = analyzeType === 'keywords' ? 'Analyze Keywords' : 'Analyze Summary';
+        btn.disabled = false;
+      });
+    });
   });
 
 </script>
