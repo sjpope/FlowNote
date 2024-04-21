@@ -19,19 +19,21 @@ class NoteGroup(models.Model):
         app_label = 'notes'
     
 
+from django.db import models
+from django.conf import settings
+
 class Note(models.Model):
     title = models.CharField(max_length=100)
     content = models.TextField()
     
-    summary = models.CharField(max_length=255, blank=True) 
-    analysis = models.TextField(blank=True)                 # Holds results of analysis, Updates when 'analyze note' task is invoked.
+    summary = models.CharField(max_length=255, blank=True)
+    keywords = models.JSONField(default=dict, blank=True)  
     
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    last_modified = models.DateTimeField(auto_now=True)     # Remove this field or updated_at, they are redundant.
+    updated_at = models.DateTimeField(auto_now=True)        # (4/20, SJP) Removed last_modified field
     
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='notes', on_delete=models.CASCADE)
-    groups = models.ManyToManyField(NoteGroup, related_name='notes')
+    groups = models.ManyToManyField('NoteGroup', related_name='notes')
 
     def __str__(self):
         return self.title

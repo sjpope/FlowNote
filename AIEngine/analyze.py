@@ -50,33 +50,47 @@ def generate_content(prompt, num_return_sequences=1, additional_tokens=500, temp
 
 def analyze(content, processed_content):
     
-    # logging.info(f'Content: {content}\n\nProcessed Content: {processed_content}\n\n')
-    
     keywords = generate_keywords(content, processed_content)
     summary = generate_summary(content)
-    
-    # logging.info(f'KEYWORDS\n\n{(keywords)}\n\n')
-    # logging.info(f'SUMMARY\n\n{summary}\n\n')
-    
     return {
         "keywords": keywords,
         "summary": summary
     }
+
+def generate_definition(keyword):
     
+    definition = model.generate(
+        f"Define the term: {keyword}",
+        max_length=100,
+        num_return_sequences=1,
+        temperature=0.5,
+        top_k=20,
+        top_p=0.75
+    )[0]
+    
+    return definition
+
 def generate_keywords(note_content, processed_content) -> list[str]:
     
-    prompt = f"From this list of words: {processed_content} Return only a comma separated list of the most important keywords relevant to this text: {note_content}"
+    prompt = f"""
+    Text:
+    "{note_content}"
+    Prompt:
+    "From this list of words: {processed_content} return only a comma separated list of the most important keywords relevant to the text."
+    """
     
     keywords = generate_content(prompt, num_return_sequences=1, additional_tokens=50, temperature=0.5, top_k=20, top_p=0.75)[0]
     keywords = strip_prompt(prompt, keywords)
     
-    # TO-DO: Add Post Processing Here in case the model gets any funny ideas.
-    
     return keywords
 
 def generate_summary(note_content) -> str:
-    
-    prompt = f"Summarize this content: {note_content}"
+    prompt = f"""
+    Text:
+    {note_content}
+    Prompt:
+    "Generate a summary for the provided text."
+    """
     summary = generate_content(prompt, num_return_sequences=1)[0]
     summary = strip_prompt(prompt, summary)
     

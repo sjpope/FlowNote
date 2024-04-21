@@ -1,4 +1,6 @@
 import logging
+from typing_extensions import deprecated
+from celery import shared_task
 from django.core.cache import cache
 
 from notes.models import Note
@@ -10,6 +12,46 @@ from .config import model, tokenizer
 import logging
 
 """ Content Generation Methods"""
+
+@shared_task
+def generate_keywords_task(note_id):
+    note = Note.objects.get(pk=note_id)
+    
+    if note.updated_at < cache.get(f"keywords_{note_id}_timestamp", note.updated_at):
+        logging.info("Keywords already up-to-date.")
+        return note.keywords
+    
+    cache.set(f"keywords_{note_id}_timestamp", note.updated_at, None)
+    
+    note_content = strip_html_tags(note.content)
+    preprocessed_content = get_preprocessed_content(note_content)
+    
+    keywords = generate_keywords(preprocessed_content)
+    
+    note.keywords = keywords
+    note.save()
+
+    return keywords
+
+@shared_task
+def generate_summary_task(note_id):
+    note = Note.objects.get(pk=note_id)
+    
+    if note.updated_at < cache.get(f"summary_{note_id}_timestamp", note.updated_at):
+        logging.info("Summary already up-to-date.")
+        return note.summary
+    
+    cache.set(f"summary_{note_id}_timestamp", note.updated_at, None)
+    
+    note_content = strip_html_tags(note.content)
+    preprocessed_content = get_preprocessed_content(note_content)
+    
+    summary = generate_summary(preprocessed_content)
+    
+    note.summary = summary
+    note.save()
+
+    return summary
 
 def generate_content_task(prompt, content):
     
@@ -26,14 +68,15 @@ def generate_content_task(prompt, content):
     
     return suggestions
 
-def generate_flashcards_task(key_concepts):
-    
-    flashcards = []
-    
-    # flashcards = generate_flashcards(key_concepts)
-    # TO-DO: Save flashcards to Django cache or DB directly. Consider saving list of Vocab/Keywords to Note Model directly.
-   
-    return flashcards
+def generate_flashcards_task(note_id):
+    note = Note.objects.get(id=note_id)
+    flashcards = {}
+    for keyword, definition in note.keywords.items():
+        if not definition:
+            definition = generate_definition(keyword)
+            note.keywords[keyword] = definition
+    note.save()
+    return [{'term': k, 'definition': v} for k, v in note.keywords.items()]
 
 def get_autocomplete_suggestions(note_id, prompt):
     
@@ -67,6 +110,7 @@ def get_autocomplete_suggestions(note_id, prompt):
     return completions
 
 """ Auto Grouping Methods"""
+
 def auto_group_note(note_id, threshold=0.15):
     try:
         target_note = Note.objects.get(pk=note_id)
@@ -112,25 +156,50 @@ def generate_group_title(contents):
     
     return title.strip()
 
-""" Analysis Methods"""
-
-def analyze_note(note_id):
-    
+@deprecated("This method is deprecated.")
+@shared_task
+def analyze_note_task(note_id):
     note = Note.objects.get(pk=note_id)
     
-    # Turned off for Testing/Debugging
-    # if note.updated_at < cache.get(f"analysis_{note_id}_timestamp", note.updated_at):
-    #     logging.info("Analysis already up-to-date.")
-    #     return note.analysis
+    # Check cache
+    if note.updated_at < cache.get(f"analysis_{note_id}_timestamp", note.updated_at):
+        logging.info("Analysis already up-to-date.")
+        return note.analysis
     
     cache.set(f"analysis_{note_id}_timestamp", note.updated_at, None)
     
+    # Pre-process and strip HTML tags
     note_content = strip_html_tags(note.content)
-    preprocessed_content = get_preprocessed_content(note)
+    preprocessed_content = get_preprocessed_content(note_content)
     
+    # Analyze note
     results = analyze(note_content, preprocessed_content)
     
-    note.analysis = results  # Store (non-parsed) analysis in Note.analysis field.
+    # Save analysis to Note model
+    note.analysis = results
+    note.save()
+
+    return results
+@shared_task
+def analyze_note_task(note_id):
+    note = Note.objects.get(pk=note_id)
+    
+    # Check cache
+    if note.updated_at < cache.get(f"analysis_{note_id}_timestamp", note.updated_at):
+        logging.info("Analysis already up-to-date.")
+        return note.analysis
+    
+    cache.set(f"analysis_{note_id}_timestamp", note.updated_at, None)
+    
+    # Pre-process and strip HTML tags
+    note_content = strip_html_tags(note.content)
+    preprocessed_content = get_preprocessed_content(note_content)
+    
+    # Analyze note
+    results = analyze(note_content, preprocessed_content)
+    
+    # Save analysis to Note model
+    note.analysis = results
     note.save()
 
     return results

@@ -28,6 +28,22 @@ from .ai import generate_response
 
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
+
+def generate_keywords(request, note_id):
+    if request.method == "POST":
+        generate_keywords_task.delay(note_id)  
+        return JsonResponse({'status': 'started'})
+    else:
+        return JsonResponse({'error': 'Invalid request'}, status=400)
+
+def generate_summary(request, note_id):
+    if request.method == "POST":
+        
+        generate_summary_task.delay(note_id)  
+        return JsonResponse({'status': 'started'})
+    else:
+        return JsonResponse({'error': 'Invalid request'}, status=400)
+
 """ Async Task Status Views """
 def task_status(request, task_id):
     task = AsyncResult(task_id)
@@ -36,13 +52,29 @@ def task_status(request, task_id):
     else:
         return JsonResponse({'status': task.status})
 
+def process_feedback(request, note_id):
+    
+    feedback = {
+        # get model output the rating was based on (keywords, summary, etc.)
+        'content': get_object_or_404(Note, pk=note_id).content,
+        'rating': request.POST.get('rating', False),
+        'module': request.POST.get('module', '')
+    }
+    
+    # run_feedback_pipeline(feedback)
+    
+    return JsonResponse({'success': True})
+
 """ AI, ML Views """
-def generate_flashcards_view(request):
+def generate_flashcards(request, note_id):
     if request.method == 'POST':
-        key_concepts = request.POST.get('key_concepts')
-        # Asynchronously generate flashcards
-        result = generate_flashcards_task.delay(key_concepts)
-        return JsonResponse({'task_id': result.task_id})
+        note = get_object_or_404(Note, pk=note_id)  
+        
+        # result = generate_flashcards_task.delay(note_id)
+        
+        flashcards = {'1': 'def1','t2': 'def2',}
+        return JsonResponse(flashcards)
+        # return JsonResponse({'task_id': result.task_id})
     else:
         return JsonResponse({'error': 'Invalid request'}, status=405)
 
@@ -119,6 +151,7 @@ def analyze(request, note_id):
         return JsonResponse(result)
     else:
         return JsonResponse({'error': 'Invalid request'}, status=400)
+
 
 def generate_response_from_prompt(request):
     if request.method == 'GET':
