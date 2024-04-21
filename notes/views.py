@@ -212,6 +212,9 @@ def group_list(request):
     groups = NoteGroup.objects.all()  
     return render(request, 'group/group_list.html', {'groups': groups})
 
+def about(request):
+    return render(request, 'about.html')
+
 class NoteSearchView(ListView):
     model = Note
     template_name = 'note_search.html'

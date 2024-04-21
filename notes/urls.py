@@ -50,8 +50,9 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('accounts/profile/', profile, name='profile'),
     path('accounts/profile/update-theme/', update_theme, name='update_theme'),
-    path('contact/', contact, name='contact'),
-    path('update-username/', update_username, name='update_username'),
+    path('contact/', views.contact, name='contact'),
+    path('about/', views.about, name='about'),
+    path('update-username/', views.update_username, name='update_username'),
 
     # Search URLs
     path('search/', NoteSearchView.as_view(), name='note_search'),
