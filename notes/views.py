@@ -22,6 +22,7 @@ from django.db.models import Q      # For complex queries (search feature)
 from django.http import JsonResponse
 from django.views.generic import ListView, DetailView, UpdateView, DeleteView
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 
 from celery.result import AsyncResult
 from .ai import generate_response
@@ -118,6 +119,19 @@ def generate_response_from_prompt(request):
             response = generate_response(prompt)
             return JsonResponse({'response': response})
     return JsonResponse({'error': 'Invalid request'}, status=400) #more error handling
+
+""" Toggle Pin """
+
+@require_POST
+def toggle_pin(request, pk):
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        note = get_object_or_404(Note, pk=pk)
+        note.pinned = not note.pinned
+        note.save()
+        return JsonResponse({'pinned': note.pinned})
+    else:
+        return redirect('notes:note_list')  # Update 'notes:note_list' to your actual note listing page's URL name if different
+
 
 """ Group Views """
 
