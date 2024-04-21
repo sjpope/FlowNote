@@ -70,11 +70,11 @@ def generate_flashcards(request, note_id):
     if request.method == 'POST':
         note = get_object_or_404(Note, pk=note_id)  
         
-        # result = generate_flashcards_task.delay(note_id)
+        result = generate_flashcards_task.delay(note_id)
         
-        flashcards = {'1': 'def1','t2': 'def2',}
-        return JsonResponse(flashcards)
-        # return JsonResponse({'task_id': result.task_id})
+        # flashcards = {'1': 'def1','t2': 'def2',}
+        # return JsonResponse(flashcards)
+        return JsonResponse({'task_id': result.task_id})
     else:
         return JsonResponse({'error': 'Invalid request'}, status=405)
 
@@ -130,27 +130,27 @@ def auto_group_all_view(request):
         return redirect('notes:group_list') 
     return render(request, 'notes/auto_group_all.html')
 
-def analyze(request, note_id):
-    if request.method == "POST":
+# def analyze(request, note_id):
+#     if request.method == "POST":
         
-        note = get_object_or_404(Note, pk=note_id)
-        analysis_type = request.POST.get('type', 'both')
+#         note = get_object_or_404(Note, pk=note_id)
+#         analysis_type = request.POST.get('type', 'both')
         
-        result = analyze_note(note_id)
+#         result = analyze_note(note_id)
         
-        keywords = result.get('keywords', [])
-        summary = result.get('summary', '')  
+#         keywords = result.get('keywords', [])
+#         summary = result.get('summary', '')  
         
-        if analysis_type == 'keywords':
-            result = {'keywords': keywords}
-        elif analysis_type == 'summary':
-            result = {'summary': summary}
-        else:
-            result = {'keywords': keywords, 'summary': summary}
+#         if analysis_type == 'keywords':
+#             result = {'keywords': keywords}
+#         elif analysis_type == 'summary':
+#             result = {'summary': summary}
+#         else:
+#             result = {'keywords': keywords, 'summary': summary}
         
-        return JsonResponse(result)
-    else:
-        return JsonResponse({'error': 'Invalid request'}, status=400)
+#         return JsonResponse(result)
+#     else:
+#         return JsonResponse({'error': 'Invalid request'}, status=400)
 
 
 def generate_response_from_prompt(request):
