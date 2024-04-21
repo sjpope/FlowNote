@@ -97,17 +97,18 @@ def generate_summary(note_content) -> str:
     return summary    
 
 """ Auto Grouping Methods"""
-
 def compute_similarity_matrix(contents):
-    vectorizer = TfidfVectorizer()
-    tfidf_matrix = vectorizer.fit_transform(contents)
-    cosine_sim = cosine_similarity(tfidf_matrix, tfidf_matrix)
-    return cosine_sim
+    try:
+        vectorizer = TfidfVectorizer()
+        tfidf_matrix = vectorizer.fit_transform(contents)
+        cosine_sim = cosine_similarity(tfidf_matrix, tfidf_matrix)
+        return cosine_sim
+    except Exception as e:
+        logging.error(f"Error occurred while computing similarity matrix: {e}")
+        return None
+    
 
 def group_note(target_note, other_notes, similarities, threshold=0.5, group_title=''):
-    """
-    Group a target note with other similar notes, updating an existing group or creating a new one.
-    """
     try:
         similar_indices = np.where(similarities > threshold)[0]
         similar_notes = [other_notes[i] for i in similar_indices]
@@ -134,10 +135,7 @@ def group_note(target_note, other_notes, similarities, threshold=0.5, group_titl
 
     return None
 
-def group_all_notes(notes, similarity_matrix, threshold=0.5, owner=None, group_title='') -> list[NoteGroup]:
-    """
-    Attempt to group all notes based on overall similarity, updating existing groups where applicable.
-    """
+def group_all_notes(notes, similarity_matrix, threshold=0.5, owner=None, group_title=''):
     note_groups = []
     visited = set()
 

@@ -137,7 +137,7 @@ def auto_group_all(threshold=0.25, owner=None) -> list[NoteGroup]:
     """
     try:
         notes = Note.objects.all()
-        preprocessed_list = [get_preprocessed_content(note).lower() for note in notes]
+        preprocessed_list = [str(get_preprocessed_content(note)).lower() for note in notes]
     
         sim_matrix = compute_similarity_matrix(preprocessed_list)
         all_groups = group_all_notes(notes, sim_matrix, threshold, owner=owner)

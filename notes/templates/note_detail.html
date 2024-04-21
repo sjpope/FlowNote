@@ -49,9 +49,10 @@
     </div>
   </div>
 
-  <button class="btn-secondary analyze-btn" data-type="keywords" data-note-id="{{ note.id }}" data-analyze-url="{% url 'notes:analyze' note.id %}">Analyze Keywords</button>
-  <button class="btn-secondary analyze-btn" data-type="summary" data-note-id="{{ note.id }}" data-analyze-url="{% url 'notes:analyze' note.id %}">Analyze Summary</button>
+  <button class="btn-secondary analyze-btn" data-type="keywords" data-note-id="{{ note.id }}" data-analyze-url="{% url 'notes:generate_keywords' note.id %}">Analyze Keywords</button>
+  <button class="btn-secondary analyze-btn" data-type="summary" data-note-id="{{ note.id }}" data-analyze-url="{% url 'notes:generate_summary' note.id %}">Analyze Summary</button>
   <div id="analysisResult"></div>
+
 
   <h3>Auto Grouping</h3>
   <form action="{% url 'notes:auto_group_note' note.id %}" method="post">
@@ -346,7 +347,7 @@
       }
       return cookieValue;
     }
-});
+  });
 
   // ANALYZE NOTE BUTTON
   {% comment %} document.addEventListener("DOMContentLoaded", function() {
@@ -404,7 +405,50 @@
     }
   }); {% endcomment %}
 
-  document.querySelectorAll(".analyze-btn").forEach(btn => {
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      document.querySelectorAll(".analyze-btn").forEach(btn => {
+        btn.addEventListener("click", function(e) {
+          e.preventDefault();
+          const noteId = this.getAttribute("data-note-id");
+          const analyzeType = this.getAttribute("data-type");
+          const analyzeUrl = this.getAttribute("data-analyze-url");
+          const postData = new FormData();
+          postData.append('note_id', noteId);
+
+          this.textContent = 'Analyzing...';  
+          this.disabled = true;  
+
+          fetch(analyzeUrl, {
+            method: 'POST',
+            headers: {
+              'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams(postData)
+          })
+          .then(response => response.json())
+          .then(data => {
+            const analysisContainer = document.getElementById("analysisResult");
+            let content = `<p>${analyzeType.charAt(0).toUpperCase() + analyzeType.slice(1)}: ${data.status}</p>`;
+            analysisContainer.innerHTML = content;  
+
+            this.textContent = 'Analyze ' + analyzeType.charAt(0).toUpperCase() + analyzeType.slice(1); 
+            this.disabled = false;  
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            this.textContent = 'Analyze ' + analyzeType.charAt(0).toUpperCase() + analyzeType.slice(1);  
+            this.disabled = false;  
+            alert('Failed to analyze: ' + error.message);
+          });
+        });
+      });
+    });
+  </script>
+
+
+  {% comment %} document.querySelectorAll(".analyze-btn").forEach(btn => {
     btn.addEventListener("click", function(e) {
       e.preventDefault();
       
@@ -428,7 +472,7 @@
       })
       .then(response => response.json())
       .then(data => {
-        console.log(data); // To check what data you get
+        console.log(data); 
         
         const analysisContainer = document.getElementById("analysisResult");
         
@@ -439,19 +483,17 @@
           analysisContainer.innerHTML += `<p>Summary: ${data.summary}</p>`;
         }
         
-        // Reset button text
         btn.textContent = analyzeType === 'keywords' ? 'Analyze Keywords' : 'Analyze Summary';
         btn.disabled = false;
       })
       .catch(error => {
         console.error('Error:', error);
         
-        // Reset button text
         btn.textContent = analyzeType === 'keywords' ? 'Analyze Keywords' : 'Analyze Summary';
         btn.disabled = false;
       });
     });
-  });
+  }); {% endcomment %}
 
 </script>
 {% endblock %}
