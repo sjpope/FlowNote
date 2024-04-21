@@ -137,8 +137,9 @@ def auto_group_all(threshold=0.25, owner=None) -> list[NoteGroup]:
     """
     try:
         notes = Note.objects.all()
+        # notes = [strip_html_tags(note.content) for note in notes]
         preprocessed_list = [str(get_preprocessed_content(note)).lower() for note in notes]
-    
+        logging.info(f"Preprocessed list contents: {preprocessed_list}")
         sim_matrix = compute_similarity_matrix(preprocessed_list)
         all_groups = group_all_notes(notes, sim_matrix, threshold, owner=owner)
         
