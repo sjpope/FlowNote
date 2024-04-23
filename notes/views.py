@@ -282,14 +282,14 @@ def update_username(request):
 
 @login_required
 def change_password(request):
-    if request.method =='POST':
+    if request.method == 'POST':
         form = ChangePasswordForm(request.user, request.POST)
         if form.is_valid():
             user = form.save()
             update_session_auth_hash(request, user)
             return redirect('notes:profile')
-        else:
-            form = ChangePasswordForm(request.user)
+    else:
+        form = ChangePasswordForm(request.user)
     return render(request, 'change_password.html', {'form': form})
 
 def home(request):
