@@ -37,6 +37,33 @@
             <p>Email: {{ user.email }}</p>
         </div>
 
+        <h3>AI Interaction Preferences</h3>
+        <p>Set your preferences for AI-generated content.</p>
+        <form id="ai-preferences-form" action="{% url 'notes:update_preferences' %}" method="post">
+            {% csrf_token %}
+            {{ form.max_length.errors }}
+            <label for="max_length">Max Length:</label>
+            <input type="number" name="max_length" value="{{ form.max_length.value|default_if_none:user.userpreference.max_length }}" min="50" max="500" step="1">
+
+            {{ form.num_return_sequences.errors }}
+            <label for="num_return_sequences">Number of Sequences:</label>
+            <input type="number" name="num_return_sequences" value="{{ form.num_return_sequences.value|default_if_none:user.userpreference.num_return_sequences }}" min="1" max="10" step="1">
+
+            {{ form.additional_tokens.errors }}
+            <label for="additional_tokens">Additional Tokens:</label>
+            <input type="number" name="additional_tokens" value="{{ form.additional_tokens.value|default_if_none:user.userpreference.additional_tokens }}" min="20" max="1000" step="10">
+
+            <button type="submit" class="btn btn-settings">Update AI Preferences</button>
+        </form>
+
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
         <h3>Website appearance</h3>
         <p>Choose which color scheme you'd like to use for FlowNote.</p>
         <form id="theme-form" action="{% url 'notes:update_theme' %}" method="post">

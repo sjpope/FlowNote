@@ -49,8 +49,8 @@
     </div>
   </div>
 
-  <button class="btn-secondary analyze-btn" data-type="keywords" data-note-id="{{ note.id }}" data-analyze-url="{% url 'notes:generate_keywords' note.id %}">Analyze Keywords</button>
-  <button class="btn-secondary analyze-btn" data-type="summary" data-note-id="{{ note.id }}" data-analyze-url="{% url 'notes:generate_summary' note.id %}">Analyze Summary</button>
+  <button type="submit" class="btn-secondary analyze-btn" data-type="keywords" data-note-id="{{ note.id }}" data-analyze-url="{% url 'notes:generate_keywords' note.id %}">Analyze Keywords</button>
+  <button type="submit" class="btn-secondary analyze-btn" data-type="summary" data-note-id="{{ note.id }}" data-analyze-url="{% url 'notes:generate_summary' note.id %}">Analyze Summary</button>
   <div id="analysisResult"></div>
 
 
