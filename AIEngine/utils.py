@@ -6,15 +6,12 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 
 from django.core.cache import cache
+import logging
 
-nlp = spacy.load('en_core_web_sm')
+nlp = spacy.load('en_core_web_sm', disable=['parser', 'ner'])
+
 
 def preprocess_text(text):
-    
-    # TO-DO: Test performance of Vocab Extraction between these two Lemmatization methods.
-    # doc = nlp(text)
-    # lemmatized = [token.lemma_ for token in doc if not token.is_stop and not token.is_punct and not token.is_space]
-    # return " ".join(lemmatized)
     
     doc = nlp(text)
     keywords = [token.lemma_ for token in doc if not token.is_stop and token.pos_ in ('NOUN', 'PROPN', 'VERB', 'ADJ') and not token.is_punct]
@@ -45,19 +42,21 @@ def strip_prompt(prompt, content):
     return content[start_index:].strip()
 
 def get_preprocessed_content(note):
-    
-    cache_key = f"preprocessed_{note.pk}"
-    preprocessed_content = cache.get(cache_key)
+    try:
+        cache_key = f"preprocessed_{note.pk}"
+        preprocessed_content = cache.get(cache_key)
 
-    if not preprocessed_content or note.updated_at > cache.get(f"{cache_key}_timestamp", note.updated_at):
-        
-        note_content = strip_html_tags(note.content)
-        preprocessed_content = preprocess_text(note_content)
-        
-        cache.set(cache_key, preprocessed_content, None)        # None timeout means it's cached forever
-        cache.set(f"{cache_key}_timestamp", note.updated_at, None)
+        if not preprocessed_content or note.updated_at > cache.get(f"{cache_key}_timestamp", note.updated_at):
+            note_content = strip_html_tags(note.content)
+            preprocessed_content = preprocess_text(note_content)
 
-    return preprocessed_content
+            cache.set(cache_key, preprocessed_content, None)        # None timeout means it's cached forever
+            cache.set(f"{cache_key}_timestamp", note.updated_at, None)
+
+        return preprocessed_content
+    except Exception as e:
+        logging.error(f"Error occurred while preprocessing content: {e}")
+        return None
 
 def preprocess_and_extract_keywords(text):
     text = text.lower()
