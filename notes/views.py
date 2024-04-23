@@ -1,6 +1,7 @@
 # from .serializers import NoteSerializer, BlogPostSerializer
 # from rest_framework import viewsets
 import os
+from typing import Dict
 import openai
 import logging
 
@@ -64,7 +65,7 @@ def generate_flashcards(request, note_id):
     if request.method == 'POST':
         note = get_object_or_404(Note, pk=note_id)  
         
-        result = generate_flashcards_task(note_id)
+        result: list[Dict[str]] = generate_flashcards_task(note_id)
         
         # flashcards = {'1': 'def1','t2': 'def2',}
         # return JsonResponse(flashcards)
@@ -174,8 +175,9 @@ def group_edit(request, pk=None):
             return redirect('notes:group_detail', pk=group.pk)
     else:
         form = NoteGroupForm(instance=group)
-    
-    return render(request, 'group/group_form.html', {'form': form})
+        note_ids = list(group.notes.values_list('id', flat=True)) if group else []
+
+    return render(request, 'group/group_form.html', {'form': form, 'note_ids': note_ids})
                   
 def group_delete(request, pk):
     group = get_object_or_404(NoteGroup, pk=pk)

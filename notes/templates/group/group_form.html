@@ -17,16 +17,19 @@
         {{ form.description.errors }}
     </div>
 
-    <div class="form-group notes-checkbox-group">
+    <div class="form-group notes-cards-container">
         <label>{{ form.notes.label }}</label>
-        {% for note in form.notes %}
-            <div class="checkbox">
-                <label>
-                    {{ note.tag }}
-                    {{ note.choice_label }}
-                </label>
-            </div>
-        {% endfor %}
+        <div class="notes-cards">
+            {% for note in form.notes %}
+                <div class="note-card">
+                    <label for="{{ note.id_for_label }}">
+                        <input type="checkbox" name="{{ note.html_name }}" value="{{ note.choice_value }}" id="{{ note.id_for_label }}" {% if note.choice_value|stringformat:"s" in note_ids %}checked{% endif %}>                        <div class="note-preview">
+                            <p>{{ note.choice_label }}</p>
+                        </div>
+                    </label>
+                </div>
+            {% endfor %}
+        </div>
         {{ form.notes.errors }}
     </div>
 
@@ -38,6 +41,26 @@
 
 {% block styles %}
 <style>
+    .notes-cards-container {
+        max-height: 300px;
+        overflow-y: auto;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px; /* Spacing between cards */
+    }
+    .note-card {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 10px;
+        width: calc(33.333% - 10px); /* Adjust width for 3 cards in a row, considering the gap */
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .note-checkbox {
+        text-align: right; /* Align the checkbox to the right of the card */
+    }
+    .note-preview {
+        margin-top: 10px;
+    }
     .form-group {
         margin-bottom: 15px;
     }
