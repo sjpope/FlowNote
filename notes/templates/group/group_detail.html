@@ -15,7 +15,7 @@
   <form method="get" action="">
     <input type="text" name="title" placeholder="Filter by Title" value="{{ request.GET.title }}">
     <input type="date" name="date" placeholder="Filter by Date" value="{{ request.GET.date }}">
-    <button type="submit">Filter</button>
+    <button type="submit" class="btn btn-secondary">Filter</button>
   </form>
   <a class="grp-button" href="{% url 'notes:assign-note-to-group' %}">Assign Notes to Group</a>
   <a class="grp-button" href="{% url 'notes:group_edit' group.pk %}">Edit Group</a>
