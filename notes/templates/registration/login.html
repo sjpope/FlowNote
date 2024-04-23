@@ -21,9 +21,12 @@
             <button type="submit" class="btn btn-info btn-forgot-password">Forgot Password?</button>
         </form>
         {% include 'theme_popup.html' %}
-    </div>
-    <div class="social-login">
-        <a href="{% provider_login_url 'google' %}">Login with Google</a>
+        <div class="social-login">
+            <a href="{% provider_login_url 'google' %}" class="google-login-button">
+                <img src="https://www.google.com/images/branding/googleg/1x/googleg_standard_color_128dp.png" alt="Google Logo">
+                <span>Login with Google</span>
+            </a>
+        </div>
     </div>
     <style>
         .login-container {
@@ -101,7 +104,32 @@
         .btn-info:hover {
             background-color: #D1E8E2;
         }
+        .social-login {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
 
+        .google-login-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 20px;
+            background-color: #fff;
+            color: #757575;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    
+        .google-login-button img {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+    
     </style>
 
     <script>
