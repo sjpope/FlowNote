@@ -127,8 +127,8 @@ def auto_group_note(note_id, threshold=0.15):
         target_note = Note.objects.get(pk=note_id)
         other_notes = list(Note.objects.exclude(pk=note_id))
 
-        target_content = ' '.join(get_preprocessed_content(target_note)).lower()        
-        other_contents = [' '.join(get_preprocessed_content(note)).lower() for note in other_notes]
+        target_content = ' '.join(preprocess_group_content(target_note)).lower()        
+        other_contents = [' '.join(preprocess_group_content(note)).lower() for note in other_notes]
         
         contents = [target_content] + other_contents
         sim_matrix = compute_similarity_matrix(contents)
@@ -148,7 +148,7 @@ def auto_group_all(threshold=0.25, owner=None) -> list[NoteGroup]:
     """
     try:
         notes = Note.objects.all().order_by('id')
-        preprocessed_list = [str(get_preprocessed_content(note)).lower() for note in notes]
+        preprocessed_list = [str(preprocess_group_content(note)).lower() for note in notes]
 
         sim_matrix = compute_similarity_matrix(preprocessed_list)
         

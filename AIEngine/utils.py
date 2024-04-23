@@ -4,6 +4,10 @@ import spacy
 
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
+from nltk.stem import WordNetLemmatizer
+
+import nltk
+nltk.download('wordnet')
 
 from django.core.cache import cache
 import logging
@@ -58,10 +62,17 @@ def get_preprocessed_content(note):
         logging.error(f"Error occurred while preprocessing content: {e}")
         return None
 
-def preprocess_and_extract_keywords(text):
-    text = text.lower()
-    text = text.translate(str.maketrans('', '', string.punctuation))
-    words = word_tokenize(text)
-    stop_words = set(stopwords.words('english'))
-    keywords = [word for word in words if word not in stop_words]
-    return keywords
+def preprocess_group_content(note):
+    
+    # Basic cleanup, HTML strip, lowering cases
+    text = re.sub(r'<[^>]+>', '', note.content) 
+    text = text.lower()  
+    text = text.translate(str.maketrans('', '', string.punctuation)) 
+
+    # Tokenization and more advanced processing like stemming/lemmatization
+    stop_words = set(stopwords.words('english')) - {'over', 'under', 'more', 'most', 'such'}
+    word_tokens = word_tokenize(text)
+    lemmatizer = WordNetLemmatizer()
+    filtered_sentence = [lemmatizer.lemmatize(w) for w in word_tokens if not w in stop_words]
+
+    return ' '.join(filtered_sentence)

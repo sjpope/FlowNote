@@ -99,13 +99,17 @@ def generate_summary(note_content) -> str:
 """ Auto Grouping Methods"""
 def compute_similarity_matrix(contents):
     try:
-        contents = [str(content).lower() for content in contents if isinstance(content, str)]
-        vectorizer = TfidfVectorizer()
+        vectorizer = TfidfVectorizer(min_df=1, max_df=0.7, ngram_range=(1, 2))
         tfidf_matrix = vectorizer.fit_transform(contents)
+        
+        if tfidf_matrix.shape[1] == 0:  # No valid terms extracted
+            raise ValueError("No terms left after vectorization; adjust preprocessing or vectorizer settings.")
+        
         cosine_sim = cosine_similarity(tfidf_matrix)
         return cosine_sim
+    
     except Exception as e:
-        logging.error(f"Error occurred while computing similarity matrix: {e}")
+        logging.error("Failed to compute similarity matrix: %s", e, exc_info=True)
         return None
     
 

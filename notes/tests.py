@@ -39,16 +39,16 @@ class AutoGroupTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user = User.objects.create_user(username='testuser', password='12345')
-        cls.note1 = Note.objects.create(owner=cls.user, title="Django Testing", content="Testing in Django can be tricky.")
-        cls.note2 = Note.objects.create(owner=cls.user, title="Django Models", content="Django models are essential for database interaction.")
-        cls.note3 = Note.objects.create(owner=cls.user, title="Testing Basics", content="Basics of testing in software development.")
+        cls.note1 = Note.objects.create(owner=cls.user, title="Django Testing", content="Testing in Django can be complex due to its rich and robust framework. A good grasp of Django's testing framework is crucial for effectively writing and running tests. This includes understanding Django's TestCase for database integrity, the SimpleTestCase for middleware testing, and the LiveServerTestCase for end-to-end tests involving HTTP and database interactions. Mastering these can significantly reduce bugs and ensure high-quality software development.")
+        cls.note2 = Note.objects.create(owner=cls.user, title="Django Models", content="Django models form the foundational layer for database interaction within Django. They not only define the structure of the database tables but also provide a systematic approach to handling database queries. By defining fields and behaviors of the data you’re storing, Django models encapsulate database access and are a crucial element in facilitating an organized, efficient, and robust database architecture. Understanding relationships such as ForeignKey, ManyToMany, and OneToOne fields are essential for leveraging the full capability of Django's ORM.")
+        cls.note3 = Note.objects.create(owner=cls.user, title="Testing Basics", content="Understanding the basics of software testing is fundamental to any software development process. Writing tests is crucial as it helps ensure the quality of code and reduces bugs in production. In software development, various testing methodologies are employed, including unit tests that help verify the functionality of a small part of the system, integration tests which ensure that different parts of the application work together as expected, and system tests which evaluate the complete and fully integrated software product. The goal is to catch bugs early in the development cycle and save costs in later stages while maintaining software quality.")
 
     def test_auto_grouping(self):
         notes = Note.objects.filter(id__in=[self.note1.id, self.note2.id, self.note3.id])
         print("\n--- Auto Grouping Test ---")
         for note in notes:
             threshold = 0.15
-            group = auto_group_note(note.pk)
+            group = auto_group_note(note.pk, 0.10)
             if group:
                 print(f"\nGroup Title: {group.title}")
                 print("Grouped Notes (Threshold 0.15):")
