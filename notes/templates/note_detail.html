@@ -23,10 +23,22 @@
   <p>By: {{ note.owner }}</p>
   <p>Group: {{ note.group }}</p>
 
-  <div class="button-group">
-    <button><a href="{% url 'notes:note_update' note.id %}" class="btn btn-primary">Update</a></button>
-    <button><a href="{% url 'notes:note_delete' note.id %}" class="btn btn-danger">Delete</a></button>
+  <div class="note-actions">
+    <button class="btn btn-primary" id="edit-button">Edit</button>
+    <a href="{% url 'notes:note_delete' note.id %}" class="btn btn-danger">Delete</a>
   </div>
+
+  <div class="update-form-container" id="update-form" style="display:none;">
+    <!-- Update form here -->
+    <h2>Update Note</h2>
+    <form method="post" class="update-form">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <input type="hidden" name="note_id" value="{{ note.id }}" />
+      <button type="submit" class="btn btn-success">Save Changes</button>
+    </form>
+  </div>
+  
 
   {% include 'assistant.html' %}
 
@@ -49,8 +61,9 @@
     </div>
   </div>
 
-  <button type="submit" class="btn-secondary analyze-btn" data-type="keywords" data-note-id="{{ note.id }}" data-analyze-url="{% url 'notes:generate_keywords' note.id %}">Analyze Keywords</button>
-  <button type="submit" class="btn-secondary analyze-btn" data-type="summary" data-note-id="{{ note.id }}" data-analyze-url="{% url 'notes:generate_summary' note.id %}">Analyze Summary</button>
+  {% comment %} <button type="submit" class="btn-secondary analyze-btn" data-type="keywords" data-note-id="{{ note.id }}" data-analyze-url="{% url 'notes:generate_keywords' note.id %}">Analyze Keywords</button> {% endcomment %}
+  <button type="submit" class="btn btn-secondary" id="autocomplete-trigger">Autocomplete</button>
+  <button type="submit" class="btn-secondary analyze-btn" data-type="summary" data-note-id="{{ note.id }}" data-analyze-url="{% url 'notes:generate_summary' note.id %}">Generate Summary</button>
   <div id="analysisResult"></div>
 
 
@@ -68,11 +81,12 @@
       
       <!-- Hidden CSRF Token Input -->
       <input class="gen-prompt-input" type="hidden" id="csrf-token" value="{{ csrf_token }}">
-      <button id="generate-content-btn" data-note-id="{{ note.id }}" class="btn-secondary">Generate</button>
+      <button type="submit" id="generate-content-btn" data-note-id="{{ note.id }}" class="btn-secondary">Generate</button>
     </div>
   </div>
 
-<div id="content-container" class="content-display-area mt-4 p-3" style="background-color: var(--bg-color); border-radius: 5px;"></div>
+  
+  <div id="content-container" class="content-display-area mt-4 p-3" style="background-color: var(--bg-color); border-radius: 5px;"></div>
 
 </div>
 <style>
@@ -411,10 +425,10 @@
     }
   }); {% endcomment %}
 
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      document.querySelectorAll(".analyze-btn").forEach(btn => {
-        btn.addEventListener("click", function(e) {
+  
+  document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll(".analyze-btn").forEach(btn => {
+      btn.addEventListener("click", function(e) {
           e.preventDefault();
           const noteId = this.getAttribute("data-note-id");
           const analyzeType = this.getAttribute("data-type");
@@ -451,55 +465,204 @@
         });
       });
     });
-  </script>
+  
 
-
-  {% comment %} document.querySelectorAll(".analyze-btn").forEach(btn => {
-    btn.addEventListener("click", function(e) {
-      e.preventDefault();
-      
-      const noteId = this.getAttribute("data-note-id");
-      const analyzeType = this.getAttribute("data-type");
-      const analyzeUrl = this.getAttribute("data-analyze-url");
-      const postData = new FormData();
-      postData.append('type', analyzeType);
-      
-      // Animate button while fetching
-      this.textContent = '...';
-      this.disabled = true;
-      
-      fetch(analyzeUrl, {
-        method: 'POST',
-        headers: {
-          'X-CSRFToken': getCookie('csrftoken'),
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams(postData)
-      })
-      .then(response => response.json())
-      .then(data => {
-        console.log(data); 
-        
-        const analysisContainer = document.getElementById("analysisResult");
-        
-        // Update keywords or summary based on the button pressed
-        if (analyzeType === 'keywords') {
-          analysisContainer.innerHTML += `<p>Keywords: ${data.keywords}</p>`;
-        } else if (analyzeType === 'summary') {
-          analysisContainer.innerHTML += `<p>Summary: ${data.summary}</p>`;
-        }
-        
-        btn.textContent = analyzeType === 'keywords' ? 'Analyze Keywords' : 'Analyze Summary';
-        btn.disabled = false;
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        
-        btn.textContent = analyzeType === 'keywords' ? 'Analyze Keywords' : 'Analyze Summary';
-        btn.disabled = false;
-      });
-    });
-  }); {% endcomment %}
+  document.getElementById('toggle-update-form').addEventListener('click', function() {
+    var updateForm = document.getElementById('update-form');
+    if (updateForm.style.display === "none") {
+      updateForm.style.display = "block";
+    } else {
+        updateForm.style.display = "none";
+    }
+  });
+  
 
 </script>
+<style>
+  :root {
+    --bg-color: #f8f9fa;  
+    --text-color: #333;    
+  }
+
+  #assistant_body {
+    display: flex;
+  }
+  .update-note {
+    display: flex;
+    flex-direction: column;
+  }
+   form {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: left;
+   }
+
+   .update-form input[type="text"],
+    .update-form textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin-bottom: 10px;
+      box-sizing: border-box;
+      background-color: var(--bg-color, #ffffff);
+      color: var(--text-color, #000000);
+    }
+
+    .update-form input[type="text"]:focus,
+    .update-form textarea:focus {
+      border-color: #555;
+    }
+
+    
+    .update-form textarea:first-of-type {
+      min-height: 300px;
+      min-width: 500px;
+    }
+
+    .update-form button {
+      padding: 12px 20px;
+      background-color: #5c62af;
+      color: #fff;
+      border: none;
+      width: 35%;
+      border-radius: 5px;
+      cursor: pointer;
+      text-align: center;
+      transition: background-color 0.3s;
+    }
+
+    .update-form button:hover {
+      background-color: #45a049
+    }
+
+    .update-form a {
+      display: block;
+      margin-top: 10px;
+      text-align: center;
+      color: #54b957;
+    }
+
+    .update-form a:hover {
+      text-decoration: underline;
+    }
+</style>
+
+<script src="https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+
+    var editor = CKEDITOR.replace('id_content', {
+      toolbar: 'Custom',
+      toolbar_Custom: [
+        { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline'] },
+        { name: 'colors', items: ['TextColor', 'BGColor'] },
+        { name: 'fonts', items: ['Font', 'FontSize'] },
+        { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent'] },
+        { name: 'links', items: ['Link', 'Unlink'] },
+        { name: 'tools', items: ['RemoveFormat', 'Source'] }
+      ],
+      removePlugins: 'elementspath',
+      extraPlugins: 'autocomplete',
+    });
+
+    var noteId = window.location.pathname.match(/\/(\d+)\/update\//);
+    noteId = noteId ? noteId[1] : 'default';
+
+    CKEDITOR.plugins.add('autocomplete', {
+      init: function(editor) {
+        editor.addCommand('autocomplete', {
+        exec: function(editor) {
+          var content = editor.getData();
+          fetch(`/notes/autocomplete?text=${encodeURIComponent(content)}&noteId=${noteId}`, {
+            method: 'GET',
+            headers: {
+              'X-CSRFToken': getCookie('csrftoken'),
+            },
+          })
+          .then(response => response.json())
+          .then(data => {
+            editor.showTextSuggestions(data.suggestions);
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+        }
+        });
+
+        editor.showTextSuggestions = function(suggestions) {
+          var suggestionsList = document.getElementById('suggestions-list');
+          // If the suggestions list already exists, remove it to replace with new suggestions
+          if (suggestionsList) {
+            suggestionsList.parentNode.removeChild(suggestionsList);
+          }
+      
+          // Create a new suggestions list if there are suggestions to display
+          if (suggestions && suggestions.length) {
+            suggestionsList = document.createElement('ul');
+            suggestionsList.id = 'suggestions-list';
+            suggestionsList.style.position = 'fixed';
+            suggestionsList.style.bottom = '50px'; // Adjust the position as needed
+            suggestionsList.style.left = '50%';
+            suggestionsList.style.transform = 'translateX(-50%)';
+            suggestionsList.style.zIndex = '10000';
+            suggestionsList.style.padding = '10px';
+            suggestionsList.style.backgroundColor = '#fff';
+            suggestionsList.style.listStyle = 'none';
+          suggestionsList.style.border = '1px solid #ccc';
+          suggestionsList.style.borderRadius = '4px';
+          suggestionsList.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+          suggestionsList.style.maxHeight = '150px';
+          suggestionsList.style.overflowY = 'auto';
+      
+          suggestions.forEach(function(suggestion) {
+            var listItem = document.createElement('li');
+            listItem.textContent = suggestion;
+            listItem.style.padding = '5px 10px';
+            listItem.style.cursor = 'pointer';
+            listItem.style.borderBottom = '1px solid #eee';
+            listItem.onclick = function() {
+              editor.insertHtml(this.textContent + ' ');
+              editor.focus();
+              suggestionsList.remove();
+            };
+            suggestionsList.appendChild(listItem);
+          });
+      
+          document.body.appendChild(suggestionsList);
+        }
+      };
+    
+      }
+    });
+
+    var autocompleteTrigger = document.getElementById('autocomplete-trigger');
+    if (autocompleteTrigger) {
+      autocompleteTrigger.addEventListener('click', function(event) {
+        event.preventDefault(); // Prevent any default action
+        editor.execCommand('autocomplete');
+      });
+    } else {
+      console.error('Autocomplete trigger button not found.');
+    }
+
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+    
+  });
+</script>
+
 {% endblock %}
