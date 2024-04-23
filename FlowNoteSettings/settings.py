@@ -50,6 +50,11 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+<<<<<<< HEAD
+=======
+    'allauth.socialaccount.providers.github',
+    'allauth.socialaccount.providers.facebook',
+>>>>>>> 7e39e9d1538ee0475408c6f51d35cf52f290aca2
     #'allauth.account.models.EmailAddress',
     
     'rest_framework',
