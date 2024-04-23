@@ -46,6 +46,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     
+    # Internal Apps
+    'AIEngine',
+    'notes',
+
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -57,9 +61,6 @@ INSTALLED_APPS = [
     'ckeditor',
     # 'django_celery_results',
     # 'django_q',
-    # Internal Apps
-    'notes',
-    'AIEngine',
     
 ]
 
