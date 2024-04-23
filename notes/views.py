@@ -18,6 +18,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import update_session_auth_hash
 from django.db.models import Q      # For complex queries (search feature)
 from django.http import JsonResponse
 from django.views.generic import ListView, DetailView, UpdateView, DeleteView
@@ -278,6 +279,18 @@ def update_username(request):
     else:
         form = UpdateUsernameForm(instance=request.user)
     return render(request, 'update_username.html', {'form': form})
+
+@login_required
+def change_password(request):
+    if request.method == 'POST':
+        form = ChangePasswordForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            return redirect('notes:profile')
+    else:
+        form = ChangePasswordForm(request.user)
+    return render(request, 'change_password.html', {'form': form})
 
 def home(request):
     return render(request, 'home.html')  
