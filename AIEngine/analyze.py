@@ -99,9 +99,10 @@ def generate_summary(note_content) -> str:
 """ Auto Grouping Methods"""
 def compute_similarity_matrix(contents):
     try:
+        contents = [str(content).lower() for content in contents if isinstance(content, str)]
         vectorizer = TfidfVectorizer()
         tfidf_matrix = vectorizer.fit_transform(contents)
-        cosine_sim = cosine_similarity(tfidf_matrix, tfidf_matrix)
+        cosine_sim = cosine_similarity(tfidf_matrix)
         return cosine_sim
     except Exception as e:
         logging.error(f"Error occurred while computing similarity matrix: {e}")
@@ -173,7 +174,7 @@ def group_all_notes(notes, similarity_matrix, threshold=0.5, owner=None, group_t
 
     return note_groups
 
-def find_existing_group(note, threshold=0.5) -> NoteGroup:
+def find_existing_group(note, threshold=0.2) -> NoteGroup:
     """
     Find an existing group with high similarity to the note's content.
     """
@@ -183,10 +184,14 @@ def find_existing_group(note, threshold=0.5) -> NoteGroup:
             group_contents = [get_preprocessed_content(n) for n in group.notes.all()]
             group_contents.append(get_preprocessed_content(note))
             sim_matrix = compute_similarity_matrix(group_contents)
-
+            
+            if sim_matrix is None:
+                continue
+            
             # Average similarity of 'note' across all notes in the group
             avg_similarity = np.mean(sim_matrix[-1][:-1])
             if avg_similarity > threshold:
+                logging.info(f"Found existing group with similarity: {avg_similarity}")
                 return group
 
     except Exception as e:
