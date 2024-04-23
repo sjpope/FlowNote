@@ -60,6 +60,11 @@
                     <p>Personalize your note-taking environment with customizable themes. Choose from a variety of color schemes and layouts to suit your preferences.</p>
                 </li>
             </ul>
+            <section id="call-action">
+                <h2>Create Your Account Now!</h2>
+                <p>Join FlowNote now and start capturing your ideas today.</p>
+                <a href="{% url 'notes:register' %}" class="cta-button">Get Started</a>
+            </section>
         </div>
         {% include 'assistant.html' %}
     </div>
@@ -95,6 +100,24 @@
             display: flex;
             flex-direction: column;
             align-items: start;
+        }
+
+        .row img {
+            margin-left: 120px;
+            margin-right: 30px;
+            transition: transform 1s ease
+        }
+        .row img:hover {
+            transform: scale(1.5);
+        }
+        .column img {
+            margin-left: 200px;
+            margin-top: 30px;
+            margin-bottom: 30px;
+            transition: transform 1s ease
+        }
+        .column img:hover {
+            transform: scale(2);
         }
         .container {
             margin: 25px;
