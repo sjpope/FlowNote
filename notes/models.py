@@ -34,6 +34,7 @@ class Note(models.Model):
     
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='notes', on_delete=models.CASCADE)
     groups = models.ManyToManyField('NoteGroup', related_name='notes')
+    pinned = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title
