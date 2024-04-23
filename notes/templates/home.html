@@ -50,6 +50,13 @@
                         </div>
                     </div>
                 </li>
+                <li><strong>Stay Organized with Note Groups</strong><br>
+                    {% if user.userprofile.theme == 'dark' %}
+                        <img class="img1" style="margin: 35px; margin-left: 200px; transition: transform 1s ease;" src="../static/notes/css/images/groups-dark.png" alt="Note groups preview">
+                    {% else %}
+                        <img class="img1" style="margin: 35px; margin-left: 200px; transition: transform 1s ease;" src="../static/notes/css/images/groups-light.png" alt="Note groups preview">
+                    {% endif %}
+                </li>
                 <li><strong>Intuitive user interface</strong>
                     <p>Enjoy a user-friendly interface designed to enhance your note-taking experience. Say goodbye to cluttered interfaces and hello to simplicity.</p>
                 </li>
@@ -83,6 +90,9 @@
             border-radius: 3px;
             border-width: 2px;
             border-style: groove;
+        }
+        .img1:hover {
+            transform: scale(1.5);
         }
         .img2{
             max-height: 30px;
