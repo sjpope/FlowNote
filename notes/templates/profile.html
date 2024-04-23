@@ -23,6 +23,16 @@
         </div>
 
         <div class="profile-item">
+            <form id="change_password-form" action="{% url 'notes:change_password' %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-settings">
+                    <i class="fas fa-key"></i>
+                    Change Password
+                </button>
+            </form>
+        </div>
+
+        <div class="profile-item">
             <i class="fas fa-envelope"></i>
             <p>Email: {{ user.email }}</p>
         </div>
