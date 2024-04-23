@@ -193,7 +193,8 @@
     const prevBtn = document.getElementById('prevBtn');
     const flipBtn = document.getElementById('flipBtn');
     const nextBtn = document.getElementById('nextBtn');
-    const noteId = JSON.parse(document.getElementById('note-id').textContent);    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    const noteId = JSON.parse(document.getElementById('note-id').textContent);    
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
     
     function fetchFlashcards() {
         fetch(`/notes/generate-flashcards/${noteId}/`, {
@@ -213,35 +214,37 @@
         .catch(error => console.error('Error fetching flashcards:', error));
     }
     
-    function displayCard(index) {
-        termElement.textContent = flashcards[index][0];
-        definitionElement.textContent = flashcards[index][1];
+  function displayCard(index) {
+    termElement.textContent = flashcards[index][0];
+    definitionElement.textContent = flashcards[index][1];
+    termElement.style.display = '';
+    definitionElement.style.display = 'none';
     }
 
-    flipBtn.addEventListener('click', () => {
-        termElement.style.display = termElement.style.display === 'none' ? '' : 'none';
-        definitionElement.style.display = definitionElement.style.display === 'none' ? '' : 'none';
-    });
+  flipBtn.addEventListener('click', () => {
+    termElement.style.display = termElement.style.display === 'none' ? '' : 'none';
+    definitionElement.style.display = definitionElement.style.display === 'none' ? '' : 'none';
+  });
 
-    prevBtn.addEventListener('click', () => {
-        if (currentCardIndex > 0) {
-            currentCardIndex--;
-            displayCard(currentCardIndex);
-        }
-    });
+  prevBtn.addEventListener('click', () => {
+    if (currentCardIndex > 0) {
+        currentCardIndex--;
+        displayCard(currentCardIndex);
+    }
+  });
 
     nextBtn.addEventListener('click', () => {
-        if (currentCardIndex < flashcards.length - 1) {
-            currentCardIndex++;
-            displayCard(currentCardIndex);
-        }
+    if (currentCardIndex < flashcards.length - 1) {
+        currentCardIndex++;
+        displayCard(currentCardIndex);
+    }
     });
 
     fetchFlashcards();
 
     function showFlashcardSection() {
-      const flashcardSection = document.getElementById('flashcard-section');
-      flashcardSection.style.display = 'block';
+    const flashcardSection = document.getElementById('flashcard-section');
+    flashcardSection.style.display = '';
     }
   });
 
