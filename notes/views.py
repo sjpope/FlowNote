@@ -30,14 +30,11 @@ from .ai import generate_response
 
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
-
-
-
 def generate_summary(request, note_id):
     if request.method == "POST":
         
-        generate_summary_task(note_id)  
-        return JsonResponse({'status': 'started'})
+        summary = generate_summary_task(note_id)  
+        return JsonResponse({'summary': summary})
     else:
         return JsonResponse({'error': 'Invalid request'}, status=400)
 
@@ -71,7 +68,7 @@ def generate_flashcards(request, note_id):
         
         # flashcards = {'1': 'def1','t2': 'def2',}
         # return JsonResponse(flashcards)
-        return JsonResponse({'task_id': result.task_id})
+        return JsonResponse(result)
     else:
         return JsonResponse({'error': 'Invalid request'}, status=405)
 
