@@ -1,5 +1,6 @@
 # from .serializers import NoteSerializer, BlogPostSerializer
 # from rest_framework import viewsets
+import json
 import os
 from typing import Dict
 import openai
@@ -65,10 +66,20 @@ def generate_flashcards(request, note_id):
     if request.method == 'POST':
         note = get_object_or_404(Note, pk=note_id)  
         logging.info(f'Generating Flashcards for Note: {note.title}')
-        result: dict[str, str] = generate_flashcards_task(note_id)
+        #result: dict[str, str] = generate_flashcards_task(note_id)
         
-        logging.info(f'Generated Flashcards: {result}\n')
-        return JsonResponse(result)
+        if note.content: #make sure it is not empty
+            response = generate_response("Provide terms and their definitions in JSON Format (dict[str, str]) for the provided text: " + note.content)
+            logging.info(f'Generated Flashcards Response: {response}')
+            try:
+                flashcards = json.loads(response) 
+            except json.JSONDecodeError:
+                return JsonResponse({'error': 'Invalid response format'}, status=500)
+
+            logging.info(f'Generated Flashcards: {flashcards}\n')
+            return JsonResponse(flashcards)
+        
+        return JsonResponse({'error': 'Invalid request'}, status=405)
     else:
         return JsonResponse({'error': 'Invalid request'}, status=405)
 
