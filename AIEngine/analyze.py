@@ -59,18 +59,11 @@ def analyze(content, processed_content):
 
 def generate_definition(keyword):
     
-    definition = model.generate(
-        f"Define the term: {keyword}",
-        max_length=100,
-        num_return_sequences=1,
-        temperature=0.5,
-        top_k=20,
-        top_p=0.75
-    )[0]
+    definition = generate_content(f"Define the term: {keyword}",num_return_sequences=1,additional_tokens=100,temperature=0.5, top_k=20,top_p=0.75)[0]
     
     return definition
 
-def generate_keywords(note_content, processed_content) -> list[str]:
+def generate_keywords(note_content, processed_content) -> dict[str, str]:
     
     prompt = f"""
     Text:
@@ -79,10 +72,14 @@ def generate_keywords(note_content, processed_content) -> list[str]:
     "From this list of words: {processed_content} return only a comma separated list of the most important keywords relevant to the text."
     """
     
-    keywords = generate_content(prompt, num_return_sequences=1, additional_tokens=50, temperature=0.5, top_k=20, top_p=0.75)[0]
-    keywords = strip_prompt(prompt, keywords)
+    keywords: str = generate_content(prompt, num_return_sequences=1, additional_tokens=50, temperature=0.5, top_k=20, top_p=0.75)[0]
+    keywords: str = strip_prompt(prompt, keywords)
     
-    return keywords
+    keyword_list = keywords.split(', ')
+    
+    keywords_dict = {keyword: '' for keyword in keyword_list}
+    
+    return keywords_dict
 
 def generate_summary(note_content) -> str:
     prompt = f"""

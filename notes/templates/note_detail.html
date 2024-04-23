@@ -34,12 +34,14 @@
   <div id="analysisResult"></div> {% endcomment %}
 
   <h3>Flashcards</h3>
-  <div id="flashcard-section" style="display:none;">
+  <div id="flashcard-section">
     <div id="flashcard-container">
       <div id="flashcard">
         <div class="card-side" id="term">Term</div>
-        <div class="card-side" id="definition" style="display:none;">Definition</div>
+        <div class="card-side" id="definition">Definition</div>
       </div>
+
+      <button id="generateFlashcardsBtn" type="submit">Generate Flashcards</button>
 
       <div id="flashcard-buttons">
         <button id="prevBtn">Previous</button>
@@ -193,26 +195,34 @@
     const prevBtn = document.getElementById('prevBtn');
     const flipBtn = document.getElementById('flipBtn');
     const nextBtn = document.getElementById('nextBtn');
-    const noteId = JSON.parse(document.getElementById('note-id').textContent);    
+    const generateFlashcardsBtn = document.getElementById('generateFlashcardsBtn');
+
+    const noteId = document.getElementById('note-id') ? JSON.parse(document.getElementById('note-id').textContent) : null;
     const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-    
-    function fetchFlashcards() {
-        fetch(`/notes/generate-flashcards/${noteId}/`, {
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': csrfToken,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ 'note_id': noteId })
-        })
-        .then(response => response.json())
-        .then(data => {
-            flashcards = Object.entries(data);  
-            displayCard(0);  
-            showFlashcardSection();
-        })
-        .catch(error => console.error('Error fetching flashcards:', error));
+    generateFlashcardsBtn.addEventListener('click', fetchFlashcards);
+
+  function fetchFlashcards() {
+    if (!noteId) {
+      console.error('No note ID found!');
+      return;
     }
+    
+    fetch(`/notes/generate-flashcards/${noteId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': csrfToken,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 'note_id': noteId })
+    })
+    .then(response => response.json())
+    .then(data => {
+        flashcards = Object.entries(data);  
+        displayCard(0);  
+        showFlashcardSection();
+    })
+    .catch(error => console.error('Error fetching flashcards:', error));
+  }
     
   function displayCard(index) {
     termElement.textContent = flashcards[index][0];
