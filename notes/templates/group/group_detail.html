@@ -8,8 +8,8 @@
     {% for note in notes %}
       <li>{{ note.title }}</li>
       {% for note_group in note.group.all %}
-              {{ note_group.title }}{% if not forloop.last %}, {% endif %}
-          {% endfor %}
+              <li id="note-item">{{ note.title }} - <a href="#edit">Edit</a> | <a href="#delete">Delete</a></li>{% if not forloop.last %}, {% endif %}
+      {% endfor %}
     {% endfor %}
   </ul>
   <form method="get" action="">
@@ -24,6 +24,13 @@
   <a class="grp-button" href="{% url 'notes:group_list' %}">Back to Group List</a>
 
   <style>
+    #note-item {
+      padding: 10px;
+      margin-bottom: 8px;
+      list-style: none; /* Consider removing bullet points for a cleaner look */
+      background: #f7f7f7; /* Light background for the note items */
+      border-radius: 4px;
+  }
     #group-buttons {
         display: flex;
         flex-direction: column;
