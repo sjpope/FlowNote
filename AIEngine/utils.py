@@ -7,6 +7,8 @@ from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 
 import nltk
+
+from notes.models import Note
 nltk.download('wordnet')
 
 from django.core.cache import cache
@@ -35,7 +37,8 @@ def strip_html_tags(input_string):
     cleaned = cleaned.replace('&apos;', "'")
     cleaned = cleaned.replace('&#39;', "'")
     cleaned = cleaned.replace('&#34;', '"')
-    
+    cleaned = cleaned.replace('\n', ' ')
+    cleaned = ' '.join(cleaned.split())
     return cleaned
 
 def strip_prompt(prompt, content):
@@ -45,7 +48,7 @@ def strip_prompt(prompt, content):
         start_index = 0
     return content[start_index:].strip()
 
-def get_preprocessed_content(note):
+def get_preprocessed_content(note: Note):
     try:
         cache_key = f"preprocessed_{note.pk}"
         preprocessed_content = cache.get(cache_key)

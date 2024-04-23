@@ -64,11 +64,10 @@ def process_feedback(request, note_id):
 def generate_flashcards(request, note_id):
     if request.method == 'POST':
         note = get_object_or_404(Note, pk=note_id)  
+        logging.info(f'Generating Flashcards for Note: {note.title}')
+        result: dict[str, str] = generate_flashcards_task(note_id)
         
-        result: list[Dict[str]] = generate_flashcards_task(note_id)
-        
-        # flashcards = {'1': 'def1','t2': 'def2',}
-        # return JsonResponse(flashcards)
+        logging.info(f'Generated Flashcards: {result}\n')
         return JsonResponse(result)
     else:
         return JsonResponse({'error': 'Invalid request'}, status=405)

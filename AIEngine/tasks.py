@@ -24,8 +24,14 @@ def generate_keywords_task(note_id):
     cache.set(f"keywords_{note_id}_timestamp", note.updated_at, None)
     
     note_content = strip_html_tags(note.content)
-    preprocessed_content = get_preprocessed_content(note_content)
+    preprocessed_content = get_preprocessed_content(note)
     
+    tokens = tokenizer.tokenize(note_content + str(preprocessed_content))
+    
+    if len(tokens) > 1024:
+        logging.warning("Content exceeds token limit. Truncating content...")
+        tokens = tokens[:1024]
+        
     keywords = generate_keywords(note_content, preprocessed_content)
     
     note.keywords = keywords
@@ -71,12 +77,13 @@ def generate_content_task(prompt, content):
     
     return suggestions
 
-def generate_flashcards_task(note_id):
+def generate_flashcards_task(note_id) -> dict[str, str]:
     note = Note.objects.get(id=note_id)
     
-    keywords = generate_keywords_task(note_id)
+    keywords: dict = generate_keywords_task(note_id)
+    num_keywords = len(keywords)
+    logging.info(f"Generating flashcards for note {note_id}...\nNumber of keywords: {num_keywords}\nKeywords: {keywords}\n\n")
     
-    flashcards = {}
     for keyword, definition in keywords.items():
         if not definition:
             definition = generate_definition(keyword)
@@ -85,7 +92,8 @@ def generate_flashcards_task(note_id):
     note.keywords = keywords
     note.save()
     
-    # Generate flashcards from the keywords
+    logging.info(f"Generated flashcards for note {note_id}.\n\n")
+    
     return [{'term': k, 'definition': v} for k, v in keywords.items()]
 
 def get_autocomplete_suggestions(note_id, content):
