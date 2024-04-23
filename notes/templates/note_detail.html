@@ -252,28 +252,33 @@
     const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
     generateFlashcardsBtn.addEventListener('click', fetchFlashcards);
 
-  function fetchFlashcards() {
-    if (!noteId) {
-      console.error('No note ID found!');
-      return;
-    }
+    function fetchFlashcards() {
+      if (!noteId) {
+        console.error('No note ID found!');
+        return;
+      }
     
-    fetch(`/notes/generate-flashcards/${noteId}/`, {
+      fetch(`/notes/generate-flashcards/${noteId}/`, {
         method: 'POST',
         headers: {
-            'X-CSRFToken': csrfToken,
-            'Content-Type': 'application/json'
+          'X-CSRFToken': csrfToken,
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({ 'note_id': noteId })
-    })
-    .then(response => response.json())
-    .then(data => {
+      })
+      .then(response => response.json())
+      .then(data => {
         flashcards = Object.entries(data);  
-        displayCard(0);  
-        showFlashcardSection();
-    })
-    .catch(error => console.error('Error fetching flashcards:', error));
-  }
+        if (flashcards.length) {
+          displayCard(0);
+          showFlashcardSection();
+        } else {
+          console.error('No flashcards data received');
+        }
+      })
+      .catch(error => console.error('Error fetching flashcards:', error));
+    }
+    
     
   function displayCard(index) {
     termElement.textContent = flashcards[index][0];
