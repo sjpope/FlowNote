@@ -12,8 +12,7 @@ from .config import model, tokenizer
 
 import logging
 
-""" Content Generation Methods"""
-
+""" Content Generation Tasks"""
 
 def generate_keywords_task(note_id):
     note = Note.objects.get(pk=note_id)
@@ -33,7 +32,6 @@ def generate_keywords_task(note_id):
     note.save()
 
     return keywords
-
 
 def generate_summary_task(note_id):
     note = Note.objects.get(pk=note_id)
@@ -121,7 +119,7 @@ def get_autocomplete_suggestions(note_id, content):
 
     return completions
 
-""" Auto Grouping Methods"""
+""" Auto Grouping Tasks"""
 
 def auto_group_note(note_id: int, threshold: float = 0.15) -> Optional[NoteGroup]:
     try:
