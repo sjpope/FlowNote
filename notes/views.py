@@ -18,10 +18,12 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import update_session_auth_hash
 from django.db.models import Q      # For complex queries (search feature)
 from django.http import JsonResponse
 from django.views.generic import ListView, DetailView, UpdateView, DeleteView
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 
 from celery.result import AsyncResult
 from .ai import generate_response
@@ -161,6 +163,19 @@ def generate_response_from_prompt(request):
             return JsonResponse({'response': response})
     return JsonResponse({'error': 'Invalid request'}, status=400) #more error handling
 
+""" Toggle Pin """
+
+@require_POST
+def toggle_pin(request, pk):
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        note = get_object_or_404(Note, pk=pk)
+        note.pinned = not note.pinned
+        note.save()
+        return JsonResponse({'pinned': note.pinned})
+    else:
+        return redirect('notes:note_list')  # Update 'notes:note_list' to your actual note listing page's URL name if different
+
+
 """ Group Views """
 
 class GroupSearchView(ListView):
@@ -240,6 +255,9 @@ def group_list(request):
     groups = NoteGroup.objects.all()  
     return render(request, 'group/group_list.html', {'groups': groups})
 
+def about(request):
+    return render(request, 'about.html')
+
 class NoteSearchView(ListView):
     model = Note
     template_name = 'note_search.html'
@@ -303,6 +321,18 @@ def update_username(request):
     else:
         form = UpdateUsernameForm(instance=request.user)
     return render(request, 'update_username.html', {'form': form})
+
+@login_required
+def change_password(request):
+    if request.method == 'POST':
+        form = ChangePasswordForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            return redirect('notes:profile')
+    else:
+        form = ChangePasswordForm(request.user)
+    return render(request, 'change_password.html', {'form': form})
 
 def home(request):
     return render(request, 'home.html')  

@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us</title>
+    <link rel="stylesheet" href="{% static 'notes/css/about.css' %}">
+</head>
+<body>
+    <h1>About Flownote</h1>
+    <main>
+        <section class="about-section">
+            <h2>Our Project</h2>
+            <p>Welcome to FlowNote, your ultimate companion in capturing, organizing, and analyzing your thoughts effortlessly. Designed with a focus on intuitive usability and powerful functionality, FlowNote transcends the boundaries of conventional note-taking apps to elevate your productivity to new heights.</p>
+            <h3>What Sets Flownote Apart</h3>
+            <ul>
+                <li><strong>Note Groups:</strong> Stay organized with ease by categorizing your notes into customizable groups, ensuring seamless access and efficient management of your valuable insights.</li>
+                <li><strong>Note Styles:</strong> Express your ideas in a variety of formats with our extensive collection of note styles, colors, fonts, and other features allowing you to capture every ounce of your creativity.</li>
+                <li><strong>OpenAI Chat Assistant:</strong> Harness the power of artificial intelligence with our integrated OpenAI chat assistant, providing real-time support and intelligent suggestions to enhance your note-taking experience without you having to leave the page.</li>
+                <li><strong>Note Analysis Functionality:</strong> Unlock deeper insights from your notes with our innovative analysis tools, enabling you to gain valuable perspectives on notes and extract meaningful information from your data effortlessly.</li>
+                <li><strong>Auto Summary:</strong> Save time and effort with our auto summary feature, which compacts notes into concise summaries, empowering you to grasp key concepts at a glance.</li>
+                <li><strong>Customizable UI:</strong> Personalize your note-taking experience with our dynamic light and dark modes, along with a range of customizable settings like note sorting, and resizability of workspace to suit your preferences.</li>
+            </ul>
+            <h3>Our Mission</h3>
+            <p>At FlowNote, we are committed to revolutionizing the way you capture and organize information, empowering you to unleash your full potential and achieve your goals with confidence. Our relentless pursuit of innovation and excellence drives us to continually enhance our platform, ensuring that you always have the tools you need to thrive.</p>
+                
+            <h3>Join the FlowNote Community</h3>
+            <p>Experience the future of note-taking today with FlowNote. Join our growing community of passionate users and embark on a journey of creativity, productivity, and discovery like never before. Together, let's unlock the power of your ideas and unleash the flow of inspiration.</p>
+        </section>
+        <section class="contributors-section">
+            <h2>Contributors</h2>
+            <div class="contributor">
+                <a href="https://www.linkedin.com/in/israelibinayin247/" target="_blank"><img src="{% static 'notes/css/images/Contributors/profile-icon.png' %}" alt="Contributor 1"></a>
+                <p>Israel Ibinayin</p>
+            </div>
+            <div class="contributor">
+                <img src="{% static 'notes/css/images/Contributors/profile-icon.png' %}" alt="Contributor 2">
+                <p>John Yamamoto</p>
+            </div>
+            <div class="contributor">
+                <img src="{% static 'notes/css/images/Contributors/profile-icon.png' %}" alt="Contributor 3">
+                <p>Matthew Ruiz</p>
+            </div>
+            <div class="contributor">
+                <a href="https://www.linkedin.com/in/samjpope/" target="_blank "><img src="{% static 'notes/css/images/Contributors/profile-icon.png' %}" alt="Contributor 4"></a>
+                <p>Samuel Pope</p>
+            </div>
+        </section>
+        <section>
+            <h3>Contact Support</h3>
+            <p>Questions, feedback, or issues? Contact us!</p>
+            <form id="contact-form" action="{% url 'notes:contact' %}" method="post">
+                {% csrf_token %}
+                <button type="submit" style="background-color: var(--navbar-bg-color);" class="btn-settings">
+                    Contact
+                </button>
+            </form>
+        </section>
+    </main>
+
+    <style>
+        main {
+        padding: 20px;
+    }
+
+    .about-section ul li {
+        margin: 10px;
+    }
+    .about-section, .contributors-section {
+        margin-bottom: 40px;
+    }
+
+    .contributor {
+        display: inline-block;
+        margin-right: 20px;
+    }
+
+    .contributor img {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        margin-bottom: 10px;
+    }
+
+    .contributor p {
+        text-align: center;
+        margin: 0;
+    }
+
+    </style>
+{% endblock %}

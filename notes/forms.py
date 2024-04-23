@@ -1,10 +1,10 @@
 from os import name
 
-from attr import fields
 from .models import *
 
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.models import User
 from ckeditor.widgets import CKEditorWidget
 from django.core.exceptions import ValidationError
@@ -88,3 +88,10 @@ class UpdateUsernameForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['username']
+
+class ChangePasswordForm(PasswordChangeForm):
+    def __init__(self, *args, **kwargs):
+        super(ChangePasswordForm, self).__init__(*args, **kwargs)
+        self.fields['old_password'].widget.attrs['placeholder'] = 'Old Password'
+        self.fields['new_password1'].widget.attrs['placeholder'] = 'New Password'
+        self.fields['new_password2'].widget.attrs['placeholder'] = 'Confirm New Password'

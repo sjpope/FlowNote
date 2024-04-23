@@ -44,7 +44,8 @@
 
     <ul class="notes-list">
       {% for note in notes %}
-        <li class="note-item">
+      <li class="note-item" data-note-id="{{ note.pk }}" data-pinned="{{ note.pinned }}">
+        <div class="note-item-container">
           <a href="{% url 'notes:note_detail' note.pk %}" class="note-card">
             <div class="note-content">
               <h3 style="text-decoration: underline;">{{ note.title }}</h3>
@@ -56,7 +57,12 @@
               <p>By: {{ note.owner }}</p>
             </div>
           </a>
-        </li>
+          {% load static %}
+          <button onclick="togglePin({{ note.pk }})" class="pin-btn">
+            <img src="{% if note.pinned %}{% static 'notes/css/images/icons8-unpin-100.png' %}{% else %}{% static 'notes/css/images/icons8-pin-100.png' %}{% endif %}" alt="Pin/Unpin">
+          </button>
+        </div>  
+      </li>
       {% endfor %}
     </ul>
   </div>
@@ -76,6 +82,28 @@
 
     .search-bar {
       min-width: 290px;
+    }
+
+    .note-item-container {
+      position: relative; 
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .pin-btn {
+      position: absolute; /* Position the button absolutely relative to its parent */
+      top: 10px; /* Adjust as necessary to position it from the top */
+      right: 10px; /* Adjust as necessary to position it from the right */
+      border: none; /* Remove the border */
+      background: none; /* Remove the background */
+      padding: 0; /* Remove padding */
+      cursor: pointer; /* Changes the cursor on hover to indicate it's clickable */
+    }
+    
+    .pin-btn img {
+      width: 24px; /* Adjust the width as needed */
+      height: 24px; /* Adjust the height as needed */
+      display: block; /* Helps remove unwanted space around the image */
     }
   </style>
 
@@ -126,6 +154,72 @@
   // Reveal the "Sort Notes" button again
   document.querySelector('button[onclick="toggleSortMenu()"]').style.display = 'inline-block'; // Ensure this matches the initial display style of the button
 }
+
+function toggleSortMenu() {
+  var sortMenu = document.getElementById('sortMenu');
+  var sortButton = document.querySelector('button[onclick="toggleSortMenu()"]');
+  var isHidden = sortMenu.style.display === 'none' || sortMenu.style.display === '';
+
+  sortMenu.style.display = isHidden ? 'grid' : 'none';
+  sortButton.style.display = isHidden ? 'none' : 'inline-block';
+}
+
+function sortNotes(sortBy, order) {
+  var notesList = document.querySelector('.notes-list');
+  var notes = Array.from(notesList.children);
+
+  // Separate pinned and unpinned notes
+  var pinnedNotes = notes.filter(note => note.dataset.pinned === "true");
+  var unpinnedNotes = notes.filter(note => note.dataset.pinned !== "true");
+
+  // Sort only unpinned notes based on the criterion
+  unpinnedNotes.sort(function(a, b) {
+      let valA, valB;
+      if (sortBy === 'title') {
+          valA = a.querySelector('h3').textContent.toUpperCase();
+          valB = b.querySelector('h3').textContent.toUpperCase();
+      } else if (sortBy === 'date') {
+          valA = new Date(a.dataset.createdAt);
+          valB = new Date(b.dataset.createdAt);
+      }
+      if (valA < valB) return order === 'asc' ? -1 : 1;
+      if (valA > valB) return order === 'asc' ? 1 : -1;
+      return 0;
+  });
+
+  if (order === 'desc') {
+      unpinnedNotes.reverse();
+  }
+
+  // Clear the list and re-append notes in the new order
+  notesList.innerHTML = '';
+  pinnedNotes.forEach(note => notesList.appendChild(note)); // Keep pinned notes at the top
+  unpinnedNotes.forEach(note => notesList.appendChild(note));
+
+  document.getElementById('sortMenu').style.display = 'none';
+  document.querySelector('button[onclick="toggleSortMenu()"]').style.display = 'inline-block';
+}
+
+function togglePin(noteId) {
+  const noteItem = document.querySelector(`li[data-note-id="${noteId}"]`);
+  const pinButtonImg = noteItem.querySelector('.pin-btn img');
+  const isPinned = noteItem.dataset.pinned === "true";
+
+  // Toggle the `data-pinned` attribute value
+  noteItem.dataset.pinned = isPinned ? "false" : "true";
+
+  // Update the image src and alt text based on the new pin status
+  // The "pin" icon is now the default. It only changes to "unpin" if the note is pinned.
+  const imgSrc = isPinned ? "/static/notes/css/images/icons8-pin-100.png" : "/static/notes/css/images/icons8-unpin-100.png";
+  pinButtonImg.src = imgSrc;
+  pinButtonImg.alt = isPinned ? "Pin" : "Unpin";
+
+  // If a note has been pinned, move it to the top
+  if (!isPinned) {
+      noteItem.parentNode.prepend(noteItem);
+  }
+}
+
 
     // This function is required to correctly set the `data-created-at` attribute
    function formatNoteItems() {

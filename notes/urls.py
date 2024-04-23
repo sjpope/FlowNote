@@ -52,7 +52,9 @@ urlpatterns = [
     path('accounts/profile/', profile, name='profile'),
     path('accounts/profile/update-theme/', update_theme, name='update_theme'),
     path('contact/', contact, name='contact'),
+    path('about/', about, name='about'),
     path('update-username/', update_username, name='update_username'),
+    path('change-password/', change_password, name='change_password'),
 
     # Search URLs
     path('search/', NoteSearchView.as_view(), name='note_search'),
