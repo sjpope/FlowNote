@@ -110,8 +110,8 @@ def compute_similarity_matrix(contents):
 
 def group_note(target_note, other_notes, similarities, threshold=0.5, group_title=''):
     try:
-        similar_indices = np.where(similarities > threshold)[0]
-        similar_notes = [other_notes[i] for i in similar_indices]
+        similar_indices = [int(i) for i in np.where(similarities > threshold)[0]]
+        similar_notes = [other_notes[i] for i in similar_indices]  
 
         if similar_notes:
             existing_group = find_existing_group(target_note, threshold)
@@ -160,7 +160,10 @@ def group_all_notes(notes, similarity_matrix, threshold=0.5, owner=None, group_t
                         break
                     else:
                         # We're clear to create a new group. Use group_title.
-                        note_group = NoteGroup(title=f"Auto Group {len(note_groups) + 1} - {dt.now().strftime('%Y-%m-%d %H:%M:%S')}", owner=owner)
+                        if group_title:
+                            note_group = NoteGroup(title=group_title, owner=owner)
+                        else:    
+                            note_group = NoteGroup(title=f"Auto Group {len(note_groups) + 1} - {dt.now().strftime('%Y-%m-%d %H:%M:%S')}", owner=owner)
                         note_group.save()
                         note_group.notes.set(group)
                         note_groups.append(note_group)

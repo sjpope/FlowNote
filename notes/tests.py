@@ -4,13 +4,16 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 from django.contrib.auth.models import User
+from django.core.cache import cache
+import logging
+from celery.result import AsyncResult
 
 from notes.models import Note, NoteGroup
 from AIEngine.tasks import *  
 
-# python manage.py test
+# python manage.py test notes.tests.NoteSummaryTestCase
 
-class NoteAnalysisTestCase(TestCase):
+class NoteSummaryTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user = User.objects.create_user(username='testuser', password='12345')
@@ -24,12 +27,14 @@ class NoteAnalysisTestCase(TestCase):
     def test_note_analysis(self):
         notes = Note.objects.filter(id__in=[self.note1.id, self.note2.id])
         for note in notes:
-            print(f"\n--- {note.title} Analysis ---")
-            result = analyze_note(note.pk)
+            print(f"\n--- {note.title} Summary ---")
+            result = generate_summary_task(note.pk)
+            # Wait for the task to complete and get the result
+            # result = async_result.get(timeout=30)
             print("Analysis Results:")
-            print(f"SUMMARY: {result['summary']}")
-            print(f"KEYWORDS: {result['keywords']}")
-
+            print(f"SUMMARY: {result}")
+            
+# python manage.py test notes.tests.AutoGroupTestCase
 class AutoGroupTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
@@ -52,9 +57,39 @@ class AutoGroupTestCase(TestCase):
                     
             else:
                 print(f"\nNo similar notes found for {note.title}")
-                
 
-    
+class GenerateVocabAndKeywordsTaskTestCase(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='testuser', password='testpassword')
+        self.note = Note.objects.create(owner=self.user, content="Artificial Intelligence (AI) is transforming industries by automating tasks, analyzing vast amounts of data, and solving complex problems. It has applications in various fields such as healthcare, finance, and autonomous driving.")
+
+    def test_generate_vocab_and_keywords(self):
+        flashcards = generate_flashcards_task(self.note.id)
+        
+        print("Flashcards:", flashcards)
+        
+        self.note.refresh_from_db()
+        #print("Updated Keywords:", self.note.keywords)
+
+    def tearDown(self):
+        self.note.delete()
+        self.user.delete()
+
+
+class GetAutocompleteSuggestionsTestCase(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='testuser', password='testpassword')
+        self.note = Note.objects.create(owner=self.user, content='<p>Last sunday was a breeze! Generally speaking, </p>')
+
+    def test_get_autocomplete_suggestions(self):
+        
+        suggestions = get_autocomplete_suggestions(self.note.id, self.note.content)
+        print("Suggestions:", suggestions)
+
+
+    def tearDown(self):
+        self.note.delete()
+        self.user.delete()
     
 """ DJANGO SHELL TESTS """
 
