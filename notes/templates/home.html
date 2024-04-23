@@ -50,6 +50,13 @@
                         </div>
                     </div>
                 </li>
+                <li><strong>Stay Organized with Note Groups</strong><br>
+                    {% if user.userprofile.theme == 'dark' %}
+                        <img class="img1" style="margin: 35px; margin-left: 200px; transition: transform 1s ease;" src="../static/notes/css/images/groups-dark.png" alt="Note groups preview">
+                    {% else %}
+                        <img class="img1" style="margin: 35px; margin-left: 200px; transition: transform 1s ease;" src="../static/notes/css/images/groups-light.png" alt="Note groups preview">
+                    {% endif %}
+                </li>
                 <li><strong>Intuitive user interface</strong>
                     <p>Enjoy a user-friendly interface designed to enhance your note-taking experience. Say goodbye to cluttered interfaces and hello to simplicity.</p>
                 </li>
@@ -60,6 +67,13 @@
                     <p>Personalize your note-taking environment with customizable themes. Choose from a variety of color schemes and layouts to suit your preferences.</p>
                 </li>
             </ul>
+            {% if not user.is_authenticated %}
+            <section id="call-action">
+                <h2>Create Your Account Now!</h2>
+                <p>Join FlowNote now and start capturing your ideas today.</p>
+                <a href="{% url 'notes:register' %}" class="cta-button">Get Started</a>
+            </section>
+            {% endif %}
         </div>
         {% include 'assistant.html' %}
     </div>
@@ -76,6 +90,9 @@
             border-radius: 3px;
             border-width: 2px;
             border-style: groove;
+        }
+        .img1:hover {
+            transform: scale(1.5);
         }
         .img2{
             max-height: 30px;
@@ -95,6 +112,24 @@
             display: flex;
             flex-direction: column;
             align-items: start;
+        }
+
+        .row img {
+            margin-left: 120px;
+            margin-right: 30px;
+            transition: transform 1s ease
+        }
+        .row img:hover {
+            transform: scale(1.5);
+        }
+        .column img {
+            margin-left: 200px;
+            margin-top: 30px;
+            margin-bottom: 30px;
+            transition: transform 1s ease
+        }
+        .column img:hover {
+            transform: scale(2);
         }
         .container {
             margin: 25px;
