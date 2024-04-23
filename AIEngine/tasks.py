@@ -181,26 +181,4 @@ def analyze_note_task(note_id):
     note.save()
 
     return results
-@shared_task
-def analyze_note_task(note_id):
-    note = Note.objects.get(pk=note_id)
-    
-    # Check cache
-    if note.updated_at < cache.get(f"analysis_{note_id}_timestamp", note.updated_at):
-        logging.info("Analysis already up-to-date.")
-        return note.analysis
-    
-    cache.set(f"analysis_{note_id}_timestamp", note.updated_at, None)
-    
-    # Pre-process and strip HTML tags
-    note_content = strip_html_tags(note.content)
-    preprocessed_content = get_preprocessed_content(note_content)
-    
-    # Analyze note
-    results = analyze(note_content, preprocessed_content)
-    
-    # Save analysis to Note model
-    note.analysis = results
-    note.save()
 
-    return results
