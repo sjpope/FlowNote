@@ -399,3 +399,18 @@ def contact(request):
         form = ContactForm()
     
     return render(request, 'contact.html', {'form': form})
+
+@login_required
+def update_preferences(request):
+    if request.method == 'POST':
+        form = UserPreferenceForm(request.POST, instance=request.user.userpreference)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your preferences have been updated.')
+            return redirect('notes:profile')
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = UserPreferenceForm(instance=request.user.userpreference)
+
+    return render(request, 'profile.html', {'form': form})

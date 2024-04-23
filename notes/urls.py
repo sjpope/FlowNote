@@ -55,6 +55,7 @@ urlpatterns = [
     path('about/', about, name='about'),
     path('update-username/', update_username, name='update_username'),
     path('change-password/', change_password, name='change_password'),
+    path('update_preferences/', update_preferences, name='update_preferences'),
 
     # Search URLs
     path('search/', NoteSearchView.as_view(), name='note_search'),
