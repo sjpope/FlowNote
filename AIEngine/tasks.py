@@ -142,7 +142,7 @@ def auto_group_note(note_id, threshold=0.15):
         logging.error(f"An error occurred while auto grouping note: {str(e)}")
         return None
 
-def auto_group_all(threshold=0.25, owner=None) -> list[NoteGroup]:
+def auto_group_all(threshold=0.15, owner=None) -> list[NoteGroup]:
     """
     Group all notes based on overall similarity.
     """
@@ -152,6 +152,13 @@ def auto_group_all(threshold=0.25, owner=None) -> list[NoteGroup]:
 
         sim_matrix = compute_similarity_matrix(preprocessed_list)
         
+        if sim_matrix is None:  # Fallback if similarity matrix fails
+            
+            preprocessed_list = [note.content.lower() for note in notes]  
+            sim_matrix = compute_similarity_matrix(preprocessed_list)
+            if sim_matrix is None:
+                raise ValueError("Failed to compute similarity matrix on second attempt")
+
         if isinstance(sim_matrix, np.ndarray):
             sim_matrix = sim_matrix.astype(int)  # Converts dtype to native Python int 
         
