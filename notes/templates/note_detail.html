@@ -3,6 +3,7 @@
 {% block content %}
 <div class="full-page">
   <h2 style="text-decoration: underline;">{{ note.title }}</h2>
+  <script id="note-id" type="application/json">{{ note.id }}</script>
 
   {% if messages %}
     <ul class="messages">
@@ -29,8 +30,29 @@
 
   {% include 'assistant.html' %}
 
-  <button class="btn-secondary" id="analyzeNoteBtn" data-note-id="{{ note.id }}" data-analyze-url="{% url 'notes:analyze' note.id %}">Analyze Note</button>
+  {% comment %} <button class="btn-secondary" id="analyzeNoteBtn" data-note-id="{{ note.id }}" data-analyze-url="{% url 'notes:analyze' note.id %}">Analyze Note</button>
+  <div id="analysisResult"></div> {% endcomment %}
+
+  <h3>Flashcards</h3>
+  <div id="flashcard-section" style="display:none;">
+    <div id="flashcard-container">
+      <div id="flashcard">
+        <div class="card-side" id="term">Term</div>
+        <div class="card-side" id="definition" style="display:none;">Definition</div>
+      </div>
+
+      <div id="flashcard-buttons">
+        <button id="prevBtn">Previous</button>
+        <button id="flipBtn">Flip</button>
+        <button id="nextBtn">Next</button>
+      </div> 
+    </div>
+  </div>
+
+  <button type="submit" class="btn-secondary analyze-btn" data-type="keywords" data-note-id="{{ note.id }}" data-analyze-url="{% url 'notes:generate_keywords' note.id %}">Analyze Keywords</button>
+  <button type="submit" class="btn-secondary analyze-btn" data-type="summary" data-note-id="{{ note.id }}" data-analyze-url="{% url 'notes:generate_summary' note.id %}">Analyze Summary</button>
   <div id="analysisResult"></div>
+
 
   <h3>Auto Grouping</h3>
   <form action="{% url 'notes:auto_group_note' note.id %}" method="post">
@@ -50,11 +72,48 @@
     </div>
   </div>
 
-<div id="content-container" class="content-display-area mt-4 p-3" style="background-color: #f8f9fa; border-radius: 5px;">
-</div>
+<div id="content-container" class="content-display-area mt-4 p-3" style="background-color: #f8f9fa; border-radius: 5px;"></div>
 
 </div>
 <style>
+  #flashcard-container {
+    text-align: center;
+  }
+
+  #flashcard {
+    width: 300px;
+    height: 200px;
+    margin: 20px auto;
+    border: 1px solid #ddd;
+    padding: 20px;
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+  }
+
+  .card-side {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+  }
+
+  #term {
+    background: #fafafa;
+  }
+
+  #definition {
+    background: #f0f0f0;
+    transform: rotateY(180deg);
+  }
+
+  #prevBtn,
+  #flipBtn,
+  #nextBtn {
+    margin: 10px;
+  }
+
   .generate-content-form {
     margin-top: 20px;
     display: flex;
@@ -91,6 +150,7 @@
     width: 125px;
     min-width: 70px;
   }
+
   .button-group button {
     margin-right: 10px;
     background-color: var(--button-bg-color);
@@ -115,6 +175,67 @@
 
 {% block javascript %}
 <script>
+  // FLASHCARDS
+  document.addEventListener('DOMContentLoaded', function() {
+    let currentCardIndex = 0;
+    let flashcards = [];
+  
+    const termElement = document.getElementById('term');
+    const definitionElement = document.getElementById('definition');
+    const prevBtn = document.getElementById('prevBtn');
+    const flipBtn = document.getElementById('flipBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const noteId = JSON.parse(document.getElementById('note-id').textContent);    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    
+    function fetchFlashcards() {
+        fetch(`/notes/generate-flashcards/${noteId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ 'note_id': noteId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            flashcards = Object.entries(data);  
+            displayCard(0);  
+            showFlashcardSection();
+        })
+        .catch(error => console.error('Error fetching flashcards:', error));
+    }
+    
+    function displayCard(index) {
+        termElement.textContent = flashcards[index][0];
+        definitionElement.textContent = flashcards[index][1];
+    }
+
+    flipBtn.addEventListener('click', () => {
+        termElement.style.display = termElement.style.display === 'none' ? '' : 'none';
+        definitionElement.style.display = definitionElement.style.display === 'none' ? '' : 'none';
+    });
+
+    prevBtn.addEventListener('click', () => {
+        if (currentCardIndex > 0) {
+            currentCardIndex--;
+            displayCard(currentCardIndex);
+        }
+    });
+
+    nextBtn.addEventListener('click', () => {
+        if (currentCardIndex < flashcards.length - 1) {
+            currentCardIndex++;
+            displayCard(currentCardIndex);
+        }
+    });
+
+    fetchFlashcards();
+
+    function showFlashcardSection() {
+      const flashcardSection = document.getElementById('flashcard-section');
+      flashcardSection.style.display = 'block';
+    }
+  });
 
   // AUTOCOMPLETE
   document.addEventListener("DOMContentLoaded", function() {
@@ -226,60 +347,10 @@
       }
       return cookieValue;
     }
-});
-
-  {% comment %} 
-  // AUTOCOMPLETE (DEBOUNCED)
-  document.addEventListener("DOMContentLoaded", function() {
-    const contentInput = document.getElementById('note-content-input');
-    const suggestionsContainer = document.getElementById('autocomplete-suggestions');
-
-    contentInput.addEventListener('input', _.debounce(function() {  
-        const currentText = contentInput.value;
-        fetch(`/autocomplete?text=${encodeURIComponent(currentText)}`, {
-            method: 'GET',
-            headers: {
-                'X-CSRFToken': getCookie('csrftoken'),
-            },
-        })
-        .then(response => response.json())
-        .then(data => {
-            suggestionsContainer.innerHTML = '';  
-            data.suggestions.forEach(suggestion => {
-                const suggestionElement = document.createElement('div');
-                suggestionElement.textContent = suggestion;
-                suggestionElement.classList.add('autocomplete-suggestion');
-                
-                suggestionElement.addEventListener('click', function() {
-                    contentInput.value += ' ' + suggestion.split(' ').slice(-2).join(' ');  
-                    suggestionsContainer.innerHTML = ''; 
-                });
-                
-                suggestionsContainer.appendChild(suggestionElement);
-            });
-        })
-        .catch(error => console.error('Error fetching autocomplete suggestions:', error));
-    }, 300));  
-
-    function getCookie(name) {
-      let cookieValue = null;
-      if (document.cookie && document.cookie !== '') {
-          const cookies = document.cookie.split(';');
-          for (let i = 0; i < cookies.length; i++) {
-              const cookie = cookies[i].trim();
-              if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                  break;
-              }
-          }
-      }
-      return cookieValue;
-    }
-  }); 
-  {% endcomment %}
+  });
 
   // ANALYZE NOTE BUTTON
-  document.addEventListener("DOMContentLoaded", function() {
+  {% comment %} document.addEventListener("DOMContentLoaded", function() {
     const analyzeBtn = document.getElementById("analyzeNoteBtn");
   
     analyzeBtn.addEventListener("click", function(e) {
@@ -332,7 +403,97 @@
       }
       return cookieValue;
     }
-  });
+  }); {% endcomment %}
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      document.querySelectorAll(".analyze-btn").forEach(btn => {
+        btn.addEventListener("click", function(e) {
+          e.preventDefault();
+          const noteId = this.getAttribute("data-note-id");
+          const analyzeType = this.getAttribute("data-type");
+          const analyzeUrl = this.getAttribute("data-analyze-url");
+          const postData = new FormData();
+          postData.append('note_id', noteId);
+
+          this.textContent = 'Analyzing...';  
+          this.disabled = true;  
+
+          fetch(analyzeUrl, {
+            method: 'POST',
+            headers: {
+              'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams(postData)
+          })
+          .then(response => response.json())
+          .then(data => {
+            const analysisContainer = document.getElementById("analysisResult");
+            let content = `<p>${analyzeType.charAt(0).toUpperCase() + analyzeType.slice(1)}: ${data.status}</p>`;
+            analysisContainer.innerHTML = content;  
+
+            this.textContent = 'Analyze ' + analyzeType.charAt(0).toUpperCase() + analyzeType.slice(1); 
+            this.disabled = false;  
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            this.textContent = 'Analyze ' + analyzeType.charAt(0).toUpperCase() + analyzeType.slice(1);  
+            this.disabled = false;  
+            alert('Failed to analyze: ' + error.message);
+          });
+        });
+      });
+    });
+  </script>
+
+
+  {% comment %} document.querySelectorAll(".analyze-btn").forEach(btn => {
+    btn.addEventListener("click", function(e) {
+      e.preventDefault();
+      
+      const noteId = this.getAttribute("data-note-id");
+      const analyzeType = this.getAttribute("data-type");
+      const analyzeUrl = this.getAttribute("data-analyze-url");
+      const postData = new FormData();
+      postData.append('type', analyzeType);
+      
+      // Animate button while fetching
+      this.textContent = '...';
+      this.disabled = true;
+      
+      fetch(analyzeUrl, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': getCookie('csrftoken'),
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams(postData)
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data); 
+        
+        const analysisContainer = document.getElementById("analysisResult");
+        
+        // Update keywords or summary based on the button pressed
+        if (analyzeType === 'keywords') {
+          analysisContainer.innerHTML += `<p>Keywords: ${data.keywords}</p>`;
+        } else if (analyzeType === 'summary') {
+          analysisContainer.innerHTML += `<p>Summary: ${data.summary}</p>`;
+        }
+        
+        btn.textContent = analyzeType === 'keywords' ? 'Analyze Keywords' : 'Analyze Summary';
+        btn.disabled = false;
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        
+        btn.textContent = analyzeType === 'keywords' ? 'Analyze Keywords' : 'Analyze Summary';
+        btn.disabled = false;
+      });
+    });
+  }); {% endcomment %}
 
 </script>
 {% endblock %}

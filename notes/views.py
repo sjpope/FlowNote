@@ -30,6 +30,22 @@ from .ai import generate_response
 
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
+
+def generate_keywords(request, note_id):
+    if request.method == "POST":
+        generate_keywords_task.delay(note_id)  
+        return JsonResponse({'status': 'started'})
+    else:
+        return JsonResponse({'error': 'Invalid request'}, status=400)
+
+def generate_summary(request, note_id):
+    if request.method == "POST":
+        
+        generate_summary_task.delay(note_id)  
+        return JsonResponse({'status': 'started'})
+    else:
+        return JsonResponse({'error': 'Invalid request'}, status=400)
+
 """ Async Task Status Views """
 def task_status(request, task_id):
     task = AsyncResult(task_id)
@@ -38,12 +54,28 @@ def task_status(request, task_id):
     else:
         return JsonResponse({'status': task.status})
 
+def process_feedback(request, note_id):
+    
+    feedback = {
+        # get model output the rating was based on (keywords, summary, etc.)
+        'content': get_object_or_404(Note, pk=note_id).content,
+        'rating': request.POST.get('rating', False),
+        'module': request.POST.get('module', '')
+    }
+    
+    # run_feedback_pipeline(feedback)
+    
+    return JsonResponse({'success': True})
+
 """ AI, ML Views """
-def generate_flashcards_view(request):
+def generate_flashcards(request, note_id):
     if request.method == 'POST':
-        key_concepts = request.POST.get('key_concepts')
-        # Asynchronously generate flashcards
-        result = generate_flashcards_task.delay(key_concepts)
+        note = get_object_or_404(Note, pk=note_id)  
+        
+        result = generate_flashcards_task.delay(note_id)
+        
+        # flashcards = {'1': 'def1','t2': 'def2',}
+        # return JsonResponse(flashcards)
         return JsonResponse({'task_id': result.task_id})
     else:
         return JsonResponse({'error': 'Invalid request'}, status=405)
@@ -100,18 +132,28 @@ def auto_group_all_view(request):
         return redirect('notes:group_list') 
     return render(request, 'notes/auto_group_all.html')
 
-def analyze(request, note_id):
-    if request.method == "POST":
-        note = get_object_or_404(Note, pk=note_id)
-        result = analyze_note(note_id)
+# def analyze(request, note_id):
+#     if request.method == "POST":
         
-        if 'Summary' not in result:
-            return JsonResponse({'result': result})
+#         note = get_object_or_404(Note, pk=note_id)
+#         analysis_type = request.POST.get('type', 'both')
         
-        keywords, summary = result['keywords'], result['summary']
-        return JsonResponse({'keywords': keywords, 'summary': summary})
-    else:
-        return JsonResponse({'error': 'Invalid request'}, status=400)
+#         result = analyze_note(note_id)
+        
+#         keywords = result.get('keywords', [])
+#         summary = result.get('summary', '')  
+        
+#         if analysis_type == 'keywords':
+#             result = {'keywords': keywords}
+#         elif analysis_type == 'summary':
+#             result = {'summary': summary}
+#         else:
+#             result = {'keywords': keywords, 'summary': summary}
+        
+#         return JsonResponse(result)
+#     else:
+#         return JsonResponse({'error': 'Invalid request'}, status=400)
+
 
 def generate_response_from_prompt(request):
     if request.method == 'GET':
@@ -357,3 +399,18 @@ def contact(request):
         form = ContactForm()
     
     return render(request, 'contact.html', {'form': form})
+
+@login_required
+def update_preferences(request):
+    if request.method == 'POST':
+        form = UserPreferenceForm(request.POST, instance=request.user.userpreference)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your preferences have been updated.')
+            return redirect('notes:profile')
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = UserPreferenceForm(instance=request.user.userpreference)
+
+    return render(request, 'profile.html', {'form': form})

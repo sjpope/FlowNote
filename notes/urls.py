@@ -20,22 +20,23 @@ urlpatterns = [
     path('task-status/<str:task_id>/', task_status, name='task-status'),
     
     # Trained GPT-2 Model URLs
-    path('generate-content/<int:note_id>/', generate_content_view, name='generate-content'),    
     path('autocomplete', autocomplete_view, name='autocomplete'),
-
+    path('generate-flashcards/<int:note_id>/', generate_flashcards, name='generate-flashcards'),
+    path('generate-content/<int:note_id>/', generate_content_view, name='generate-content'),    
+    path('generate_keywords/<int:note_id>/', generate_keywords, name='generate_keywords'),
+    path('generate_summary/<int:note_id>/', generate_summary, name='generate_summary'),
+    
     # Analysis URLs
-    path('analyze/<int:note_id>/', analyze, name='analyze'),
+    # path('analyze/<int:note_id>/', analyze, name='analyze'),
     
     # AI Assistant URL
     path('generate-response/', generate_response_from_prompt, name='generate-response'),
 
-    # Note Group URLs
+    # Group URLs
     path('note-groups/search', GroupSearchView.as_view(), name='group_search'),
-    
     # Auto Grouping
     path('notes/<int:note_id>/auto-group/', auto_group_note_view, name='auto_group_note'),
     path('notes/auto-group-all/', auto_group_all_view, name='auto_group_all'),
-    
     # User Grouping
     path('note-groups/', group_list, name='group_list'),
     path('note-groups/<int:pk>/', group_detail, name='group_detail'),
@@ -54,6 +55,7 @@ urlpatterns = [
     path('about/', about, name='about'),
     path('update-username/', update_username, name='update_username'),
     path('change-password/', change_password, name='change_password'),
+    path('update_preferences/', update_preferences, name='update_preferences'),
 
     # Search URLs
     path('search/', NoteSearchView.as_view(), name='note_search'),

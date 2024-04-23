@@ -71,6 +71,7 @@ staticfiles/
 media/
 
 # Environments
+/venv-4
 /venv-3
 /venv
 .env
@@ -93,8 +94,10 @@ Untitled.ipynb
 # Hugging Face Transformer models, cache
 */hf_*
 **/hf_*
+huggingface_cache/
 /models 
 /tokenizer
+
 
 obj/
 Any CPU/
