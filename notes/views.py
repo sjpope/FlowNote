@@ -31,12 +31,7 @@ from .ai import generate_response
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
 
-def generate_keywords(request, note_id):
-    if request.method == "POST":
-        generate_keywords_task(note_id)  
-        return JsonResponse({'status': 'started'})
-    else:
-        return JsonResponse({'error': 'Invalid request'}, status=400)
+
 
 def generate_summary(request, note_id):
     if request.method == "POST":
@@ -234,18 +229,6 @@ def group_list(request):
 def about(request):
     return render(request, 'about.html')
 
-class NoteSearchView(ListView):
-    model = Note
-    template_name = 'note_search.html'
-    context_object_name = 'notes'
-
-    def get_queryset(self):
-        query = self.request.GET.get('q')
-        if query:
-            return Note.objects.filter(Q(title__icontains=query) | Q(content__icontains=query), owner=self.request.user)
-        else:
-            return Note.objects.filter(owner=self.request.user)
-
 """ User Auth Views """
 @login_required
 def profile(request):
@@ -326,6 +309,18 @@ def create_note(request):
     else:
         form = NoteForm()
     return render(request, 'note_form.html', {'form': form})
+
+class NoteSearchView(ListView):
+    model = Note
+    template_name = 'note_search.html'
+    context_object_name = 'notes'
+
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        if query:
+            return Note.objects.filter(Q(title__icontains=query) | Q(content__icontains=query), owner=self.request.user)
+        else:
+            return Note.objects.filter(owner=self.request.user)
 
 class NoteListView(ListView):
     model = Note

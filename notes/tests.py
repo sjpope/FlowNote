@@ -43,20 +43,40 @@ class AutoGroupTestCase(TestCase):
         cls.note2 = Note.objects.create(owner=cls.user, title="Django Models", content="Django models form the foundational layer for database interaction within Django. They not only define the structure of the database tables but also provide a systematic approach to handling database queries. By defining fields and behaviors of the data you’re storing, Django models encapsulate database access and are a crucial element in facilitating an organized, efficient, and robust database architecture. Understanding relationships such as ForeignKey, ManyToMany, and OneToOne fields are essential for leveraging the full capability of Django's ORM.")
         cls.note3 = Note.objects.create(owner=cls.user, title="Testing Basics", content="Understanding the basics of software testing is fundamental to any software development process. Writing tests is crucial as it helps ensure the quality of code and reduces bugs in production. In software development, various testing methodologies are employed, including unit tests that help verify the functionality of a small part of the system, integration tests which ensure that different parts of the application work together as expected, and system tests which evaluate the complete and fully integrated software product. The goal is to catch bugs early in the development cycle and save costs in later stages while maintaining software quality.")
 
-    def test_auto_grouping(self):
-        notes = Note.objects.filter(id__in=[self.note1.id, self.note2.id, self.note3.id])
-        print("\n--- Auto Grouping Test ---")
-        for note in notes:
-            threshold = 0.15
-            group = auto_group_note(note.pk, 0.10)
+    def test_auto_grouping_individual_notes(self):
+        print("\n--- Auto Grouping Individual Notes Test ---")
+        for note in [self.note1, self.note2, self.note3]:
+            group = auto_group_note(note.pk, threshold=0.10)
             if group:
                 print(f"\nGroup Title: {group.title}")
-                print("Grouped Notes (Threshold 0.15):")
+                print("Grouped Notes (Threshold 0.10):")
                 for grouped_note in group.notes.all():
                     print(f"- {grouped_note.title}")
-                    
             else:
                 print(f"\nNo similar notes found for {note.title}")
+
+    def test_auto_grouping_all_notes(self):
+        print("\n--- Auto Grouping All Notes Test ---")
+        groups: list[NoteGroup] = auto_group_all(threshold=0.15, owner=self.user)
+        if groups:
+            for group in groups:
+                print(f"\nGroup Title: {group.title}")
+                print("Grouped Notes:")
+                for note in group.notes.all():
+                    print(f"- {note.title}")
+        else:
+            print("\nNo groups formed.")
+
+    def test_threshold_variability(self):
+        print("\n--- Testing Threshold Variability ---")
+        thresholds = [0.05, 0.10, 0.15, 0.20]
+        for threshold in thresholds:
+            group = auto_group_note(self.note1.pk, threshold)
+            print(f"\nThreshold: {threshold}")
+            if group:
+                print("Group formed with title:", group.title)
+            else:
+                print("No group formed.")
 
 class GenerateVocabAndKeywordsTaskTestCase(TestCase):
     def setUp(self):
