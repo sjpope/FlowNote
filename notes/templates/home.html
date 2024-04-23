@@ -60,11 +60,13 @@
                     <p>Personalize your note-taking environment with customizable themes. Choose from a variety of color schemes and layouts to suit your preferences.</p>
                 </li>
             </ul>
+            {% if not user.is_authenticated %}
             <section id="call-action">
                 <h2>Create Your Account Now!</h2>
                 <p>Join FlowNote now and start capturing your ideas today.</p>
                 <a href="{% url 'notes:register' %}" class="cta-button">Get Started</a>
             </section>
+            {% endif %}
         </div>
         {% include 'assistant.html' %}
     </div>
