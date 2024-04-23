@@ -1,4 +1,5 @@
 import logging
+from typing import List, Optional
 from typing_extensions import deprecated
 from celery import shared_task
 from django.core.cache import cache
@@ -11,8 +12,7 @@ from .config import model, tokenizer
 
 import logging
 
-""" Content Generation Methods"""
-
+""" Content Generation Tasks"""
 
 def generate_keywords_task(note_id):
     note = Note.objects.get(pk=note_id)
@@ -32,7 +32,6 @@ def generate_keywords_task(note_id):
     note.save()
 
     return keywords
-
 
 def generate_summary_task(note_id):
     note = Note.objects.get(pk=note_id)
@@ -120,26 +119,40 @@ def get_autocomplete_suggestions(note_id, content):
 
     return completions
 
-""" Auto Grouping Methods"""
+""" Auto Grouping Tasks"""
 
-def auto_group_note(note_id, threshold=0.15):
+def auto_group_note(note_id: int, threshold: float = 0.15) -> Optional[NoteGroup]:
     try:
-        target_note = Note.objects.get(pk=note_id)
-        other_notes = list(Note.objects.exclude(pk=note_id))
+        target_note: Note = Note.objects.get(pk=note_id)
+        other_notes: List[Note] = list(Note.objects.exclude(pk=note_id))
 
         target_content = ' '.join(preprocess_group_content(target_note)).lower()        
         other_contents = [' '.join(preprocess_group_content(note)).lower() for note in other_notes]
         
-        contents = [target_content] + other_contents
-        sim_matrix = compute_similarity_matrix(contents)
-        similarities = sim_matrix[0, 1:]
+        contents: List[str] = [target_content] + other_contents
+        sim_matrix: Optional[np.ndarray] = compute_similarity_matrix(contents)
 
-        group_title = generate_group_title(target_note.content + ' '.join([note.content for note in other_notes]))
-        group = group_note(target_note, other_notes, similarities, threshold, group_title)
+        if sim_matrix is None:  # Fallback if similarity matrix fails
+            preprocessed_list: List[str] = [note.content.lower() for note in [target_note] + other_notes]
+            sim_matrix = compute_similarity_matrix(preprocessed_list)
+            if sim_matrix is None:
+                logging.error("Both attempts to compute the similarity matrix failed.")
+                raise ValueError("Failed to compute similarity matrix on both attempts.")
+
+        similarities: np.ndarray = sim_matrix[0, 1:]
+
+
+        group_title: str = generate_group_title(" ".join(contents))
+        group: Optional[NoteGroup] = group_note(target_note, other_notes, similarities, threshold, group_title)
 
         return group
+     
+    except ValueError as ve:
+        logging.error("ValueError in auto_group_note: %s", ve)
+        return None
+    
     except Exception as e:
-        logging.error(f"An error occurred while auto grouping note: {str(e)}")
+        logging.error("Exception in auto_group_note: %s", e)
         return None
 
 def auto_group_all(threshold=0.15, owner=None) -> list[NoteGroup]:

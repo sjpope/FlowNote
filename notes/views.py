@@ -31,12 +31,7 @@ from .ai import generate_response
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
 
-def generate_keywords(request, note_id):
-    if request.method == "POST":
-        generate_keywords_task(note_id)  
-        return JsonResponse({'status': 'started'})
-    else:
-        return JsonResponse({'error': 'Invalid request'}, status=400)
+
 
 def generate_summary(request, note_id):
     if request.method == "POST":
@@ -166,30 +161,23 @@ class GroupSearchView(ListView):
             return NoteGroup.objects.filter(Q(title__icontains=query), owner=self.request.user)
         else:
             return NoteGroup.objects.filter(owner=self.request.user)
-        
-def assign_note_to_group(request):
-    if request.method == 'POST':
-        form = NoteGroupAssignmentForm(request.POST)
-        if form.is_valid():
-            note = form.cleaned_data['note']
-            groups = form.cleaned_data['groups']
-            for group in groups:
-                note.groups.add(group)
-            return redirect('notes:group_list')
-    else:
-        form = NoteGroupAssignmentForm()
-    
-    return render(request, 'group/group_assign.html', {'form': form})
 
-def group_edit(request, pk):
-    group = get_object_or_404(NoteGroup, pk=pk)
+def note_remove_from_group(request, group_id, note_id):
+    group = get_object_or_404(NoteGroup, id=group_id)
+    note = get_object_or_404(Note, id=note_id)
+    note.groups.remove(group)  
+    return redirect('notes:group_detail', pk=group_id)
+       
+def group_edit(request, pk=None):
+    group = get_object_or_404(NoteGroup, pk=pk) if pk else None
     if request.method == 'POST':
         form = NoteGroupForm(request.POST, instance=group)
         if form.is_valid():
-            form.save()
-            return redirect('notes:group_list')
+            group = form.save()  
+            return redirect('notes:group_detail', pk=group.pk)
     else:
         form = NoteGroupForm(instance=group)
+    
     return render(request, 'group/group_form.html', {'form': form})
                   
 def group_delete(request, pk):
@@ -233,18 +221,6 @@ def group_list(request):
 
 def about(request):
     return render(request, 'about.html')
-
-class NoteSearchView(ListView):
-    model = Note
-    template_name = 'note_search.html'
-    context_object_name = 'notes'
-
-    def get_queryset(self):
-        query = self.request.GET.get('q')
-        if query:
-            return Note.objects.filter(Q(title__icontains=query) | Q(content__icontains=query), owner=self.request.user)
-        else:
-            return Note.objects.filter(owner=self.request.user)
 
 """ User Auth Views """
 @login_required
@@ -326,6 +302,18 @@ def create_note(request):
     else:
         form = NoteForm()
     return render(request, 'note_form.html', {'form': form})
+
+class NoteSearchView(ListView):
+    model = Note
+    template_name = 'note_search.html'
+    context_object_name = 'notes'
+
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        if query:
+            return Note.objects.filter(Q(title__icontains=query) | Q(content__icontains=query), owner=self.request.user)
+        else:
+            return Note.objects.filter(owner=self.request.user)
 
 class NoteListView(ListView):
     model = Note
