@@ -48,7 +48,7 @@
 <body class="{% if user.userprofile.theme == 'dark' %}theme-dark{% else %}theme-light{% endif %}">
     <header>
         <div class="nav-container">
-            <h1>FlowNote</h1>
+            <h1><a style="text-decoration: none; color: var(--navbar-text-color);" href="{% url 'home' %}">FlowNote</a></h1>
             <nav class="nav-links">
                 <ul>
                     <li><a href="{% url 'home' %}" class="{% if request.path == '/' %}active{% endif %}">Home</a></li>
@@ -149,9 +149,21 @@
     
     {% endblock %}
 </body>
-<!-- <footer>
+<footer class="footer">
         <div class="footer-container">
             &copy; 2024 FlowNote.
         </div>
-</footer> -->
+</footer>
+
+<style>
+    .footer {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        color: #fff;
+        text-align: center;
+        padding: 10px 0;
+    }
+</style>
 </html>
