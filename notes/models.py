@@ -19,9 +19,6 @@ class NoteGroup(models.Model):
         app_label = 'notes'
     
 
-from django.db import models
-from django.conf import settings
-
 class Note(models.Model):
     title = models.CharField(max_length=100)
     content = models.TextField()
@@ -50,4 +47,11 @@ class UserProfile(models.Model):
         app_label = 'notes'
 
 
+class UserPreference(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    max_length = models.IntegerField(default=150)
+    num_return_sequences = models.IntegerField(default=1)
+    additional_tokens = models.IntegerField(default=500)
 
+    def __str__(self):
+        return f"Preferences of {self.user.username}"
