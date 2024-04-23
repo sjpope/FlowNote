@@ -1,13 +1,98 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>{% if form.instance.pk %}Edit Group{% else %}Create Group{% endif %}</h2>
+<h2>{{ form.instance.pk|yesno:"Edit Group,Create Group" }}</h2>
 
 <form method="post" action="">
     {% csrf_token %}
-    {{ form.as_p }}
+    {{ form.non_field_errors }}
+
+    <div class="form-group">
+        <label for="id_title">{{ form.title.label }}</label>
+        {{ form.title }}
+        {{ form.title.errors }}
+    </div>
+
+    <div class="form-group">
+        <label for="id_description">{{ form.description.label }}</label>
+        {{ form.description }}
+        {{ form.description.errors }}
+    </div>
+
+    <div class="form-group">
+        <label for="id_notes">{{ form.notes.label }}</label>
+        {{ form.notes }}
+        {{ form.notes.errors }}
+    </div>
+
     <button type="submit">Save</button>
 </form>
 
 <a href="{% url 'notes:group_list' %}">Back to Group List</a>
+{% endblock %}
+
+{% block styles %}
+<style>
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+        margin-top: 5px;
+    }
+    
+    input[type="text"],
+    textarea {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+        margin-top: 5px;
+    }
+
+    button[type="submit"] {
+        background-color: #4CAF50;
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    button[type="submit"]:hover {
+        background-color: #45a049;
+    }
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function(event) {
+            const title = form.querySelector('#id_title').value;
+            const description = form.querySelector('#id_description').value;
+            const notes = form.querySelector('#id_notes').value;
+
+            if (!title || !description || !notes) {
+                event.preventDefault();
+                alert('All fields are required');
+            }
+        });
+    });
+
+    
+</script>
 {% endblock %}

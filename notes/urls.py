@@ -39,9 +39,8 @@ urlpatterns = [
     path('note-groups/create/', group_create, name='group_create'),
     path('note-groups/<int:pk>/edit/', group_edit, name='group_edit'),
     path('note-groups/<int:pk>/delete/', group_delete, name='group_delete'),
-    path('assign-note-to-group/', assign_note_to_group, name='assign-note-to-group'),
     path('note-groups/search', GroupSearchView.as_view(), name='group_search'),
-
+    path('note-groups/<int:pk>/remove-note/<int:note_id>/', note_remove_from_group, name='note_remove_from_group'),
     # Registration/User Profile URLs
     path('register/', register, name='register'),
     path('login/', auth_views.LoginView.as_view(), name='login'),
