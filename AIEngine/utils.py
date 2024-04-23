@@ -41,6 +41,26 @@ def strip_html_tags(input_string):
     cleaned = ' '.join(cleaned.split())
     return cleaned
 
+def clean_keywords(text):
+    # Remove newlines and the prompt
+    text = re.sub(r'[\n\r]', ' ', text)  # Replace newlines and carriage returns with space
+    text = re.sub(r'".*?Prompt:.*?"', '', text)  # Attempt to remove the prompt
+    
+    # Split the text into individual words
+    words = re.split(r'[^a-zA-Z-]', text)  # Split on non-alphabetic characters, preserving hyphenated words
+    
+    # Filter out empty strings and overly long words (more than 2 words in a phrase)
+    keywords = [word.strip() for word in words if word and len(word.strip().split()) <= 2]
+    
+    # Deduplicate while preserving order
+    seen = set()
+    keywords = [x for x in keywords if not (x in seen or seen.add(x))]
+    
+    # Create a dictionary with keywords as keys
+    keyword_dict = {keyword: '' for keyword in keywords}
+    
+    return keyword_dict
+
 def strip_prompt(prompt, content):
     try:
         start_index = content.index(prompt) + len(prompt)

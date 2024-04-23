@@ -75,9 +75,10 @@ def generate_keywords(note_content, processed_content) -> dict[str, str]:
     keywords: str = generate_content(prompt, num_return_sequences=1, additional_tokens=50, temperature=0.5, top_k=20, top_p=0.75)[0]
     keywords: str = strip_prompt(prompt, keywords)
     
-    keyword_list = keywords.split(', ')
+    print(keywords + '\n\n')
+    # keyword_list = keywords.split(', ')
     
-    keywords_dict = {keyword: '' for keyword in keyword_list}
+    keywords_dict = clean_keywords(keywords)
     
     return keywords_dict
 
