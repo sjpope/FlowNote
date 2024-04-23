@@ -98,11 +98,18 @@ input[type="text"],
 input[type="email"],
 input[type="password"] {
   width: calc(100% - 170px); /* Adjust the width to accommodate label */
+  color: var(--text-color);
+  background-color: var(--input-bg-color);
   min-width: 190px;
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
   box-sizing: border-box;
+}
+
+input[type="number"] {
+  color: var(--text-color);
+  background-color: var(--input-bg-color);
 }
 
 button[type="submit"] {
