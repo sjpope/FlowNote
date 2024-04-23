@@ -26,7 +26,7 @@ def generate_keywords_task(note_id):
     note_content = strip_html_tags(note.content)
     preprocessed_content = get_preprocessed_content(note_content)
     
-    keywords = generate_keywords(preprocessed_content)
+    keywords = generate_keywords(note_content, preprocessed_content)
     
     note.keywords = keywords
     note.save()
