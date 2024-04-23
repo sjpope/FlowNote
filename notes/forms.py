@@ -89,9 +89,14 @@ class UpdateUsernameForm(forms.ModelForm):
         model = User
         fields = ['username']
 
-class ChangePasswordForm(PasswordChangeForm):
+class ChangePasswordForm(PasswordChangeForm):   
     def __init__(self, *args, **kwargs):
         super(ChangePasswordForm, self).__init__(*args, **kwargs)
         self.fields['old_password'].widget.attrs['placeholder'] = 'Old Password'
         self.fields['new_password1'].widget.attrs['placeholder'] = 'New Password'
         self.fields['new_password2'].widget.attrs['placeholder'] = 'Confirm New Password'
+
+class UserPreferenceForm(forms.ModelForm):
+    class Meta:
+        model = UserPreference
+        fields = ['max_length', 'num_return_sequences', 'additional_tokens']
